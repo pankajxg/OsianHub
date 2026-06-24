@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard - OSIAN</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8; /* OSIAN mint */
+            --primary-hover: #5FFBF1; /* OSIAN cyan */
+            --secondary: #F9F586; /* OSIAN yellow */
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+
+            /* Card Colors - Updated for dark theme */
+            --color-blue-500: #5FFBF1; /* Cyan */
+            --color-green-500: #86FDE8; /* Mint */
+            --color-purple-500: #A78BFA; /* Light purple */
+            --color-amber-500: #F9F586; /* Yellow */
+            --color-cyan-500: #5FFBF1; /* Cyan */
+
+            /* Additional colors */
+            --white: #ffffff;
+            --secondary-color: #0F1A2B;
+            --text-light: #9FB6CC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .metric-card {
+            padding: 1.75rem;
+            border-radius: 1rem;
+            background: var(--bg-card);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 150px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--osian-gradient);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            border-color: var(--primary);
+        }
+
+        /* Metric Colors */
+        .bg-blue-500 { border-color: var(--color-blue-500); }
+        .bg-green-500 { border-color: var(--color-green-500); }
+        .bg-purple-500 { border-color: var(--color-purple-500); }
+        .bg-amber-500 { border-color: var(--color-amber-500); }
+        .bg-cyan-500 { border-color: var(--color-cyan-500); }
+
+        .metric-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .metric-icon {
+            font-size: 1.75rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0.9;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Management Grid */
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .manage-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .manage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--osian-gradient);
+        }
+
+        .manage-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        .manage-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .manage-card p {
+            color: var(--text-para);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        .btn {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--osian-glow);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .management-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item active">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-management.html" class="nav-item">
+                <i class='bx bxs-user-detail'></i>
+                <span>Manage Admins</span>
+            </a>
+            <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="manage-departments.html" class="nav-item">
+                <i class='bx bxs-building-house'></i>
+                <span>Departments</span>
+            </a>
+            <a href="manage-categories.html" class="nav-item">
+                <i class='bx bxs-folder'></i>
+                <span>Categories</span>
+            </a>
+            <a href="manage-global-quizzes.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>Global Quizzes</span>
+            </a>
+            <a href="all-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>All Results</span>
+            </a>
+            <a href="events.html" class="nav-item">
+                <i class='bx bxs-calendar-event'></i>
+                <span>Events</span>
+            </a>
+            <a href="site-settings.html" class="nav-item">
+                <i class='bx bxs-cog'></i>
+                <span>Site Settings</span>
+            </a>
+             <a href="profile.html" class="nav-item">
+        <i class='bx bxs-user-circle'></i>
+        <span>My Profile</span>
+      </a>
+        </nav>
+
+        <div class="logout-container">
+             <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Super Admin Dashboard</h1>
+                    <p>Complete control over OSIAN platform</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="create-notification.html" class="notification-icon" style="text-decoration: none; color: inherit;">
+                    <i class='bx bx-bell'></i>
+                    <span class="notification-badge"></span>
+                </a>
+                <div class="user-profile-header" onclick="window.location.href='profile.html'">
+                    <img src="https://i.ibb.co/jP9JWBBy/diljj.png" class="avatar" id="headerAvatar" alt="Profile" style="object-fit: cover;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Cards -->
+        <div class="metrics-grid">
+            <!-- Total Users: Cyan -->
+            <div class="metric-card bg-blue-500">
+                <div class="metric-top">
+                    <i class='bx bx-user metric-icon'></i>
+                </div>
+                <div class="metric-value" id="sup-kpi-total-users">0</div>
+                <div class="metric-label">Total Users</div>
+            </div>
+            
+            <!-- Total Admins: Mint -->
+            <div class="metric-card bg-green-500">
+                <div class="metric-top">
+                    <i class='bx bx-user-voice metric-icon'></i>
+                </div>
+                <div class="metric-value" id="sup-kpi-total-admins">0</div>
+                <div class="metric-label">Total Admins</div>
+            </div>
+            
+            <!-- Total Quizzes: Purple -->
+            <div class="metric-card bg-purple-500">
+                <div class="metric-top">
+                    <i class='bx bx-help-circle metric-icon'></i>
+                </div>
+                <div class="metric-value" id="sup-kpi-live-quizzes">0</div>
+                <div class="metric-label">Total Quizzes</div>
+            </div>
+            
+            <!-- Total Attempts: Yellow -->
+            <div class="metric-card bg-amber-500">
+                <div class="metric-top">
+                    <i class='bx bx-bar-chart metric-icon'></i>
+                </div>
+                <div class="metric-value" id="sup-kpi-total-attempts">0</div>
+                <div class="metric-label">Total Attempts</div>
+            </div>
+            
+            <!-- Categories: Cyan -->
+            <div class="metric-card bg-cyan-500">
+                <div class="metric-top">
+                    <i class='bx bx-category metric-icon'></i>
+                </div>
+                <div class="metric-value" id="sup-kpi-categories">0</div>
+                <div class="metric-label">Categories</div>
+            </div>
+        </div>
+
+        <!-- Management Grid -->
+        <div class="management-grid">
+            <!-- Card 1: Manage Admins -->
+            <div class="manage-card">
+                <h3>Manage Admins</h3>
+                <p>Add, edit, or remove department admins from the platform.</p>
+                <a href="admin-management.html" class="btn">Manage</a>
+            </div>
+
+            <!-- Card 2: Assign Roles -->
+            <div class="manage-card">
+                <h3>Assign Roles</h3>
+                <p>Promote existing users to admin or super admin roles.</p>
+                <a href="user-management.html" class="btn">Assign Roles</a>
+            </div>
+
+            <!-- Card 3: Global Quizzes -->
+            <div class="manage-card">
+                <h3>Global Quizzes</h3>
+                <p>Create and manage quizzes available to all departments.</p>
+                <a href="manage-global-quizzes.html" class="btn">Create Quiz</a>
+            </div>
+
+            <!-- Card 4: Site Settings -->
+            <div class="manage-card">
+                <h3>Site Settings</h3>
+                <p>Configure the homepage, branding, and global settings.</p>
+                <a href="site-settings.html" class="btn">Configure</a> 
+            </div>
+        </div>
+        
+        <!-- Hidden chart container -->
+        <div style="display:none">
+            <canvas id="activityChart"></canvas>
+        </div>
+
+    </main>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="script-dashboard-superadmin.js"></script>
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Global logout function
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        };
+    </script>
+</body>
+</html>

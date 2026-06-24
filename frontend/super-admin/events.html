@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Events - OSIAN Super Admin</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Dark Theme Palette */
+      --bg-main: #070B12;
+      --bg-sidebar: #06121F;
+      --bg-card: #0D1422;
+
+      --text-main: #E6F1FF;
+      --text-para: #BFD3E6;
+      --text-muted: #8FA9C4;
+      --text-sidebar: #BFD3E6;
+
+      --primary: #86FDE8; /* OSIAN mint */
+      --primary-hover: #5FFBF1; /* OSIAN cyan */
+      --secondary: #F9F586; /* OSIAN yellow */
+      
+      --border: rgba(134,253,232,0.18);
+      --border-color: rgba(134,253,232,0.18);
+      
+      --success: #86FDE8;
+      --warning: #F9F586;
+      --danger: #FF6B6B;
+
+      --shadow: 0 14px 36px rgba(0,0,0,0.6);
+      --osian-glow: rgba(134,253,232,0.35);
+      --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+
+      /* Card Colors - Updated for dark theme */
+      --color-blue-500: #5FFBF1; /* Cyan */
+      --color-green-500: #86FDE8; /* Mint */
+      --color-purple-500: #A78BFA; /* Light purple */
+      --color-amber-500: #F9F586; /* Yellow */
+      --color-cyan-500: #5FFBF1; /* Cyan */
+
+      /* Additional colors */
+      --white: #ffffff;
+      --secondary-color: #0F1A2B;
+      --text-light: #9FB6CC;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 16rem;
+      background-color: var(--bg-sidebar);
+      color: var(--text-sidebar);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+      border-right: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--osian-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand i {
+      font-size: 1.5rem;
+      background: var(--osian-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand span {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--osian-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(134, 253, 232, 0.08);
+      border-color: var(--border);
+      color: var(--text-main);
+      transform: translateX(5px);
+    }
+
+    .nav-item.active {
+      background: rgba(134, 253, 232, 0.12);
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 20px var(--osian-glow);
+    }
+
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+
+    .logout-container {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 16rem;
+      flex: 1;
+      padding: 2rem;
+      max-width: calc(100vw - 16rem);
+      min-height: 100vh;
+      background-color: var(--bg-main);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2.5rem;
+      background: transparent;
+      padding: 1rem 0;
+    }
+
+    .page-title h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      background: var(--osian-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-title p {
+      color: var(--text-para);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .notification-icon {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .notification-icon:hover {
+      color: var(--primary);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--danger);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--danger);
+    }
+
+    .user-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--osian-gradient);
+      color: var(--bg-sidebar);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid var(--primary);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-toggle {
+      display: none;
+      font-size: 1.5rem;
+      color: var(--primary);
+      cursor: pointer;
+      margin-right: 1rem;
+      background: var(--osian-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Container Styling */
+    .container {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Card Styling */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--osian-gradient);
+    }
+
+    /* Button Styling */
+    .btn {
+      background: var(--osian-gradient);
+      color: var(--bg-sidebar);
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px var(--osian-glow);
+    }
+
+    .btn-primary {
+      background: var(--osian-gradient);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(134, 253, 232, 0.08);
+      border-color: var(--primary);
+    }
+
+    .btn-danger {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* Table Styling */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    th {
+      text-align: left;
+      padding: 1rem;
+      background: rgba(134, 253, 232, 0.08);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(134, 253, 232, 0.08);
+      color: var(--text-para);
+      font-size: 0.875rem;
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(134, 253, 232, 0.05);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-block;
+      padding: 0.375rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-active {
+      background: rgba(134, 253, 232, 0.15);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .status-upcoming {
+      background: rgba(249, 245, 134, 0.15);
+      color: var(--secondary);
+      border: 1px solid var(--secondary);
+    }
+
+    .status-ended {
+      background: rgba(167, 139, 250, 0.15);
+      color: var(--color-purple-500);
+      border: 1px solid var(--color-purple-500);
+    }
+
+    .status-cancelled {
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .status-draft {
+      background: rgba(159, 182, 204, 0.15);
+      color: var(--text-muted);
+      border: 1px solid var(--text-muted);
+    }
+
+    /* Action Buttons */
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      background: rgba(134, 253, 232, 0.08);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .btn-action:hover {
+      background: var(--primary);
+      color: var(--bg-sidebar);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .btn-action.delete:hover {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: white;
+    }
+
+    .btn-action.edit:hover {
+      background: var(--color-purple-500);
+      border-color: var(--color-purple-500);
+      color: white;
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 11, 18, 0.95);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      padding: 2.5rem;
+      border-radius: 1rem;
+      width: 100%;
+      max-width: 720px;
+      border: 1px solid var(--primary);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      position: relative;
+      overflow-y: auto !important;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--osian-gradient);
+    }
+
+    .modal-content h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+      background: var(--osian-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Form Controls */
+    input, select, textarea {
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--osian-glow);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Event Type Badges */
+    .type-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .type-online {
+      background: rgba(134, 253, 232, 0.1);
+      color: var(--primary);
+    }
+
+    .type-offline {
+      background: rgba(249, 245, 134, 0.1);
+      color: var(--secondary);
+    }
+
+    .type-hybrid {
+      background: rgba(167, 139, 250, 0.1);
+      color: var(--color-purple-500);
+    }
+
+    /* Category Badges */
+    .category-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: rgba(134, 253, 232, 0.1);
+      color: var(--primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .mobile-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 1.5rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+      
+      .btn-action {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      th:nth-child(7),
+      td:nth-child(7),
+      th:nth-child(8),
+      td:nth-child(8) {
+        display: none;
+      }
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-card);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <i class='bx bxs-dashboard'></i>
+      <span>OSIAN</span>
+    </div>
+    
+    <nav class="nav-menu">
+      <a href="dashboard.html" class="nav-item">
+        <i class='bx bxs-grid-alt'></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="admin-management.html" class="nav-item">
+        <i class='bx bxs-user-detail'></i>
+        <span>Manage Admins</span>
+      </a>
+      <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="manage-departments.html" class="nav-item">
+                <i class='bx bxs-building-house'></i>
+                <span>Departments</span>
+            </a>
+            <a href="manage-categories.html" class="nav-item">
+        <i class='bx bxs-folder'></i>
+        <span>Categories</span>
+      </a>
+      <a href="manage-global-quizzes.html" class="nav-item">
+        <i class='bx bxs-help-circle'></i>
+        <span>Global Quizzes</span>
+      </a>
+      <a href="all-results.html" class="nav-item">
+        <i class='bx bxs-bar-chart-alt-2'></i>
+        <span>All Results</span>
+      </a>
+      <a href="events.html" class="nav-item active">
+        <i class='bx bxs-calendar-event'></i>
+        <span>Events</span>
+      </a>
+      
+      <a href="site-settings.html" class="nav-item">
+        <i class='bx bxs-cog'></i>
+        <span>Site Settings</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class='bx bxs-user-circle'></i>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="logout-container">
+      <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+        <i class='bx bx-log-out'></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="header">
+      <div style="display: flex; align-items: center;">
+        <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+        <div class="page-title">
+          <h1>Manage Events</h1>
+          <p>Create and manage platform events</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <div class="notification-icon">
+          <i class='bx bx-bell'></i>
+          <span class="notification-badge"></span>
+        </div>
+        <div class="user-profile-header">
+          <div class="avatar">SA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="card">
+        <div class="toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <h2 style="margin: 0;">All Events</h2>
+          <button id="btnNew" class="btn btn-primary">
+            <i class='bx bx-plus'></i> Create Event
+          </button>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Reg Window</th>
+                <th>Slots</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eventsBody">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Event Modal -->
+  <div id="eventModal" class="modal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Create Event</h3>
+      <form id="eventForm">
+        <div class="grid">
+          <div>
+            <label for="fTitle" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Title</label>
+            <input id="fTitle" placeholder="Event Title">
+          </div>
+          <div>
+            <label for="fCategory" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Category</label>
+            <select id="fCategory">
+              <option value="">Select Category</option>
+              <option>Hackathon</option>
+              <option>Ideathon</option>
+              <option>Sports</option>
+              <option>Cultural</option>
+              <option>Tech</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="fType" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Type</label>
+            <select id="fType">
+              <option>Online</option>
+              <option>Offline</option>
+              <option>Hybrid</option>
+            </select>
+          </div>
+          <div>
+            <label for="fVenue" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Venue</label>
+            <input id="fVenue" placeholder="Event Venue">
+          </div>
+          <div>
+            <label for="fStart" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Start Date & Time</label>
+            <input id="fStart" type="datetime-local">
+          </div>
+          <div>
+            <label for="fEnd" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">End Date & Time</label>
+            <input id="fEnd" type="datetime-local">
+          </div>
+          <div>
+            <label for="fRegStart" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Registration Start</label>
+            <input id="fRegStart" type="datetime-local">
+          </div>
+          <div>
+            <label for="fRegEnd" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Registration End</label>
+            <input id="fRegEnd" type="datetime-local">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Registration Status</label>
+            <label style="display:flex;align-items:center;gap:0.5rem; cursor:pointer; padding:0.5rem; border:1px solid var(--border); border-radius:4px;">
+                <input type="checkbox" id="fRegClosed"> 
+                <span style="color:var(--danger);">Force Close Registration</span>
+            </label>
+          </div>
+          <div>
+            <label for="fMax" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Max Participants</label>
+            <input id="fMax" type="number" min="0" placeholder="Maximum Participants">
+          </div>
+          <div>
+            <label for="fFee" style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Fee Type</label>
+            <select id="fFee">
+              <option>Free</option>
+              <option>Paid</option>
+            </select>
+          </div>
+        </div>
+            <div class="form-group">
+              <label>Event Image (16:9 recommended)</label>
+              <input type="file" id="fImage" accept="image/*">
+              <img id="imgPreview" src="" alt="Preview" style="display:none; width: 100%; max-height: 200px; object-fit: cover; margin-top: 0.5rem; border-radius: 4px;">
+            </div>
+
+            <div class="form-group full-width">
+              <label>Description</label>
+              <textarea id="fDesc" rows="4" placeholder="Event Details..."></textarea>
+            </div>
+
+            <div class="form-group full-width" style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem;">
+              <h4 style="margin-bottom: 1rem; color: var(--primary);">Registration Form Builder</h4>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Customize the registration form for this event.</p>
+              
+              <div id="formBuilderContainer" style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Dynamic Fields will appear here -->
+              </div>
+
+              <button type="button" id="btnAddField" class="btn btn-secondary" style="margin-top: 1rem; width: 100%;">
+                <i class='bx bx-plus'></i> Add Form Field
+              </button>
+            </div>
+            
+            <!-- Legacy Fields (Hidden or Deprecated visually) -->
+            <details style="margin-top: 1rem; border: 1px solid var(--border); padding: 0.5rem; border-radius: 4px;">
+              <summary style="cursor: pointer; font-size: 0.9rem;">Legacy Options (Deprecated)</summary>
+              <div class="form-row" style="margin-top: 1rem;">
+                 <label><input type="checkbox" id="fAskSkills"> Ask Skills</label>
+                 <label><input type="checkbox" id="fAskExp"> Ask Experience</label>
+              </div>
+              <div class="form-group full-width">
+                <label>Custom Questions (Legacy)</label>
+                <div id="customQuestionsContainer"></div>
+                <button type="button" id="btnAddQuestion" class="btn btn-secondary" style="margin-top:0.5rem; width:100%;">+ Add Question</button>
+              </div>
+            </details>
+
+        <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+          <button id="btnSave" type="submit" class="btn btn-primary">Save Event</button>
+          <button id="btnCancel" type="button" class="btn btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Mobile Sidebar Toggle
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // Global logout function
+    window.logout = function() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/frontend/auth/login.html';
+    };
+
+    // Modal Functions & Event Actions are now handled by script-superadmin-events.js
+
+    // Load existing scripts
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load auth guard if exists
+      if (typeof loadAuthGuard === 'function') {
+        loadAuthGuard();
+      }
+      
+      // Load shared init if exists
+      if (typeof loadSharedInit === 'function') {
+        loadSharedInit();
+      }
+      
+      // Load navbar if exists
+      if (typeof loadNavbar === 'function') {
+        loadNavbar();
+      }
+      
+      // Load events script if exists
+      if (typeof loadEvents === 'function') {
+        loadEvents();
+      }
+    });
+  </script>
+  
+  <script src="/frontend/shared/auth-guard.js"></script>
+  <script src="/frontend/shared/js/shared-init.js"></script>
+  <script src="/frontend/shared/navbar.js"></script>
+  <script src="script-superadmin-events.js"></script>
+</body>
+</html>

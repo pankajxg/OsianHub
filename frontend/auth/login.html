@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>OSIAN - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared/css/style.css?v=20251206">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="login-page">
+    <div class="login-container">
+        
+        <div class="info-section">
+            <div class="info-content">
+                <div class="illustration-card">
+                    <img class="illustration-img" src="https://i.ibb.co/HTMgy3HX/Screenshot-2025-12-07-085652.png" alt="OSIAN Quiz Illustration" loading="lazy">
+                </div>
+                <div class="brand-copy">
+                    <h3 class="brand-title">India’s Largest Inter-College Quiz Championship</h3>
+                    <p class="brand-subtitle">Test your knowledge, compete nationwide, and unlock new opportunities.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-wrapper">
+                <h2>Login</h2>
+                
+                <form id="login-form">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-envelope input-icon'></i>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-lock-alt input-icon'></i>
+                            <input type="password" id="password" placeholder="Enter your password" required autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+                        </div>
+                    </div>
+                    <p class="form-hint">Having trouble logging in? Try disabling extensions or use incognito.</p>
+                    
+                    <div class="form-options">
+                        <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                <p id="error-message" class="error-text" style="display: none;"></p>
+
+    
+                <div class="register-link">
+                    <p>Don't have an account? <a href="register.html">Sign up</a></p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script src="../shared/js/shared-init.js" defer></script>
+    <script src="../shared/js/script-toast-helper.js" defer></script>
+    <script src="../shared/js/script.js?v=20251206" defer></script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OSIAN - Verify OTP</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link rel="stylesheet" href="../shared/css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --bg-dark: #050509;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-hover: rgba(255, 255, 255, 0.06);
+            --osian-cyan: #00f2ff;
+            --osian-mint: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --gradient-primary: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            --gradient-text: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            /* Use min-height 100dvh for better mobile browser support */
+            min-height: 100vh;
+            min-height: 100dvh; 
+            
+            /* SCROLL FIX: Allow flex item to grow and scroll */
+            display: flex;
+            align-items: flex-start; /* Prevents top cut-off on small screens */
+            justify-content: center;
+            
+            padding: 20px;
+            background-image: radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05), transparent 60%);
+            background-attachment: fixed; /* Keeps background static while scrolling */
+            
+            /* SCROLL FIX: Ensure Y-axis scroll is active if needed */
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* --- CONTAINER --- */
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            
+            /* SCROLL FIX: Use margin auto to center vertically when height allows */
+            margin: auto; 
+            
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            
+            /* SCROLL FIX: Allow container to grow with content */
+            min-height: 550px;
+            overflow: hidden; /* Only hide overflow for the border-radius corners */
+        }
+
+        /* --- LEFT SIDE (INFO) --- */
+        .info-section {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .logo-name {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .info-content p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* --- RIGHT SIDE (FORM) --- */
+        .form-section {
+            flex: 1.2;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-wrapper h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-wrapper p {
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* --- INPUTS --- */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .input-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--osian-cyan);
+            font-size: 1.3rem;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .input-wrap input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .input-wrap input:focus {
+            border-color: var(--osian-cyan);
+            background: var(--bg-glass-hover);
+        }
+
+        /* --- BUTTONS --- */
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-primary);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        
+        .login-btn:active {
+            transform: scale(0.98);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #resend-btn {
+            background: transparent !important;
+            color: var(--osian-cyan) !important;
+            border: 1px solid var(--osian-cyan) !important;
+            margin-top: 15px;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .register-link a {
+            color: var(--osian-cyan);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* --- STATUS MESSAGES --- */
+        #message-area {
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+            padding: 12px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            line-height: 1.4;
+            border-left: 3px solid transparent;
+        }
+
+        /* --- MOBILE RESPONSIVE FIXES --- */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px; /* Less padding on small screens */
+                display: block; /* Remove flex centering constraint on mobile */
+            }
+
+            .login-container {
+                flex-direction: column; /* Stack vertically */
+                height: auto;
+                min-height: auto;
+                margin-top: 20px;
+                margin-bottom: 40px;
+                /* Remove overflow hidden so content can flow naturally */
+                overflow: visible; 
+            }
+
+            .info-section {
+                padding: 30px 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                /* Rounded corners for the top part only */
+                border-radius: 20px 20px 0 0; 
+            }
+
+            .form-section {
+                padding: 30px 20px;
+            }
+            
+            .logo-name {
+                font-size: 2.5rem;
+            }
+
+            /* Prevents iOS zoom on input focus */
+            .input-wrap input {
+                font-size: 16px; 
+                padding: 16px 15px 16px 45px;
+            }
+
+            .login-btn {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="info-section">
+            <div class="info-content">
+                <h1 class="logo-name">OSIAN</h1>
+                <p>Verify Your Account</p>
+                <p style="font-size: 0.95rem; margin-top: 10px; opacity: 0.8;">
+                    Secure your account by verifying your email address.
+                </p>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-wrapper">
+                <h2>Verification Code</h2>
+                <p style="margin-bottom: 30px;">
+                    We have sent a 6-digit verification code to your email.
+                </p>
+
+                <form id="verify-form">
+                    <div class="input-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-envelope input-icon'></i>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="otp">OTP Code</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-check-shield input-icon'></i>
+                            <input type="text" id="otp" placeholder="Enter 6-digit code" maxlength="6" pattern="[0-9]*" inputmode="numeric" required autocomplete="one-time-code">
+                        </div>
+                    </div>
+
+                    <div id="message-area"></div>
+
+                    <button type="submit" class="login-btn">Verify Account</button>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button type="button" id="resend-btn" class="login-btn">
+                            Resend OTP
+                        </button>
+                        <p id="timer-msg" style="font-size: 0.85rem; margin-top: 10px; display: none; color: var(--text-muted);">
+                            Resend available in <span id="countdown">30</span>s
+                        </p>
+                    </div>
+                </form>
+
+                <div class="register-link">
+                    <p>Back to <a href="login.html">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/js/shared-init.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('verify-form');
+            const emailInput = document.getElementById('email');
+            const otpInput = document.getElementById('otp');
+            const resendBtn = document.getElementById('resend-btn');
+            const messageArea = document.getElementById('message-area');
+            const timerMsg = document.getElementById('timer-msg');
+            const countdownSpan = document.getElementById('countdown');
+
+            // 1. Pre-fill Email if available
+            const storedEmail = localStorage.getItem('pendingVerificationEmail');
+            if (storedEmail) emailInput.value = storedEmail;
+
+            // Helper to show messages
+            function showMessage(msg, type) {
+                messageArea.textContent = msg;
+                messageArea.style.display = 'block';
+                // Adjust colors for readability
+                messageArea.style.color = type === 'error' ? '#ff6b6b' : '#00ff9d';
+                messageArea.style.borderLeftColor = type === 'error' ? '#ff6b6b' : '#00ff9d';
+            }
+
+            // 2. Submit Logic
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = emailInput.value.trim();
+                    const otp = otpInput.value.trim();
+
+                    if (!email || !otp) return showMessage('Please enter both email and OTP.', 'error');
+
+                    const btn = form.querySelector('button[type="submit"]');
+                    const originalText = btn.textContent;
+                    
+                    btn.disabled = true;
+                    btn.textContent = 'Verifying...';
+
+                    try {
+                        // Check if API helper exists, otherwise warn
+                        if (typeof apiFetch === 'undefined') {
+                            throw new Error('System Error: API connection missing.');
+                        }
+                        
+                        const data = await apiFetch('/auth/verify-otp', {
+                            method: 'POST',
+                            body: JSON.stringify({ email, otp })
+                        });
+
+                        showMessage('Success! Redirecting...', 'success');
+                        
+                        if (data.token) {
+                            localStorage.setItem('token', data.token);
+                            localStorage.setItem('user', JSON.stringify(data.user));
+                            localStorage.removeItem('pendingVerificationEmail');
+                            
+                            setTimeout(() => {
+                                const role = data.user.role;
+                                const dashboardMap = {
+                                    'superadmin': '/frontend/super-admin/dashboard.html',
+                                    'admin': '/frontend/admin/dashboard.html',
+                                    'user': '/frontend/user/dashboard.html'
+                                };
+                                window.location.href = dashboardMap[role] || '/frontend/user/dashboard.html';
+                            }, 1000);
+                        } else {
+                            window.location.href = 'login.html';
+                        }
+                    } catch (err) {
+                        showMessage(err.message || 'Verification failed. Please try again.', 'error');
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                    }
+                });
+            }
+
+            // 3. Resend Logic
+            if (resendBtn) {
+                resendBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const email = emailInput.value.trim();
+                    if (!email) {
+                        emailInput.focus();
+                        return showMessage('Please enter your email first.', 'error');
+                    }
+
+                    resendBtn.disabled = true;
+                    const originalText = resendBtn.textContent;
+                    resendBtn.textContent = 'Sending...';
+
+                    try {
+                        if (typeof apiFetch === 'undefined') {
+                            throw new Error('API connection missing');
+                        }
+
+                        await apiFetch('/auth/resend-otp', {
+                            method: 'POST',
+                            body: JSON.stringify({ email })
+                        });
+                        
+                        showMessage('OTP sent successfully!', 'success');
+                        resendBtn.textContent = originalText;
+                        startTimer();
+                    } catch (err) {
+                        showMessage(err.message || 'Error resending OTP.', 'error');
+                        if (!err.message?.toLowerCase().includes('wait')) {
+                            resendBtn.disabled = false;
+                            resendBtn.textContent = originalText;
+                        }
+                    }
+                });
+            }
+
+            function startTimer() {
+                let timeLeft = 30;
+                resendBtn.style.display = 'none';
+                timerMsg.style.display = 'block';
+                
+                // Clear any existing timer to prevent bugs
+                if (window.resendTimer) clearInterval(window.resendTimer);
+
+                window.resendTimer = setInterval(() => {
+                    timeLeft--;
+                    countdownSpan.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(window.resendTimer);
+                        timerMsg.style.display = 'none';
+                        resendBtn.style.display = 'inline-block';
+                        resendBtn.disabled = false;
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

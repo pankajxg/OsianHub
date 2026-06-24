@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - OSIAN Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8; /* OSIAN mint */
+            --primary-hover: #5FFBF1; /* OSIAN cyan */
+            --secondary: #F9F586; /* OSIAN yellow */
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        /* Content Section */
+        .content-section {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--osian-gradient);
+        }
+
+        /* Button Styling */
+        .btn {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--osian-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(134, 253, 232, 0.08);
+            border-color: var(--primary);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline:hover {
+            background: rgba(134, 253, 232, 0.08);
+            border-color: var(--primary);
+        }
+
+        /* Form Styling */
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--osian-glow);
+        }
+
+        .btn-submit {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 12px 30px;
+            font-weight: bold;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--osian-glow);
+        }
+
+        /* CSV Preview */
+        #csv-preview {
+            min-height: 120px;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 12px;
+            color: var(--text-muted);
+            overflow: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+
+        /* Image Preview Style */
+        .image-preview-container {
+            margin-top: 10px;
+            width: 100%;
+            height: 200px;
+            border: 1px dashed var(--border);
+            border-radius: 0.5rem;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .image-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="create-quiz.html" class="nav-item active">
+                <i class='bx bxs-plus-circle'></i>
+                <span>Create Quiz</span>
+            </a>
+            <a href="my-quiz.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>My Quizzes</span>
+            </a>
+            
+            <a href="quiz-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>Results</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class='bx bxs-user'></i>
+                <span>Profile</span>
+            </a>
+            <a href="notifications.html" class="nav-item">
+                <i class='bx bxs-bell'></i>
+                <span>Notifications</span>
+            </a>
+            
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div id="create-quiz-view">
+            <div class="header">
+                <div style="display: flex; align-items: center;">
+                    <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()" style="display:none; font-size:1.5rem; margin-right:1rem; cursor:pointer;"></i>
+                    <div class="page-title">
+                        <h1 class="header-title">Create a New Quiz</h1>
+                        <p>Fill in the details to build and launch your quiz</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="dashboard.html" class="btn btn-secondary">
+                        <i class='bx bx-arrow-back'></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <form id="create-quiz-form">
+                <div class="content-section">
+                    <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem;">Quiz Details</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <div style="grid-column: span 2;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Quiz Title</label>
+                            <input type="text" id="quiz-title" placeholder="e.g., Technical Quiz #009" required>
+                        </div>
+
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Difficulty</label>
+                            <select id="quiz-difficulty" required>
+                                <option value="basic">Basic</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Type</label>
+                            <select id="quiz-type" required>
+                                <option value="regular">Regular</option>
+                                <option value="live">Live Quiz</option>
+                                <option value="game">Game Quiz</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Visibility</label>
+                            <select id="quiz-visibility" required>
+                                <option value="public">Public</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Duration (mins)</label>
+                            <input type="number" id="quiz-duration" placeholder="e.g., 30" required>
+                        </div>
+
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Cover Image</label>
+                            <input type="file" id="quiz-cover" accept="image/*" required>
+                            <div id="cover-preview-container" class="image-preview-container">
+                                <img id="cover-preview" src="" alt="Cover Preview">
+                            </div>
+                        </div>
+                        
+                        <div id="quiz-price-group" style="display:none;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Price (INR)</label>
+                            <input type="number" id="quiz-price" placeholder="e.g., 99">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Registration Limit</label>
+                            <input type="number" id="quiz-limit" placeholder="0 for unlimited">
+                        </div>
+
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Max Attempts</label>
+                            <input type="number" id="quiz-attempts" placeholder="0 for unlimited (Default: 1)" min="0">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Schedule Time (Optional)</label>
+                            <input type="datetime-local" id="quiz-schedule" style="color-scheme: dark;">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Questions to Show</label>
+                            <input type="number" id="num-questions" placeholder="Default: All">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Certificate Minimum Percentage (%)</label>
+                            <input type="number" id="certificate-pass-percentage" placeholder="e.g., 70" min="0" max="100">
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Randomize Questions</label>
+                            <select id="randomize-questions">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">Randomize Options</label>
+                            <select id="randomize-options">
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin: 2rem 0 1.5rem;">Questions Input Options</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">CSV Upload</label>
+                            <input type="file" id="csv-upload" accept=".csv">
+                            <small style="color: var(--text-muted); display:block; margin-top: 0.5rem; font-size: 0.875rem;">Columns: question, optionA, optionB, optionC, optionD, correct, explanation (optional), difficulty (optional), marks (optional)</small>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500;">CSV Preview</label>
+                            <div id="csv-status"></div>
+                            <div id="csv-preview"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top: 1rem;">
+                        <button type="button" id="btn-clear-csv" class="btn-outline">Clear CSV</button>
+                        <button type="button" id="btn-parse-csv" class="btn-outline">Parse CSV</button>
+                        <button type="button" id="btn-use-csv" class="btn">Use Parsed Questions</button>
+                    </div>
+                    
+                    <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin: 2rem 0 1.5rem;">Questions <span id="questions-count" style="font-size:0.9rem; color:var(--text-muted); font-weight:normal;">(0 questions)</span></h3>
+                    <div id="questions-container"></div>
+                    
+                    <button type="button" id="add-question-btn" class="btn-secondary" style="background: transparent; border: 1px dashed var(--primary); color: var(--primary); padding: 12px; width: 100%; border-radius: 0.5rem; margin-bottom: 2rem; cursor: pointer; transition: all 0.3s;">
+                        <i class='bx bx-plus'></i> Add Question
+                    </button>
+
+                    <div style="text-align: right; padding-top: 1rem; border-top: 1px solid var(--border);">
+                        <button type="submit" class="btn-submit">Create Quiz</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/shared/navbar.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="script-create-quiz.js"></script>
+    <script src="script-admin-header.js"></script>
+</body>
+</html>

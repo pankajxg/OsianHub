@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Notification - OSIAN Super Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8; /* OSIAN mint */
+            --primary-hover: #5FFBF1; /* OSIAN cyan */
+            --secondary: #F9F586; /* OSIAN yellow */
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+
+            /* Card Colors - Updated for dark theme */
+            --color-blue-500: #5FFBF1; /* Cyan */
+            --color-green-500: #86FDE8; /* Mint */
+            --color-purple-500: #A78BFA; /* Light purple */
+            --color-amber-500: #F9F586; /* Yellow */
+            --color-cyan-500: #5FFBF1; /* Cyan */
+
+            /* Additional colors */
+            --white: #ffffff;
+            --secondary-color: #0F1A2B;
+            --text-light: #9FB6CC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Container and Card Styles */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--osian-gradient);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(134, 253, 232, 0.1);
+        }
+
+        select option {
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+            line-height: 1.5;
+        }
+
+        /* Button Styles */
+        .btn {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--osian-glow);
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .container {
+                padding: 0;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Additional form styling */
+        .form-note {
+            color: var(--text-para);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item active">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-management.html" class="nav-item">
+                <i class='bx bxs-user-detail'></i>
+                <span>Manage Admins</span>
+            </a>
+            <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="manage-categories.html" class="nav-item">
+                <i class='bx bxs-folder'></i>
+                <span>Categories</span>
+            </a>
+            <a href="manage-global-quizzes.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>Global Quizzes</span>
+            </a>
+            <a href="all-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>All Results</span>
+            </a>
+            <a href="events.html" class="nav-item">
+                <i class='bx bxs-calendar-event'></i>
+                <span>Events</span>
+            </a>
+           
+            <a href="site-settings.html" class="nav-item">
+                <i class='bx bxs-cog'></i>
+                <span>Site Settings</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Create New Notification</h1>
+                    <p>Send a message to all users, all admins, or both</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="notification-icon" style="cursor: default;">
+                    <i class='bx bx-bell'></i>
+                    <span class="notification-badge"></span>
+                </div>
+                <div class="user-profile-header">
+                    <div class="avatar">SA</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <h3>Notification Composer</h3>
+                <form id="notification-form">
+                    <div class="form-group">
+                        <label for="recipient">Select Recipients</label>
+                        <select id="recipient" required>
+                            <option value="all">All Users & Admins</option>
+                            <option value="users">Only Users</option>
+                            <option value="admins">Only Admins</option>
+                            <option value="custom">Custom Selection</option>
+                        </select>
+                        <p class="form-note">Choose who will receive this notification</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" required placeholder="e.g., System Update Scheduled, New Quiz Available, Important Announcement">
+                        <p class="form-note">Keep it clear and concise</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" required placeholder="Enter the full notification message here... 
+
+Example: 
+Dear Users,
+
+We will be performing system maintenance on Saturday, December 15th from 2:00 AM to 6:00 AM UTC. During this time, the platform will be temporarily unavailable.
+
+We apologize for any inconvenience and thank you for your understanding.
+
+- OSIAN Team"></textarea>
+                        <p class="form-note">You can include formatting like line breaks for better readability</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level</label>
+                        <select id="urgency" required>
+                            <option value="normal">Normal</option>
+                            <option value="important">Important</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                        <p class="form-note">Affects how the notification is displayed to recipients</p>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class='bx bx-send'></i> Send Notification Now
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Recent Notifications</h3>
+                <div style="color: var(--text-para); font-size: 0.95rem; padding: 1rem 0;">
+                    <p><i class='bx bx-info-circle' style="color: var(--primary); margin-right: 0.5rem;"></i> Your last 5 notifications will appear here for reference.</p>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(134, 253, 232, 0.05); border-radius: 0.5rem; border-left: 3px solid var(--primary);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                            <span style="font-weight: 600;">System Maintenance Notice</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">2 hours ago</span>
+                        </div>
+                        <p style="color: var(--text-para); font-size: 0.9rem; margin-bottom: 0.5rem;">Sent to: All Users & Admins</p>
+                        <p style="color: var(--text-light); font-size: 0.85rem;">Scheduled maintenance for database optimization...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Global logout function
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        };
+
+        // Form submission
+        document.getElementById('notification-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const recipient = document.getElementById('recipient').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            const urgency = document.getElementById('urgency').value;
+            
+            // Here you would typically send this data to your backend
+            console.log('Notification Data:', {
+                recipient,
+                subject,
+                message,
+                urgency,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Show success message
+            if (window.showToast) window.showToast('Notification sent successfully!', 'success');
+            else console.log('Notification sent successfully!');
+            
+            // Reset form
+            document.getElementById('notification-form').reset();
+            document.getElementById('recipient').value = 'all';
+            document.getElementById('urgency').value = 'normal';
+        });
+
+        // Auto-resize textarea
+        const textarea = document.getElementById('message');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+</body>
+</html>

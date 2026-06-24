@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - OSIAN</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <!-- CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Events Specific Styles */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .event-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(95, 251, 241, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(95, 251, 241, 0.3);
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .event-card:hover::before {
+            opacity: 1;
+        }
+
+        .event-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, rgba(95, 251, 241, 0.1), rgba(13, 20, 34, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--osian-cyan);
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .event-card:hover .event-image img {
+            transform: scale(1.05);
+        }
+
+        .event-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .event-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-upcoming {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .badge-live {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .badge-completed {
+            background: rgba(156, 163, 175, 0.1);
+            color: #9CA3AF;
+            border: 1px solid rgba(156, 163, 175, 0.3);
+        }
+
+        .badge-registered {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8B5CF6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item i {
+            color: var(--osian-cyan);
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .event-description {
+            color: var(--text-para);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(95, 251, 241, 0.1);
+        }
+
+        .event-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--osian-cyan), var(--osian-mint));
+            color: var(--bg-main);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(95, 251, 241, 0.3);
+        }
+
+        .btn-register:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .btn-view-details {
+            background: rgba(95, 251, 241, 0.1);
+            color: var(--osian-cyan);
+            border: 1px solid rgba(95, 251, 241, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-view-details:hover {
+            background: rgba(95, 251, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Filters */
+        .filters-container {
+            background: var(--bg-card);
+            border: 1px solid rgba(95, 251, 241, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .filter-input, .filter-select {
+            background: var(--bg-main);
+            border: 1px solid rgba(95, 251, 241, 0.15);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--osian-cyan);
+            box-shadow: 0 0 0 3px rgba(95, 251, 241, 0.1);
+        }
+
+        .filter-input:hover, .filter-select:hover {
+            border-color: rgba(95, 251, 241, 0.3);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn-filter {
+            background: rgba(95, 251, 241, 0.1);
+            color: var(--osian-cyan);
+            border: 1px solid rgba(95, 251, 241, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-filter:hover {
+            background: rgba(95, 251, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: rgba(239, 68, 68, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Loading Skeletons */
+        .skeleton-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skeleton-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: rgba(95, 251, 241, 0.3);
+        }
+
+        .empty-state h3 {
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid rgba(95, 251, 241, 0.1);
+        }
+
+        .btn-pagination {
+            background: rgba(95, 251, 241, 0.1);
+            color: var(--osian-cyan);
+            border: 1px solid rgba(95, 251, 241, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-pagination:hover:not(:disabled) {
+            background: rgba(95, 251, 241, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-pagination:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-actions {
+                flex-direction: column;
+            }
+
+            .btn-filter, .btn-reset {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .event-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .btn-register, .btn-view-details {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .event-stats {
+                justify-content: center;
+            }
+        }
+
+        /* Event Categories */
+        .category-tech { border-left: 4px solid #3B82F6; }
+        .category-hackathon { border-left: 4px solid #8B5CF6; }
+        .category-workshop { border-left: 4px solid #10B981; }
+        .category-webinar { border-left: 4px solid #F59E0B; }
+        .category-sports { border-left: 4px solid #EF4444; }
+        .category-cultural { border-left: 4px solid #EC4899; }
+
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--osian-cyan);
+            background: rgba(95, 251, 241, 0.1);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid rgba(95, 251, 241, 0.2);
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .countdown-label {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        /* Featured Event */
+        .featured-event {
+            grid-column: 1 / -1;
+            position: relative;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Sidebar/Navbar -->
+        <div id="sidebar-container" class="sidebar"></div>
+        
+        <!-- Mobile Overlay -->
+        <div class="overlay" id="overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>Events & Activities 🎉</h1>
+                    <p>Join workshops, hackathons, webinars, and competitions</p>
+                </div>
+                
+                <button id="mobile-menu-btn" class="mobile-menu-btn">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </header>
+
+            <!-- Filters Section -->
+            <div class="filters-container">
+                <div class="filters">
+                    <div class="filter-group">
+                        <label><i class='bx bx-search'></i> Search Events</label>
+                        <input type="text" id="search-input" class="filter-input" placeholder="Search by title, description...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label><i class='bx bx-category'></i> Category</label>
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="tech">Technology</option>
+                            <option value="hackathon">Hackathon</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="webinar">Webinar</option>
+                            <option value="sports">Sports</option>
+                            <option value="cultural">Cultural</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label><i class='bx bx-time'></i> Status</label>
+                        <select id="status-filter" class="filter-select">
+                            <option value="">All Status</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="live">Live Now</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button id="apply-filters" class="btn-filter">
+                            <i class='bx bx-filter-alt'></i> Apply Filters
+                        </button>
+                        <button id="reset-filters" class="btn-reset">
+                            <i class='bx bx-reset'></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="events-grid" id="events-list">
+                <!-- Events will be loaded here -->
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button id="prev-page" class="btn-pagination">
+                    <i class='bx bx-chevron-left'></i> Previous
+                </button>
+                <div class="page-info">
+                    Page <span id="current-page">1</span> of <span id="total-pages">1</span>
+                </div>
+                <button id="next-page" class="btn-pagination">
+                    Next <i class='bx bx-chevron-right'></i>
+                </button>
+            </div>
+
+            <!-- Empty State (Hidden by default) -->
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class='bx bx-calendar-x'></i>
+                <h3>No Events Found</h3>
+                <p>Try adjusting your filters or check back later for new events.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Modal for Event Details -->
+    <div id="event-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Event details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="/frontend/user/script-events.js"></script>
+</body>
+</html>

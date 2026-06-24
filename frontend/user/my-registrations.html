@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Event Registrations - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    <style>
+        .registrations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .registration-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid rgba(95, 251, 241, 0.12);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .registration-banner {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, rgba(95, 251, 241, 0.12), rgba(13, 20, 34, 0.9));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--osian-cyan);
+            font-size: 2.5rem;
+        }
+        .registration-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        .registration-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .registration-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .registration-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .registration-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .registration-meta-item i {
+            color: var(--osian-cyan);
+            font-size: 1.1rem;
+        }
+        .registration-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .registration-tag {
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            border: 1px solid rgba(95, 251, 241, 0.25);
+            font-size: 0.75rem;
+            color: var(--osian-cyan);
+        }
+        .registration-details {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-para);
+        }
+        .registration-details-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.35rem;
+        }
+        .registration-details-label {
+            color: var(--text-muted);
+        }
+        .registration-details-value {
+            text-align: right;
+        }
+        .registration-footer {
+            padding: 1rem 1.5rem 1.25rem;
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(95, 251, 241, 0.08);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .badge-status {
+            padding: 0.25rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-status-upcoming {
+            background: rgba(59, 130, 246, 0.12);
+            color: #3B82F6;
+        }
+        .badge-status-live {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10B981;
+        }
+        .badge-status-completed {
+            background: rgba(156, 163, 175, 0.12);
+            color: #9CA3AF;
+        }
+        .empty-state {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: rgba(95, 251, 241, 0.35);
+        }
+        .empty-state a {
+            color: var(--osian-cyan);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .registrations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        <div class="overlay" id="overlay"></div>
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>My Event Registrations</h1>
+                    <p>Review your registered events and submitted details</p>
+                </div>
+                <button id="mobile-menu-btn" class="mobile-menu-btn">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </header>
+            <section>
+                <div id="registrations-list" class="registrations-grid"></div>
+                <div id="registrations-empty" class="empty-state" style="display:none;">
+                    <i class='bx bx-calendar-x'></i>
+                    <p>You have not registered for any events yet.</p>
+                    <p>Browse <a href="events.html">Events</a> to get started.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="/frontend/user/script-my-registrations.js"></script>
+</body>
+</html>
+

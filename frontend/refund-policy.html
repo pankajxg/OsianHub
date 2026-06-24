@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Policy - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= PREMIUM THEME (Nebula Onyx) ================= */
+        :root {
+            --bg-dark: #050509;
+            --bg-card: rgba(20, 25, 38, 0.6);
+            --osian-cyan: #00f2ff;
+            --osian-red: #ff4444;
+            --osian-mint: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --gradient-primary: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            --border-light: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 10%, rgba(0, 242, 255, 0.05), transparent 40%);
+            color: var(--text-main); font-family: 'Inter', sans-serif;
+            margin: 0; line-height: 1.7; overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { padding: 0; margin: 0; list-style: none; }
+
+        /* --- NAVBAR --- */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(15px);
+            z-index: 1000; border-bottom: 1px solid var(--border-light);
+        }
+        .navbar {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; }
+        .nav-link { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .nav-link:hover { color: var(--osian-cyan); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .btn { padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-primary { background: var(--gradient-primary); color: #000; box-shadow: 0 4px 15px rgba(0,242,255,0.3); }
+        .btn-light { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border-light); }
+        .hamburger { display: none; cursor: pointer; color: #fff; font-size: 1.5rem; }
+
+        /* --- CONTENT --- */
+        .refund-container { max-width: 1000px; margin: 140px auto 60px; padding: 0 2rem; }
+        
+        .refund-header { text-align: center; margin-bottom: 60px; }
+        .refund-header h1 {
+            font-size: 3rem; margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff, #a5f3fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .refund-header p { color: var(--text-muted); max-width: 800px; margin: 0 auto; font-size: 1.1rem; }
+
+        .refund-section {
+            background: var(--bg-card); border: 1px solid var(--border-light);
+            border-radius: 20px; padding: 35px; margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .refund-section h2 { color: var(--osian-cyan); margin-bottom: 20px; font-size: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .refund-section h3 { color: #fff; margin: 25px 0 10px; font-size: 1.2rem; }
+        .refund-section p, .refund-section li { color: var(--text-muted); margin-bottom: 10px; }
+        .refund-section ul, .refund-section ol { margin-left: 20px; }
+        /* Reset ul inside footer from being indented */
+        .footer ul { margin-left: 0; }
+
+        /* Tables */
+        .refund-table { width: 100%; border-collapse: collapse; margin: 25px 0; border-radius: 12px; overflow: hidden; }
+        .refund-table th { background: rgba(0, 242, 255, 0.1); color: var(--osian-cyan); padding: 15px; text-align: left; }
+        .refund-table td { padding: 15px; border-bottom: 1px solid var(--border-light); color: var(--text-muted); }
+        .refund-table tr:hover td { background: rgba(255,255,255,0.02); color: #fff; }
+
+        /* Boxes */
+        .highlight-box { background: rgba(0, 242, 255, 0.05); border-left: 4px solid var(--osian-cyan); padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .no-refund-box { background: rgba(255, 68, 68, 0.05); border-left: 4px solid var(--osian-red); padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .no-refund-box ul { list-style: disc; }
+
+        /* Steps */
+        .process-steps { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+        .process-step {
+            flex: 1; min-width: 200px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-light); padding: 25px;
+            border-radius: 16px; text-align: center;
+        }
+        .step-number {
+            background: var(--osian-cyan); color: #000; width: 40px; height: 40px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; margin: 0 auto 15px;
+        }
+        .process-step h3 { color: #fff; font-size: 1.1rem; margin-bottom: 5px; }
+        .process-step p { font-size: 0.9rem; color: var(--text-muted); }
+
+        .update-date { text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid var(--border-light); color: var(--text-muted); font-style: italic; }
+        
+        /* ================= FOOTER STYLES ================= */
+        .footer { background: #020204; padding: 60px 2rem 20px; border-top: 1px solid var(--border-light); margin-top: 80px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 3rem;
+        }
+        .footer h3 { color: var(--osian-cyan); font-size: 1.5rem; margin-bottom: 1rem; }
+        .footer p, .footer li a { color: var(--text-muted); font-size: 0.9rem; }
+        .footer li { margin-bottom: 0.5rem; }
+        .footer li a:hover { color: #fff; padding-left: 5px; }
+        
+        .social-media { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-media a {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: #fff; font-size: 1.2rem;
+        }
+        .social-media a:hover { background: var(--osian-cyan); color: #000; }
+
+        .footer-bottom {
+            text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light); font-size: 0.8rem; color: #555;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem; }
+            .nav-menu, .nav-buttons { display: none; }
+            .hamburger { display: block; }
+            .process-steps { flex-direction: column; }
+            
+            .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+            .refund-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">
+                <i class='bx bx-atom' style="font-size: 2rem; color: var(--osian-cyan); filter: drop-shadow(0 0 5px var(--osian-cyan));"></i>
+                <span style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px;">OSIAN</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#features" class="nav-link">Features</a></li>
+                <li><a href="index.html#categories" class="nav-link">Categories</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="auth/register.html" class="btn btn-primary">Sign Up</a>
+                <a href="auth/login.html" class="btn btn-light">Login</a>
+            </div>
+            <div class="hamburger"><i class='bx bx-menu'></i></div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="refund-container">
+            <div class="refund-header">
+                <h1>Refund Policy</h1>
+                <p>At OSIAN, we strive to provide the best experience for our users. This Refund Policy outlines the circumstances under which refunds may be granted for paid services.</p>
+            </div>
+            
+            <div class="refund-section">
+                <h2>1. General Refund Policy</h2>
+                <p>Most of OSIAN's services are free. However, for specific paid events, courses, or premium features, the following refund policy applies:</p>
+                
+                <div class="highlight-box">
+                    <p><strong>Important:</strong> Free quiz participation and basic platform access are non-refundable as they are provided at no cost.</p>
+                </div>
+            </div>
+            
+            <div class="refund-section">
+                <h2>2. Eligibility for Refunds</h2>
+                <p>Refunds for paid services may be considered under the following circumstances:</p>
+                
+                <table class="refund-table">
+                    <thead>
+                        <tr>
+                            <th>Service Type</th>
+                            <th>Refund Eligibility</th>
+                            <th>Time Frame</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Paid Quiz Events</td>
+                            <td>Full refund if cancelled 48+ hours before event start</td>
+                            <td>48 hours prior</td>
+                        </tr>
+                        <tr>
+                            <td>Premium Courses</td>
+                            <td>50% refund if cancelled before course materials accessed</td>
+                            <td>7 days from purchase</td>
+                        </tr>
+                        <tr>
+                            <td>Subscription Plans</td>
+                            <td>Prorated refund for unused period</td>
+                            <td>30 days from billing</td>
+                        </tr>
+                        <tr>
+                            <td>Technical Issues</td>
+                            <td>Full refund if platform is inaccessible</td>
+                            <td>Report within 24 hours</td>
+                        </tr>
+                        <tr>
+                            <td>Event Cancellation</td>
+                            <td>Automatic full refund</td>
+                            <td>Within 7 business days</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="refund-section">
+                <h2>3. Non-Refundable Items</h2>
+                <p>The following are strictly non-refundable:</p>
+                
+                <div class="no-refund-box">
+                    <ul>
+                        <li>Digital certificates and badges already issued</li>
+                        <li>Quiz attempts already completed</li>
+                        <li>Services used or accessed</li>
+                        <li>Processing fees for transactions</li>
+                        <li>Donations to educational initiatives</li>
+                        <li>Services where prohibited by partners/educational institutions</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="refund-section">
+                <h2>4. Refund Process</h2>
+                <p>To request a refund, follow these steps:</p>
+                
+                <div class="process-steps">
+                    <div class="process-step">
+                        <div class="step-number">1</div>
+                        <h3>Submit Request</h3>
+                        <p>Email osiancommunity01025@gmail.com with transaction details</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">2</div>
+                        <h3>Review Period</h3>
+                        <p>We review your request within 3-5 business days</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">3</div>
+                        <h3>Decision</h3>
+                        <p>You receive email notification of approval or denial</p>
+                    </div>
+                    <div class="process-step">
+                        <div class="step-number">4</div>
+                        <h3>Processing</h3>
+                        <p>Approved refunds processed within 7-10 business days</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="refund-section">
+                <h2>5. Special Circumstances</h2>
+                
+                <h3>5.1 Medical Emergencies</h3>
+                <p>With valid medical documentation, we may offer:</p>
+                <ul>
+                    <li>Full refund for upcoming events</li>
+                    <li>Credit for future participation</li>
+                    <li>Deferred participation option</li>
+                </ul>
+                
+                <h3>5.2 Technical Failures</h3>
+                <p>If OSIAN experiences technical issues preventing participation:</p>
+                <ul>
+                    <li>Full refund if event cannot be rescheduled</li>
+                    <li>Option to participate in rescheduled event</li>
+                    <li>Credit for future events of equal value</li>
+                </ul>
+                
+                <h3>5.3 Institutional Partnerships</h3>
+                <p>Refunds for institution-sponsored events follow the institution's policies in coordination with OSIAN.</p>
+            </div>
+            
+            <div class="refund-section">
+                <h2>6. Refund Methods</h2>
+                <p>Refunds are issued using the original payment method:</p>
+                <ul>
+                    <li>Credit/Debit Cards: 7-10 business days</li>
+                    <li>Digital Wallets: 3-5 business days</li>
+                    <li>Bank Transfers: 5-7 business days</li>
+                    <li>Platform Credits: Instant (if chosen)</li>
+                </ul>
+                <p>International transactions may take additional time due to banking processes.</p>
+            </div>
+            
+            <div class="refund-section">
+                <h2>7. Dispute Resolution</h2>
+                <p>If you disagree with a refund decision:</p>
+                <ol>
+                    <li>Submit a detailed appeal to osiancommunity01025@gmail.com</li>
+                    <li>Include all relevant documentation</li>
+                    <li>Our team will conduct a secondary review within 10 business days</li>
+                    <li>Final decisions are communicated in writing</li>
+                </ol>
+            </div>
+            
+            <div class="refund-section">
+                <h2>8. Contact Information</h2>
+                <p>For refund-related inquiries:</p>
+                <p>Email: osiancommunity01025@gmail.com<br>
+                Phone: +91 76967-01967 (Refund Department)<br>
+                Hours: Monday-Friday, 10 AM - 6 PM IST</p>
+                
+                <div class="highlight-box">
+                    <p><strong>Note:</strong> Please include your transaction ID, registered email, and event details in all refund communications for faster processing.</p>
+                </div>
+            </div>
+            
+            <div class="update-date">
+                <p><strong>Last Updated:</strong> DEC 11, 2025</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>OSIAN</h3>
+                <p>India’s premium student quiz platform — fair, transparent, and engaging.</p>
+            </div>
+            <div class="footer-links">
+                <h4 style="color:#fff; margin-bottom:1rem;">Quick Links</h4>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="shipping-policy.html">Shipping Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4 style="color:#fff; margin-bottom:1rem;">Contact Us</h4>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/osianoffical" target="_blank"><i class='bx bxl-instagram'></i></a>
+                    <a href="https://www.linkedin.com/in/osian-group-94b1b3398/" target="_blank"><i class='bx bxl-linkedin'></i></a>
+                </div>
+                <p style="margin-top: 20px;">Email: osiancommunity01025@gmail.com</p>
+                <p>Phone: +91 76967-01967</p>
+                <p>Office: Chandigarh Engineering College, Jhanjeri, MOHALI</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 OSIAN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar toggle logic
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navButtons = document.querySelector('.nav-buttons');
+
+        hamburger.addEventListener('click', () => {
+            const isFlex = navMenu.style.display === 'flex';
+            if(!isFlex) {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '70px';
+                navMenu.style.left = '0';
+                navMenu.style.width = '100%';
+                navMenu.style.background = '#050509';
+                navMenu.style.padding = '2rem';
+                
+                navButtons.style.display = 'flex';
+                navButtons.style.flexDirection = 'column';
+                navButtons.style.position = 'absolute';
+                navButtons.style.top = '300px';
+                navButtons.style.left = '0';
+                navButtons.style.width = '100%';
+                navButtons.style.padding = '2rem';
+                navButtons.style.background = '#050509';
+            } else {
+                navMenu.style.display = 'none';
+                navButtons.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

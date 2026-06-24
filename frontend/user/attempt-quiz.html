@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt Quiz - OSIAN Secure</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. PREMIUM THEME VARIABLES
+           ========================================= */
+        :root {
+            --bg-dark: #09090b;
+            --bg-card: rgba(30, 30, 35, 0.95);
+            --primary: #00f2ff;
+            --primary-glow: rgba(0, 242, 255, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --border: rgba(255, 255, 255, 0.08);
+            --danger: #ff4444;
+            --success: #00ff9d;
+            --warning: #ffbb00;
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden; 
+            display: flex; flex-direction: column;
+            user-select: none; /* Security: Disable Text Selection */
+        }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 9, 0.95); 
+            backdrop-filter: blur(15px);
+            z-index: 9999;
+            display: none; 
+            justify-content: center; align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            border-radius: var(--radius-lg);
+            width: 100%; max-width: 600px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .inst-icon-glow {
+            width: 80px; height: 80px; margin: 0 auto 25px;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(112, 0, 255, 0.1));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px var(--primary-glow);
+        }
+        .inst-icon-glow i { font-size: 36px; color: var(--primary); }
+
+        h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        p.subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 30px; line-height: 1.6; }
+
+        /* Security List */
+        .security-list { text-align: left; background: rgba(255, 68, 68, 0.1); border: 1px solid var(--danger); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .security-list li { color: #ffcccc; margin-bottom: 5px; font-size: 0.9rem; list-style: none; display: flex; gap: 10px; align-items: center; }
+        .security-list li i { color: var(--danger); font-size: 1.2rem; }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        .btn-lg {
+            padding: 14px 35px; border-radius: 50px; font-weight: 600; cursor: pointer;
+            border: none; font-size: 1rem; transition: all 0.2s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .btn-primary { background: var(--text-main); color: #000; }
+        .btn-primary:hover { background: var(--primary); box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+        
+        /* --- QUIZ UI --- */
+        #quiz-content { display: none; height: 100vh; width: 100%; flex-direction: row; }
+        
+        .quiz-main { flex: 1; padding: 40px 60px; overflow-y: auto; display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .timer-badge { font-family: monospace; font-size: 1.5rem; font-weight: 700; color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+        
+        .question-container { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 300px; }
+        .q-meta { color: var(--primary); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
+        .q-text { font-size: 1.6rem; line-height: 1.4; color: #fff; margin-bottom: 30px; font-weight: 600; }
+
+        .options-grid { display: grid; gap: 12px; width: 100%; }
+        .option-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            padding: 18px 25px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 15px; font-size: 1rem; color: var(--text-muted);
+        }
+        .option-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); color: #fff; }
+        .option-card.selected { background: rgba(0, 242, 255, 0.1); border-color: var(--primary); color: #fff; }
+        .key-hint { width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        .option-card.selected .key-hint { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        .quiz-footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border); }
+
+        /* Sidebar */
+        .quiz-sidebar { width: 300px; background: rgba(15, 15, 20, 0.8); border-left: 1px solid var(--border); backdrop-filter: blur(10px); padding: 30px; display: flex; flex-direction: column; }
+        .tracker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+        .question-dot { aspect-ratio: 1; border-radius: 8px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; }
+        .question-dot.current { border-color: var(--primary); color: #fff; }
+        .question-dot.answered { background: var(--primary); color: #000; }
+
+        /* --- NOTIFICATIONS & OVERLAYS --- */
+        #fullscreen-blocker {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 100000; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px;
+        }
+        
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(30, 30, 35, 0.95); color: white; padding: 12px 25px;
+            border-radius: 50px; font-weight: 500; z-index: 10001;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); border: 1px solid var(--border);
+            display: none; animation: slideDown 0.4s ease;
+        }
+        .toast.error { border-color: var(--danger); color: var(--danger); }
+        .toast.success { border-color: var(--success); color: var(--success); }
+        
+        @keyframes slideDown { from { top: -50px; } to { top: 20px; } }
+
+        /* Loader */
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin-left:10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 900px) {
+            .quiz-sidebar { display: none; }
+            .quiz-main { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="instructions-container" class="modal-overlay active">
+        <div class="glass-card">
+            <div id="inst-icon" class="inst-icon-glow"><i class='bx bx-shield-quarter'></i></div>
+            <h1 id="inst-quiz-title">Loading...</h1>
+            <p id="inst-quiz-desc" class="subtitle">Please wait...</p>
+
+            <div id="inst-details-panel" style="display:none;">
+                <div id="security-rules-section">
+                    <ul class="security-list">
+                        <li><i class='bx bx-fullscreen'></i> <strong>Fullscreen Mode Enforced</strong></li>
+                        <li><i class='bx bx-window-close'></i> <strong>No Tab Switching</strong></li>
+                        <li><i class='bx bx-copy-alt'></i> <strong>Copy/Paste Disabled</strong></li>
+                    </ul>
+
+                    <div class="meta-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <i class='bx bx-time' style="color:var(--primary)"></i><br>
+                            <span id="inst-duration">--</span> Mins
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <i class='bx bx-list-ul' style="color:var(--primary)"></i><br>
+                            <span id="inst-questions">--</span> Qs
+                        </div>
+                        <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;">
+                            <i class='bx bx-target-lock' style="color:var(--primary)"></i><br>
+                            <span id="inst-pass">--</span> Pass
+                        </div>
+                    </div>
+                </div>
+
+                <div id="action-buttons" class="btn-group">
+                    <button class="btn-lg btn-secondary" onclick="window.history.back()">Exit</button>
+                    <button id="start-btn" class="btn-lg btn-primary" onclick="startQuizSecure()">Start Exam</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="submit-modal" class="modal-overlay">
+        <div class="glass-card">
+            <div class="inst-icon-glow" style="border-color: var(--success); box-shadow: 0 0 30px rgba(0, 255, 157, 0.2);">
+                <i class='bx bx-check-circle' style="color: var(--success);"></i>
+            </div>
+            <h1>Ready to Submit?</h1>
+            <p class="subtitle" id="submit-msg">You are about to finish your attempt.</p>
+            
+            <div id="submit-error-msg" style="color:var(--danger); margin-bottom:15px; display:none;"></div>
+
+            <div class="btn-group">
+                <button class="btn-lg btn-secondary" onclick="closeSubmitModal()">Return</button>
+                <button class="btn-lg btn-primary" onclick="confirmSubmit()">
+                    <span>Confirm Submit</span>
+                    <div class="spinner" id="submit-spinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fullscreen-blocker">
+        <i class='bx bx-error-circle' style="color:var(--danger); font-size:4rem; margin-bottom:20px;"></i>
+        <h2 style="color:var(--danger);">Exam Paused</h2>
+        <p style="color:#aaa; margin-bottom: 30px;">You attempted to exit fullscreen mode. This is a violation.</p>
+        <button class="btn-lg btn-primary" onclick="returnToFullscreen()">Return to Exam</button>
+    </div>
+
+    <div id="toast-msg" class="toast"></div>
+
+    <div id="quiz-content">
+        <div class="quiz-main">
+            <div class="quiz-header">
+                <div class="timer-badge" id="timer">00:00</div>
+                <div style="color:var(--text-muted)">ID: <span id="quiz-id-display">--</span></div>
+            </div>
+
+            <div class="question-container" id="question-card-visual">
+                <div class="q-meta">Question <span id="current-q-num">1</span> of <span id="total-q-num">5</span></div>
+                <div class="q-text" id="question-text">Loading...</div>
+                <div class="options-grid" id="options-container"></div>
+            </div>
+
+            <div class="quiz-footer">
+                <button id="prev-btn" class="btn-lg btn-secondary" onclick="prevQuestion()" disabled>Back</button>
+                <button id="next-btn" class="btn-lg btn-primary" onclick="nextQuestion()">Next</button>
+                <button id="submit-btn" class="btn-lg btn-primary" style="background:var(--danger); display:none;" onclick="openSubmitModal()">Submit</button>
+            </div>
+        </div>
+
+        <div class="quiz-sidebar">
+            <h3 style="color:#fff; margin-bottom: 15px;">Navigator</h3>
+            <div class="tracker-grid" id="tracker-grid"></div>
+        </div>
+    </div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script>
+        // --- GLOBAL STATE ---
+        let currentQuizData = null;
+        let finalQuestionsList = [];
+        let userAnswers = {};
+        let currentQuestionIndex = 0;
+        let timerInterval;
+        let timeRemaining = 0;
+        let warningCount = 0;
+        let isQuizActive = false;
+
+        // --- 1. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Security: Disable Right Click & Copy
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && ['c','v','x','u'].includes(e.key)) {
+                    e.preventDefault(); showToast("Shortcuts Disabled", "error");
+                }
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const quizId = urlParams.get('id');
+            if (!quizId) return showToast("No Quiz ID found", "error");
+
+            try {
+                // Fetch Data
+                const data = await window.apiFetch(`/quizzes/${quizId}`);
+                
+                if (data.success) {
+                    initInstructions(data.quiz);
+                } else {
+                    document.getElementById('inst-quiz-title').textContent = "Error";
+                    document.getElementById('inst-quiz-desc').textContent = data.message || "Failed to load quiz.";
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('inst-quiz-title').textContent = "Network Error";
+            }
+        });
+
+        // --- 2. LOGIC FOR ATTEMPTS & SETUP ---
+        function initInstructions(quiz) {
+            currentQuizData = quiz;
+            
+            document.getElementById('inst-quiz-title').textContent = quiz.title;
+            document.getElementById('inst-duration').textContent = quiz.duration;
+            document.getElementById('inst-pass').textContent = (quiz.certificatePassPercentage || 60) + "%";
+            document.getElementById('quiz-id-display').textContent = quiz._id ? quiz._id.substring(0,6) : '...';
+
+            // --- CRITICAL FIX: CHECK ATTEMPTS FIRST ---
+            // If the user has already attempted, block them immediately
+            const alreadyAttempted = quiz.hasAttempted || (quiz.attempts && quiz.attempts.length > 0); 
+            
+            if (alreadyAttempted) {
+                // 1. Change Icon & Title
+                const iconBox = document.getElementById('inst-icon');
+                iconBox.style.borderColor = 'var(--success)';
+                iconBox.style.boxShadow = '0 0 30px rgba(0, 255, 157, 0.2)';
+                iconBox.innerHTML = "<i class='bx bx-check-circle' style='color:var(--success)'></i>";
+                
+                document.getElementById('inst-quiz-title').textContent = "Assessment Completed";
+                
+                // 2. Change Description
+                document.getElementById('inst-quiz-desc').textContent = "You have already submitted this assessment.";
+                document.getElementById('inst-quiz-desc').style.color = "var(--success)";
+                
+                // 3. Hide Security Rules (Not needed if they can't start)
+                document.getElementById('security-rules-section').style.display = 'none';
+                
+                // 4. Swap Buttons (Remove Start, Add View Results)
+                const actionDiv = document.getElementById('action-buttons');
+                actionDiv.innerHTML = `
+                    <button class="btn-lg btn-secondary" onclick="window.history.back()">Back to Dashboard</button>
+                    <button class="btn-lg btn-primary" onclick="window.location.href='/frontend/user/all-results.html'">View Results</button>
+                `;
+                
+                // 5. Show Panel
+                document.getElementById('inst-details-panel').style.display = 'block';
+                return; // STOP execution here
+            }
+
+            // --- IF NOT ATTEMPTED, CONTINUE SETUP ---
+            document.getElementById('inst-quiz-desc').textContent = quiz.description || "Secure Environment Ready.";
+
+            // Shuffle & Slice Logic
+            let allQs = [...quiz.questions];
+            if (quiz.randomizeQuestions) {
+                for (let i = allQs.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allQs[i], allQs[j]] = [allQs[j], allQs[i]];
+                }
+            }
+            const limit = quiz.numQuestionsToShow || allQs.length;
+            finalQuestionsList = allQs.slice(0, limit);
+
+            document.getElementById('inst-questions').textContent = finalQuestionsList.length;
+            document.getElementById('inst-details-panel').style.display = 'block';
+        }
+
+        // --- 3. SECURITY ENFORCEMENT ---
+        function startQuizSecure() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) elem.requestFullscreen();
+            else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+            
+            document.getElementById('instructions-container').classList.remove('active');
+            document.getElementById('quiz-content').style.display = 'flex';
+            isQuizActive = true;
+
+            // Monitors
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            window.addEventListener('blur', () => { if(isQuizActive) handleVisibilityChange(); });
+
+            // Start Engine
+            timeRemaining = currentQuizData.duration * 60;
+            startTimer();
+            renderTracker();
+            loadQuestion(0);
+        }
+
+        function handleVisibilityChange() {
+            if (!isQuizActive) return;
+            if (document.hidden || !document.hasFocus()) {
+                warningCount++;
+                showToast(`Warning: Tab Switch Detected! (${warningCount}/3)`, "error");
+                
+                if (warningCount >= 3) {
+                    isQuizActive = false;
+                    confirmSubmit(true); // Force Auto-Submit
+                }
+            }
+        }
+
+        function handleFullscreenChange() {
+            if (!isQuizActive) return;
+            document.getElementById('fullscreen-blocker').style.display = 
+                !document.fullscreenElement ? 'flex' : 'none';
+        }
+
+        function returnToFullscreen() {
+            document.documentElement.requestFullscreen().catch(() => showToast("Enable Fullscreen Manually", "error"));
+        }
+
+        function showToast(msg, type="normal") {
+            const toast = document.getElementById('toast-msg');
+            toast.textContent = msg;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        // --- 4. CORE QUIZ ENGINE ---
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = finalQuestionsList[index];
+
+            document.getElementById('current-q-num').textContent = index + 1;
+            document.getElementById('total-q-num').textContent = finalQuestionsList.length;
+            document.getElementById('question-text').textContent = q.questionText;
+
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+
+            const options = q.options || [];
+            options.forEach((opt, idx) => {
+                const isSelected = userAnswers[index] === idx;
+                const div = document.createElement('div');
+                div.className = `option-card ${isSelected ? 'selected' : ''}`;
+                div.onclick = () => selectOption(index, idx);
+                div.innerHTML = `<div class="key-hint">${['A','B','C','D'][idx]}</div><div>${opt}</div>`;
+                optsContainer.appendChild(div);
+            });
+
+            document.getElementById('prev-btn').disabled = index === 0;
+            if (index === finalQuestionsList.length - 1) {
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('submit-btn').style.display = 'block';
+            } else {
+                document.getElementById('next-btn').style.display = 'block';
+                document.getElementById('submit-btn').style.display = 'none';
+            }
+            updateTrackerUI();
+        }
+
+        function selectOption(qIdx, optIdx) {
+            userAnswers[qIdx] = optIdx;
+            loadQuestion(qIdx);
+        }
+
+        function nextQuestion() { if (currentQuestionIndex < finalQuestionsList.length - 1) loadQuestion(currentQuestionIndex + 1); }
+        function prevQuestion() { if (currentQuestionIndex > 0) loadQuestion(currentQuestionIndex - 1); }
+
+        function renderTracker() {
+            const grid = document.getElementById('tracker-grid');
+            grid.innerHTML = '';
+            finalQuestionsList.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'question-dot';
+                dot.id = `dot-${i}`;
+                dot.textContent = i + 1;
+                dot.onclick = () => loadQuestion(i);
+                grid.appendChild(dot);
+            });
+        }
+
+        function updateTrackerUI() {
+            finalQuestionsList.forEach((_, i) => {
+                const dot = document.getElementById(`dot-${i}`);
+                dot.className = 'question-dot';
+                if (i === currentQuestionIndex) dot.classList.add('current');
+                if (userAnswers[i] !== undefined) dot.classList.add('answered');
+            });
+        }
+
+        function startTimer() {
+            const timerEl = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                const m = Math.floor(timeRemaining / 60);
+                const s = timeRemaining % 60;
+                timerEl.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    confirmSubmit(true);
+                }
+            }, 1000);
+        }
+
+        // --- 5. CLEAN SUBMISSION LOGIC (No Browser Popups) ---
+        function openSubmitModal() {
+            const answered = Object.keys(userAnswers).length;
+            const total = finalQuestionsList.length;
+            const msg = document.getElementById('submit-msg');
+            
+            msg.textContent = answered < total 
+                ? `You have answered ${answered} out of ${total} questions. Submit anyway?`
+                : "You have answered all questions. Ready to submit?";
+            
+            document.getElementById('submit-modal').classList.add('active');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submit-modal').classList.remove('active');
+        }
+
+        async function confirmSubmit(force = false) {
+            isQuizActive = false; // Disable security checks
+            clearInterval(timerInterval);
+            
+            const btn = document.querySelector('#submit-modal .btn-primary');
+            const spinner = document.getElementById('submit-spinner');
+            
+            if(!force) {
+                btn.disabled = true;
+                spinner.style.display = 'inline-block';
+            } else {
+                showToast("Auto-Submitting...", "warning");
+            }
+
+            const answersPayload = finalQuestionsList.map((q, idx) => ({
+                questionId: q._id || q.id,
+                questionText: q.questionText,
+                selectedOptionIndex: userAnswers[idx] !== undefined ? userAnswers[idx] : -1
+            }));
+
+            const payload = {
+                quizId: currentQuizData._id || currentQuizData.id,
+                answers: answersPayload
+            };
+
+            try {
+                const res = await window.apiFetch('/results/submit', { method: 'POST', body: payload });
+
+                if (res.success) {
+                    // Redirect to Results Page
+                    window.location.href = `/frontend/user/quiz-results.html?resultId=${res.resultId}`;
+                } else {
+                    document.getElementById('submit-error-msg').textContent = res.message || "Submission Failed";
+                    document.getElementById('submit-error-msg').style.display = 'block';
+                    btn.disabled = false;
+                    spinner.style.display = 'none';
+                }
+            } catch (e) {
+                console.error(e);
+                if(force) {
+                    window.location.href = '/frontend/user/dashboard.html';
+                } else {
+                    document.getElementById('submit-error-msg').textContent = "Network Error. Please check connection.";
+                    document.getElementById('submit-error-msg').style.display = 'block';
+                    btn.disabled = false;
+                    spinner.style.display = 'none';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

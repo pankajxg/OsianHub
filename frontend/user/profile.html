@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    
+    <style>
+        /* =========================================
+           PREMIUM PROFILE THEME (Nebula Onyx)
+           ========================================= */
+        :root {
+            --bg-dark: #050509;
+            --glass-card: rgba(20, 25, 38, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --osian-cyan: #00f2ff;
+            --osian-mint: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --glow-shadow: 0 0 20px rgba(0, 242, 255, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- LAYOUT GRID --- */
+        .profile-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .profile-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* --- CARD STYLES --- */
+        .glass-panel {
+            background: var(--glass-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        /* --- LEFT: IDENTITY CARD --- */
+        .identity-card {
+            padding: 40px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        /* Neon Top Accent */
+        .identity-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--osian-cyan), transparent);
+        }
+
+        /* Avatar Area */
+        .avatar-wrapper {
+            position: relative;
+            width: 130px; height: 130px;
+            margin-bottom: 20px;
+        }
+        
+        .profile-img {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(0, 242, 255, 0.15);
+            padding: 3px;
+            background: var(--bg-dark);
+            box-shadow: var(--glow-shadow);
+        }
+
+        /* Fallback Logo (The Atom) */
+        .default-avatar-placeholder {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: rgba(0, 242, 255, 0.05);
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--glow-shadow);
+        }
+        .default-avatar-placeholder i {
+            font-size: 3.5rem;
+            color: var(--osian-cyan);
+            animation: spin-slow 10s linear infinite;
+        }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .upload-btn {
+            position: absolute; bottom: 5px; right: 5px;
+            width: 36px; height: 36px;
+            background: var(--osian-cyan);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #000; font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 242, 255, 0.4);
+            transition: 0.2s;
+        }
+        .upload-btn:hover { transform: scale(1.1); background: #fff; }
+
+        /* User Info */
+        .user-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 5px; }
+        .user-role { 
+            font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--osian-mint); background: rgba(0, 255, 157, 0.1);
+            padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 25px;
+        }
+
+        /* Mini Stats */
+        .stats-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            width: 100%; padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.02);
+            padding: 12px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .stat-val { display: block; font-size: 1.2rem; font-weight: 700; color: #fff; }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+        /* --- RIGHT: FORM CARD --- */
+        .form-card { padding: 40px; }
+
+        .section-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .section-header i { font-size: 1.4rem; color: var(--osian-cyan); }
+        .section-header h3 { font-size: 1.1rem; font-weight: 600; margin: 0; color: #fff; }
+
+        .form-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;
+        }
+        .form-group { margin-bottom: 5px; }
+        .full-width { grid-column: 1 / -1; }
+
+        label {
+            display: block; font-size: 0.85rem; color: var(--text-muted);
+            margin-bottom: 8px; font-weight: 500;
+        }
+
+        .input-box {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: #fff; font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        .input-box:focus {
+            outline: none;
+            border-color: var(--osian-cyan);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 0 3px rgba(0, 242, 255, 0.1);
+        }
+        .input-box:disabled {
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.4);
+            border-color: transparent; cursor: not-allowed;
+        }
+
+        /* Buttons */
+        .action-bar {
+            margin-top: 30px; padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            display: flex; justify-content: flex-end; gap: 15px;
+        }
+        .btn-main {
+            background: linear-gradient(135deg, var(--osian-cyan), var(--osian-mint));
+            color: #000; border: none; padding: 12px 30px; border-radius: 50px;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.2); transition: 0.3s;
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 242, 255, 0.4); }
+        
+        .btn-ghost {
+            background: transparent; color: #ff4444; border: 1px solid rgba(255, 68, 68, 0.3);
+            padding: 12px 25px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        }
+        .btn-ghost:hover { background: rgba(255, 68, 68, 0.1); border-color: #ff4444; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .identity-card { flex-direction: row; justify-content: space-between; text-align: left; padding: 30px; }
+            .avatar-wrapper { margin-bottom: 0; margin-right: 20px; width: 100px; height: 100px; }
+            .stats-row { border-top: none; padding-top: 0; width: auto; gap: 20px; display: flex; }
+        }
+        @media (max-width: 600px) {
+            .identity-card { flex-direction: column; text-align: center; }
+            .avatar-wrapper { margin-right: 0; margin-bottom: 20px; }
+            .stats-row { width: 100%; border-top: 1px solid var(--glass-border); padding-top: 20px; display: grid; }
+            .form-row { grid-template-columns: 1fr; }
+            .action-bar { flex-direction: column-reverse; }
+            .btn-main, .btn-ghost { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <main class="main-content">
+            <div class="profile-wrapper">
+                
+                <header class="profile-header" data-aos="fade-down">
+                    <h1>My Profile</h1>
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class='bx bx-menu'></i></button>
+                </header>
+
+                <form id="profile-form">
+                    <div class="profile-grid">
+                        
+                        <aside class="glass-panel identity-card" data-aos="fade-right">
+                            <div class="avatar-wrapper">
+                                <div id="default-avatar" class="default-avatar-placeholder">
+                                    <i class='bx bx-atom'></i>
+                                </div>
+                                <img id="avatar-preview" src="" class="profile-img" style="display: none;" alt="Profile">
+                                
+                                <label for="avatar-input" class="upload-btn">
+                                    <i class='bx bx-camera'></i>
+                                </label>
+                                <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                            </div>
+
+                            <div>
+                                <div id="display-name" class="user-name">Loading...</div>
+                                <div id="role-display" class="user-role">Student</div>
+                            </div>
+
+                            <div class="stats-row">
+                                <div class="stat-box">
+                                    <span class="stat-val" id="stat-quizzes">--</span>
+                                    <span class="stat-label">Quizzes</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-val" id="stat-score">--</span>
+                                    <span class="stat-label">Score</span>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <div class="glass-panel form-card" data-aos="fade-up">
+                            
+                            <div class="section-header">
+                                <i class='bx bx-user-circle'></i>
+                                <h3>Personal Information</h3>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" id="name" class="input-box" placeholder="Your Full Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" id="email" class="input-box" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="tel" id="phone" class="input-box" placeholder="+91 00000 00000">
+                                </div>
+                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="text" id="username" class="input-box" disabled>
+                                </div>
+                            </div>
+
+                            <div class="section-header" style="margin-top: 30px;">
+                                <i class='bx bx-book-reader'></i>
+                                <h3>Academic Details</h3>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Department Code</label>
+                                    <input type="text" id="linkedAdminCode" class="input-box" placeholder="Enter HOD Code to Link">
+                                </div>
+                                <div class="form-group">
+                                    <label>University ID</label>
+                                    <input type="text" id="universityId" class="input-box" placeholder="e.g. 210xxxx">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>College / University</label>
+                                    <input type="text" id="college" class="input-box" placeholder="Institution Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Course</label>
+                                    <input type="text" id="course" class="input-box" placeholder="e.g. B.Tech CSE">
+                                </div>
+                                <div class="form-group">
+                                    <label>Current Year</label>
+                                    <input type="text" id="year" class="input-box" placeholder="e.g. 3rd Year">
+                                </div>
+                            </div>
+
+                            <div class="section-header" style="margin-top: 30px;">
+                                <i class='bx bx-share-alt'></i>
+                                <h3>Social Profiles</h3>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><i class='bx bxl-linkedin-square'></i> LinkedIn URL</label>
+                                    <input type="url" id="linkedinProfile" class="input-box" placeholder="https://linkedin.com/in/...">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class='bx bxl-github'></i> GitHub URL</label>
+                                    <input type="url" id="githubProfile" class="input-box" placeholder="https://github.com/...">
+                                </div>
+                            </div>
+
+                            <div class="action-bar">
+                                <button type="button" class="btn-ghost" onclick="window.location.reload()">Discard Changes</button>
+                                <button type="submit" class="btn-main" id="save-btn">
+                                    <i class='bx bx-save'></i> Save Profile
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    
+    <script>
+        // Init Animate on Scroll
+        AOS.init({ duration: 800, once: true });
+
+        // --- TOAST HELPER ---
+        window.showToast = function(message, type = 'info') {
+            let container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.cssText = `background: rgba(13, 17, 26, 0.9); border: 1px solid ${type==='success'?'#00ff9d':'#ff4444'}; color: #fff; padding: 12px 20px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; backdrop-filter: blur(10px); animation: slideIn 0.3s ease;`;
+            toast.innerHTML = `<i class='bx ${type==='success'?'bx-check-circle':'bx-error-circle'}' style="color:${type==='success'?'#00ff9d':'#ff4444'}; font-size: 1.2rem;"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+        };
+
+        // --- MAIN LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            
+            document.getElementById('profile-form').addEventListener('submit', saveProfile);
+            document.getElementById('avatar-input').addEventListener('change', handleAvatarUpload);
+        });
+
+        async function loadProfile() {
+            try {
+                const res = await window.apiFetch('/users/profile');
+                let userData = {};
+
+                if (res && res.success && res.user) {
+                    userData = res.user;
+                } else {
+                    userData = JSON.parse(localStorage.getItem('user') || '{}');
+                }
+
+                populateForm(userData);
+                loadStats();
+
+            } catch (e) { console.error(e); }
+        }
+
+        function populateForm(user) {
+            document.getElementById('display-name').textContent = user.name || 'User';
+            document.getElementById('role-display').textContent = (user.role || 'Student').toUpperCase();
+
+            // Avatar Logic
+            const imgEl = document.getElementById('avatar-preview');
+            const defaultEl = document.getElementById('default-avatar');
+            
+            const avatarUrl = (user.profile && user.profile.avatar) || user.avatar;
+            
+            if (avatarUrl && avatarUrl !== 'null' && avatarUrl !== 'undefined') {
+                imgEl.src = avatarUrl;
+                imgEl.style.display = 'block';
+                defaultEl.style.display = 'none';
+            } else {
+                imgEl.style.display = 'none';
+                defaultEl.style.display = 'flex'; 
+            }
+
+            const setVal = (id, val) => { 
+                const el = document.getElementById(id); 
+                if(el) el.value = val || ''; 
+            };
+
+            setVal('name', user.name);
+            setVal('email', user.email);
+            setVal('username', user.username);
+            setVal('linkedAdminCode', user.linkedAdminCode);
+            setVal('universityId', user.universityId); 
+
+            if (user.profile) {
+                const p = user.profile;
+                setVal('phone', p.phone);
+                setVal('college', p.college);
+                setVal('course', p.course);
+                setVal('year', p.year);
+                setVal('linkedinProfile', p.linkedinProfile);
+                setVal('githubProfile', p.githubProfile);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const res = await window.apiFetch('/users/stats');
+                if (res && res.success && res.stats) {
+                    document.getElementById('stat-quizzes').textContent = res.stats.totalQuizzes || 0;
+                    document.getElementById('stat-score').textContent = res.stats.totalScore || 0;
+                }
+            } catch (_) {}
+        }
+
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.getElementById('avatar-preview');
+                    const def = document.getElementById('default-avatar');
+                    img.src = ev.target.result;
+                    img.style.display = 'block';
+                    def.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+       async function saveProfile(e) {
+    e.preventDefault();
+    const btn = document.getElementById('save-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Saving...';
+    btn.disabled = true;
+
+    const formData = new FormData();
+    
+    // 1. Collect Text Fields
+    const fields = ['name', 'linkedAdminCode', 'phone', 'college', 'course', 'year', 'linkedinProfile', 'githubProfile', 'universityId'];
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if(el && el.value) formData.append(id, el.value);
+    });
+
+    // 2. Collect File
+    const fileInput = document.getElementById('avatar-input');
+    if (fileInput.files[0]) {
+        formData.append('avatar', fileInput.files[0]);
+    }
+
+    try {
+        // Link Code Logic
+        const code = document.getElementById('linkedAdminCode').value;
+        if(code) {
+            await window.apiFetch('/users/link-admin', { method: 'POST', body: JSON.stringify({ uniqueCode: code }) });
+        }
+
+        // 3. Send Request using apiFetch (Handles API_BASE and Auth automatically)
+        const data = await window.apiFetch('/users/profile', { 
+            method: 'PUT',
+            body: formData
+        });
+
+        if (data.success) {
+            showToast('Profile updated successfully!', 'success');
+            if (data.user) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Update Name
+                document.getElementById('display-name').textContent = data.user.name;
+
+                // Update Avatar immediately
+                if(data.user.profile && data.user.profile.avatar) {
+                     const img = document.getElementById('avatar-preview');
+                     const def = document.getElementById('default-avatar');
+                     img.src = data.user.profile.avatar;
+                     img.style.display = 'block';
+                     def.style.display = 'none';
+                }
+            }
+        } else {
+            showToast(data.message || 'Update failed', 'error');
+        }
+
+    } catch (err) {
+        console.error(err);
+        showToast(err.message || 'Connection failed', 'error');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+    </script>
+</body>
+</html>

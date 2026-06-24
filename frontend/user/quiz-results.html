@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Results - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Fallback variables */
+            --osian-cyan: #5ffbf1;
+            --osian-mint: #4ade80;
+            --osian-dark: #0f172a;
+            --bg-main: #0B1221;
+            --bg-card: #131c2e;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header Styles --- */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding: 0 10px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* --- Premium Table Styles --- */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            padding-bottom: 10px; /* Space for scrollbar */
+        }
+
+        /* Custom Scrollbar for table */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: rgba(95, 251, 241, 0.2);
+            border-radius: 4px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px; /* Gap between rows */
+            min-width: 600px; /* Force scroll on small mobile */
+        }
+
+        .results-table th {
+            text-align: left;
+            padding: 0 24px 10px 24px;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .results-table tbody tr {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .results-table tbody tr td {
+            padding: 20px 24px;
+            color: var(--text-main);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        /* Rounded corners for the row */
+        .results-table tbody tr td:first-child {
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            font-weight: 600;
+        }
+
+        .results-table tbody tr td:last-child {
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        /* Hover Effects */
+        .results-table tbody tr:hover {
+            transform: translateY(-3px) scale(1.002);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .results-table tbody tr:hover td {
+            border-color: rgba(95, 251, 241, 0.15);
+        }
+
+        .results-table tbody tr:hover td:first-child {
+            border-left-color: rgba(95, 251, 241, 0.15);
+        }
+        
+        .results-table tbody tr:hover td:last-child {
+            border-right-color: rgba(95, 251, 241, 0.15);
+        }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-pass {
+            background: rgba(95, 251, 241, 0.1);
+            color: var(--osian-cyan);
+            border: 1px solid rgba(95, 251, 241, 0.25);
+            box-shadow: 0 0 10px rgba(95, 251, 241, 0.05);
+        }
+
+        .status-fail {
+            background: rgba(248, 113, 113, 0.1);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.25);
+            box-shadow: 0 0 10px rgba(248, 113, 113, 0.05);
+        }
+
+        /* --- Buttons --- */
+        .view-btn {
+            background: transparent;
+            border: 1px solid rgba(95, 251, 241, 0.3);
+            color: var(--osian-cyan);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .view-btn:hover {
+            background: rgba(95, 251, 241, 0.1);
+            border-color: var(--osian-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(95, 251, 241, 0.15);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-4px);
+        }
+
+        /* --- Detail View Internal Styles (Shared with Progress Page) --- */
+        .result-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--osian-cyan) var(--percent), rgba(255,255,255,0.05) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(95, 251, 241, 0.1);
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: var(--bg-card);
+            border-radius: 50%;
+        }
+        
+        /* These classes might be used by your JS for the questions */
+        .question-review {
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.02);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-left: 4px solid transparent;
+        }
+        .question-review.correct { border-left-color: var(--osian-cyan); }
+        .question-review.incorrect { border-left-color: #f87171; }
+        
+        .option-item {
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+            font-size: 14px;
+        }
+        .option-item.correct { background: rgba(95, 251, 241, 0.1); color: var(--osian-cyan); border: 1px solid rgba(95, 251, 241, 0.2); }
+        .option-item.wrong { background: rgba(248, 113, 113, 0.1); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); }
+
+        /* --- Header Icons --- */
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            padding: 0;
+        }
+
+        .notification-link {
+            text-decoration: none;
+            position: relative;
+            color: var(--osian-cyan);
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .notification-link:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 5px var(--osian-cyan));
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FF6B6B;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+            border: 2px solid var(--bg-card);
+        }
+
+        /* --- Responsive Layout --- */
+        .container {
+            padding: 0 10px;
+            max-width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            .dashboard-header {
+                padding: 0;
+            }
+            .container {
+                padding: 0;
+            }
+            .results-table tbody tr td {
+                padding: 16px 20px;
+            }
+            .view-btn span {
+                display: none; /* Hide text on small screens if needed, keep icon */
+            }
+            .view-btn {
+                padding: 8px;
+            }
+            .view-btn i {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        
+        <div class="overlay" id="overlay"></div>
+
+        <div class="main-content" id="main-content">
+            <header class="dashboard-header">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button id="mobile-menu-btn" class="mobile-menu-btn">
+                        <i class='bx bx-menu'></i>
+                    </button>
+                    <div class="header-title">
+                        <h1>My Progress</h1>
+                        <p>Track your quiz history and performance</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <a href="notifications.html" class="notification-link">
+                        <i class='bx bx-bell'></i>
+                        <span id="notification-badge" class="notification-badge" style="display: none;"></span>
+                    </a>
+                    <div class="user-profile-header">
+                        </div>
+                </div>
+            </header>
+
+            <div id="results-list-view" class="container">
+                <div class="content-box">
+                    <div class="table-container">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Quiz Title</th>
+                                    <th>Date & Time</th>
+                                    <th>Score</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                            <i class='bx bx-loader-alt bx-spin' style="font-size: 24px; color: var(--osian-cyan);"></i>
+                                            <span>Loading history...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results-detail-view" class="container" style="display: none;">
+                <button onclick="backToList()" class="back-btn">
+                    <i class='bx bx-arrow-back'></i> Back to History
+                </button>
+                
+                <div id="detail-content">
+                    </div>
+            </div>
+        </div> </div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="/frontend/user/script-results.js"></script>
+</body>
+</html>

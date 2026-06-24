@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Global Results - OSIAN Super Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8; /* OSIAN mint */
+            --primary-hover: #5FFBF1; /* OSIAN cyan */
+            --secondary: #F9F586; /* OSIAN yellow */
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+
+            /* Card Colors - Updated for dark theme */
+            --color-blue-500: #5FFBF1; /* Cyan */
+            --color-green-500: #86FDE8; /* Mint */
+            --color-purple-500: #A78BFA; /* Light purple */
+            --color-amber-500: #F9F586; /* Yellow */
+            --color-cyan-500: #5FFBF1; /* Cyan */
+
+            /* Additional colors */
+            --white: #ffffff;
+            --secondary-color: #0F1A2B;
+            --text-light: #9FB6CC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        /* Avatar */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Results Table Container */
+        .results-table-container {
+            background: var(--bg-card);
+            padding: 1.75rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--osian-gradient);
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            background: rgba(134, 253, 232, 0.08);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(134, 253, 232, 0.08);
+            color: var(--text-para);
+            font-size: 0.875rem;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(134, 253, 232, 0.05);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Student Avatar */
+        .student-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pass {
+            background: rgba(134, 253, 232, 0.15);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .status-fail {
+            background: rgba(255, 107, 107, 0.15);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .status-in-progress {
+            background: rgba(249, 245, 134, 0.15);
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+
+        /* Score Styling */
+        .score-cell {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .score-high {
+            color: var(--primary);
+        }
+
+        .score-medium {
+            color: var(--secondary);
+        }
+
+        .score-low {
+            color: var(--danger);
+        }
+
+        /* Loading State */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(134, 253, 232, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error-container {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .error-container i {
+            font-size: 3rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        /* No Data State */
+        .no-data-container {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .no-data-container i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .results-table-container {
+                padding: 1rem;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            th:nth-child(6),
+            td:nth-child(6) {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            th:nth-child(2),
+            td:nth-child(2) {
+                display: none;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-management.html" class="nav-item">
+                <i class='bx bxs-user-detail'></i>
+                <span>Manage Admins</span>
+            </a>
+            <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="manage-departments.html" class="nav-item">
+                <i class='bx bxs-building-house'></i>
+                <span>Departments</span>
+            </a>
+            <a href="manage-categories.html" class="nav-item">
+                <i class='bx bxs-folder'></i>
+                <span>Categories</span>
+            </a>
+            <a href="manage-global-quizzes.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>Global Quizzes</span>
+            </a>
+            <a href="all-results.html" class="nav-item active">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>All Results</span>
+            </a>
+            <a href="events.html" class="nav-item">
+                <i class='bx bxs-calendar-event'></i>
+                <span>Events</span>
+            </a>
+            
+            <a href="site-settings.html" class="nav-item">
+                <i class='bx bxs-cog'></i>
+                <span>Site Settings</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>All Global Results</h1>
+                    <p>View performance of students in global quizzes</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="user-profile-header">
+                    <div class="avatar">SA</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-table-container">
+            <div id="loadingState" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Loading results...</p>
+            </div>
+
+            <div id="errorState" class="error-container" style="display: none;">
+                <i class='bx bx-error-circle'></i>
+                <p id="errorMessage">Failed to load results. Please try again.</p>
+                <button onclick="loadResults()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--osian-gradient); color: var(--bg-sidebar); border: none; border-radius: 0.5rem; cursor: pointer;">
+                    Retry
+                </button>
+            </div>
+
+            <div id="noDataState" class="no-data-container" style="display: none;">
+                <i class='bx bx-data'></i>
+                <p>No quiz results available yet.</p>
+            </div>
+
+            <table id="resultsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Quiz Title</th>
+                        <th>Score</th>
+                        <th>Time Taken</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Violation Status</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../shared/js/shared-init.js"></script>
+    <script src="../shared/auth-guard.js"></script>
+    <script src="script-all-results.js"></script>
+</body>
+</html>

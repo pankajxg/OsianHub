@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>OSIAN - Create Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../shared/css/style.css"> 
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body class="login-page">
+    <div class="login-container">
+        
+        <div class="info-section">
+            <div class="info-content">
+                <div class="illustration-card">
+                    <img class="illustration-img" src="https://i.ibb.co/HTMgy3HX/Screenshot-2025-12-07-085652.png" alt="OSIAN Quiz Illustration">
+                </div>
+                <div class="brand-copy">
+                    <h3 class="brand-title">India’s Largest Inter-College Quiz Championship</h3>
+                    <p class="brand-subtitle">Test your knowledge, compete nationwide, and unlock new opportunities.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-wrapper">
+                <h2>Sign Up</h2>
+                
+                <form id="register-form">
+                    <div class="input-group">
+                        <label for="fullname">Full name</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-user input-icon'></i>
+                            <input type="text" id="fullname" placeholder="Enter your full name" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-envelope input-icon'></i>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-lock-alt input-icon'></i>
+                            <input type="password" id="password" placeholder="Create a password" required autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+                        </div>
+                        <div id="password-strength-container" style="display: none; margin-top: 10px; font-size: 0.85rem; color: #666;">
+                            <p style="margin-bottom: 5px; font-weight: 500;">Password Strength:</p>
+                            <ul style="list-style: none; padding-left: 0; margin: 0;">
+                                <li id="rule-length" class="password-rule"><i class='bx bx-x-circle'></i> At least 8 characters</li>
+                                <li id="rule-uppercase" class="password-rule"><i class='bx bx-x-circle'></i> One uppercase letter</li>
+                                <li id="rule-lowercase" class="password-rule"><i class='bx bx-x-circle'></i> One lowercase letter</li>
+                                <li id="rule-number" class="password-rule"><i class='bx bx-x-circle'></i> One number</li>
+                                <li id="rule-special" class="password-rule"><i class='bx bx-x-circle'></i> One special char (@#$!%*?&)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-check-shield input-icon'></i>
+                            <input type="password" id="confirm-password" placeholder="Confirm your password" required autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+                        </div>
+                    </div>
+                    
+                    <div id="custom-fields-container"></div>
+
+                    <div class="input-group">
+                        <label for="phone">Phone Number (Optional)</label>
+                        <div class="input-wrap">
+                            <i class='bx bx-phone input-icon'></i>
+                            <input type="tel" id="phone" placeholder="Enter your phone number">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="register-btn">Register</button>
+                </form>
+
+                <div class="register-link" style="margin-top: 20px;">
+                    <p>Already have an account? <a href="login.html">Login</a></p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script type="application/javascript" src="../shared/js/shared-init.js"></script>
+    <script type="application/javascript" src="../shared/js/script-toast-helper.js"></script>
+    <!-- <script type="application/javascript" src="../shared/js/script-api.js"></script> -->
+    <script type="application/javascript" src="script-register.js"></script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Quizzes - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    
+    <style>
+        /* =========================================
+           PAGE SPECIFIC STYLES (Nebula Theme)
+           ========================================= */
+        :root {
+            --bg-dark: #050509;
+            --glass-card: rgba(20, 25, 38, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --osian-cyan: #00f2ff;
+            --osian-mint: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        /* --- Header & Filters --- */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-title p { color: var(--text-muted); margin: 5px 0 0; }
+
+        .filters-bar {
+            display: flex;
+            gap: 15px;
+            background: var(--glass-card);
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box {
+            position: relative;
+            width: 250px;
+        }
+        .search-box input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 15px 10px 40px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+        }
+        .search-box i {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .filter-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+        }
+        .filter-select option { background: #1a1f2e; color: #fff; }
+
+        /* --- Quiz Grid --- */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        /* --- Quiz Card --- */
+        .quiz-card {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.1);
+            border-color: rgba(0, 242, 255, 0.3);
+        }
+
+        /* Card Header (Gradient Stripe) */
+        .card-top {
+            height: 6px;
+            background: linear-gradient(90deg, var(--osian-cyan), var(--osian-mint));
+            width: 100%;
+        }
+
+        .card-body {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quiz-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--osian-cyan);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            width: fit-content;
+        }
+
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .quiz-meta {
+            display: flex;
+            gap: 15px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            margin-top: auto; /* Push to bottom of body */
+        }
+        .meta-item { display: flex; align-items: center; gap: 5px; }
+
+        .card-footer {
+            padding: 20px 25px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .btn-start {
+            background: #fff;
+            color: #000;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .btn-start:hover {
+            background: var(--osian-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 4rem; opacity: 0.5; margin-bottom: 15px; color: var(--osian-cyan); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .filters-bar { width: 100%; flex-direction: column; }
+            .search-box { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+        <main class="main-content">
+            <div class="profile-wrapper">
+                
+                <header class="page-header" data-aos="fade-down">
+                    <div class="header-title">
+                        <h1>Department Quizzes</h1>
+                        <p>Access quizzes assigned to your department</p>
+                    </div>
+
+                    <div class="filters-bar">
+                        <div class="search-box">
+                            <i class='bx bx-search'></i>
+                            <input type="text" id="searchInput" placeholder="Search quizzes...">
+                        </div>
+                        <select id="topicFilter" class="filter-select">
+                            <option value="all">All Topics</option>
+                        </select>
+                        <select id="difficultyFilter" class="filter-select">
+                            <option value="all">All Levels</option>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </div>
+                </header>
+
+                <div id="loading-spinner" style="text-align: center; padding: 50px;">
+                    <i class='bx bx-loader-alt bx-spin' style="font-size: 3rem; color: var(--osian-cyan);"></i>
+                    <p style="margin-top: 10px; color: var(--text-muted);">Loading quizzes...</p>
+                </div>
+
+                <div id="quiz-container" class="quiz-grid" style="display: none;">
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+        AOS.init({ duration: 800, once: true });
+
+        // State to hold quizzes for filtering
+        let allQuizzes = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchQuizzes();
+
+            // Attach event listeners for filtering
+            document.getElementById('searchInput').addEventListener('input', filterQuizzes);
+            document.getElementById('topicFilter').addEventListener('change', filterQuizzes);
+            document.getElementById('difficultyFilter').addEventListener('change', filterQuizzes);
+        });
+
+        async function fetchQuizzes() {
+            try {
+                // --- FIX 1: Fetch from /quizzes/department/me instead of /quizzes ---
+                const res = await window.apiFetch('/quizzes/department/me'); 
+                
+                if (res && res.success) {
+                    // --- FIX 2: Filter out any 'Global' quizzes for safety ---
+                    const rawQuizzes = res.quizzes || [];
+                    allQuizzes = rawQuizzes.filter(q => q.type !== 'Global');
+                    
+                    populateTopics(allQuizzes);
+                    renderQuizzes(allQuizzes);
+                } else {
+                    renderEmpty("No department quizzes available.");
+                }
+            } catch (error) {
+                console.error("Error loading quizzes:", error);
+                renderEmpty("An error occurred while loading quizzes.");
+            } finally {
+                document.getElementById('loading-spinner').style.display = 'none';
+                document.getElementById('quiz-container').style.display = 'grid';
+            }
+        }
+
+        function renderQuizzes(quizzes) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            if (quizzes.length === 0) {
+                renderEmpty("No quizzes found matching your criteria.");
+                return;
+            }
+
+            quizzes.forEach((quiz, index) => {
+                // Formatting
+                const duration = quiz.duration ? `${quiz.duration} mins` : 'Unlimited';
+                const questionsCount = quiz.questions ? quiz.questions.length : 0;
+                const difficulty = quiz.difficulty ? capitalize(quiz.difficulty) : 'Medium';
+                
+                // Animation delay for staggered effect
+                const delay = index * 100; 
+
+                const card = `
+                    <div class="quiz-card" data-aos="fade-up" data-aos-delay="${delay}">
+                        <div class="card-top"></div>
+                        <div class="card-body">
+                            <span class="quiz-badge">${quiz.category || 'General'}</span>
+                            <h3 class="quiz-title">${quiz.title}</h3>
+                            <div class="quiz-meta">
+                                <div class="meta-item" title="Duration">
+                                    <i class='bx bx-time-five'></i> ${duration}
+                                </div>
+                                <div class="meta-item" title="Questions">
+                                    <i class='bx bx-list-ul'></i> ${questionsCount} Qs
+                                </div>
+                                <div class="meta-item" title="Difficulty">
+                                    <i class='bx bx-bar-chart-alt-2'></i> ${difficulty}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.85rem; color: #94a3b8;">
+                                ${quiz.createdBy ? 'By Admin' : 'Department'}
+                            </span>
+                            <button onclick="startQuiz('${quiz._id}')" class="btn-start">
+                                Start <i class='bx bx-right-arrow-alt'></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        function filterQuizzes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const topic = document.getElementById('topicFilter').value;
+            const difficulty = document.getElementById('difficultyFilter').value;
+
+            const filtered = allQuizzes.filter(quiz => {
+                const matchSearch = quiz.title.toLowerCase().includes(searchTerm);
+                const matchTopic = topic === 'all' || (quiz.category && quiz.category === topic);
+                const matchDiff = difficulty === 'all' || (quiz.difficulty && quiz.difficulty.toLowerCase() === difficulty);
+
+                return matchSearch && matchTopic && matchDiff;
+            });
+
+            renderQuizzes(filtered);
+        }
+
+        function populateTopics(quizzes) {
+            const topicSelect = document.getElementById('topicFilter');
+            // Reset options except 'All Topics'
+            topicSelect.innerHTML = '<option value="all">All Topics</option>';
+            
+            const topics = new Set();
+            quizzes.forEach(q => {
+                if(q.category) topics.add(q.category);
+            });
+
+            topics.forEach(t => {
+                const option = document.createElement('option');
+                option.value = t;
+                option.textContent = t;
+                topicSelect.appendChild(option);
+            });
+        }
+
+        function renderEmpty(message) {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class='bx bx-file-blank'></i>
+                    <h3>No Quizzes Available</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+            // Ensure container is visible even if empty
+            container.style.display = 'grid'; 
+            // Override grid to center single item
+            container.style.gridTemplateColumns = '1fr';
+        }
+
+        function startQuiz(quizId) {
+            window.location.href = `/frontend/user/quiz-interface.html?id=${quizId}`;
+        }
+
+        function capitalize(s) {
+            if (typeof s !== 'string') return '';
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<nav aria-label="Sidebar navigation">
+  <div class="sidebar-header" style="margin-bottom: 25px; padding-top: 10px; padding-left: 15px;">
+      <a href="/frontend/user/dashboard.html" class="logo" aria-label="Go to Dashboard" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+          <i class='bx bx-atom' style="font-size: 2rem; color: #00f2ff; filter: drop-shadow(0 0 5px #00f2ff);"></i>
+          <span style="font-size: 1.6rem; font-weight: 800; color: #fff; letter-spacing: 1px;">OSIAN</span>
+      </a>
+  </div>
+  
+  <ul class="sidebar-menu" id="sidebar-menu" role="menu">
+      <li role="none">
+          <a href="/frontend/user/dashboard.html" role="menuitem" aria-label="Dashboard">
+              <i class='bx bxs-dashboard' aria-hidden="true"></i>
+              <span>Dashboard</span>
+          </a>
+      </li>
+      <li role="none">
+          <a href="global-quizzes.html" role="menuitem" aria-label="Global Quizzes">
+              <i class='bx bx-globe' aria-hidden="true"></i>
+              <span>Global Quizzes</span>
+          </a>
+      </li>
+      <li role="none">
+          <a href="my-quizzes.html" role="menuitem" aria-label="My Progress">
+              <i class='bx bx-trending-up' aria-hidden="true"></i>
+              <span>My Progress</span>
+          </a>
+      </li>
+      <li role="none">
+          <a href="certificates.html" role="menuitem" aria-label="Certificates">
+              <i class='bx bx-certification' aria-hidden="true"></i>
+              <span>Certificates</span>
+          </a>
+      </li>
+      <li role="none">
+          <a href="leaderboard.html" role="menuitem" aria-label="Leaderboard">
+              <i class='bx bx-trophy' aria-hidden="true"></i>
+              <span>Leaderboard</span>
+          </a>
+      </li>
+      <li role="none">
+          <a href="events.html" role="menuitem" aria-label="Events">
+              <i class='bx bx-calendar-event' aria-hidden="true"></i>
+              <span>Events</span>
+          </a>
+      </li>
+      <li role="none">
+          <a href="profile.html" role="menuitem" aria-label="Profile">
+              <i class='bx bx-user' aria-hidden="true"></i>
+              <span>Profile</span>
+          </a>
+      </li>
+  </ul>
+  
+  <div class="sidebar-footer" aria-label="User section">
+      <div class="user-profile-mini">
+          <img src="https://ibb.co/9kQXYs8t" alt="User avatar" class="user-avatar" id="sidebar-avatar" onerror="this.src='https://i.ibb.co/jP9JWBBy/diljj.png'">
+          <div class="user-info">
+              <h4 id="sidebar-name">User</h4>
+          </div>
+      </div>
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 12px 0;"></div>
+      <a href="/frontend/index.html" onclick="window.logout()" class="logout-btn" aria-label="Logout">
+          <i class='bx bx-log-out' aria-hidden="true"></i><span>Logout</span>
+      </a>
+  </div>
+</nav>

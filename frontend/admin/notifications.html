@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - OSIAN Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           Premium Admin Theme - "Nebula Obsidian"
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-body: #030508;
+            --bg-sidebar: rgba(11, 16, 26, 0.95);
+            --bg-card: rgba(20, 27, 45, 0.6);
+            --bg-card-hover: rgba(28, 36, 56, 0.8);
+            --bg-input: rgba(0, 0, 0, 0.3);
+            
+            /* Text Colors */
+            --text-main: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* Brand Colors */
+            --primary: #00f2ff; /* Cyan */
+            --primary-glow: rgba(0, 242, 255, 0.5);
+            --secondary: #00ff9d; /* Mint */
+            --accent: #7c3aed; /* Purple */
+            --danger: #ff6347; /* Red */
+            
+            /* Gradients */
+            --gradient-brand: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            
+            /* UI Elements */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(0, 242, 255, 0.3);
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --radius-md: 16px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(124, 58, 237, 0.03) 0%, transparent 40%);
+        }
+
+        /* --- Sidebar Styling --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brand {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand i {
+            font-size: 24px;
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .brand span {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.05);
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .nav-item i { font-size: 1.25rem; }
+
+        .logout-container {
+            padding: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 32px 40px;
+            width: calc(100% - 260px);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            color: var(--text-secondary);
+            position: relative;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .notification-icon:hover { color: var(--text-main); transform: scale(1.1); }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 10px; height: 10px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--bg-body);
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px 6px 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .user-profile-header:hover { border-color: var(--text-secondary); }
+
+        .avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2a2a72, #009ffd);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* --- Notifications Card --- */
+        .notifications-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(10px);
+            min-height: 400px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.3s ease;
+            position: relative;
+        }
+
+        .notification-item:last-child { border-bottom: none; }
+        .notification-item:hover { background: rgba(255, 255, 255, 0.03); }
+
+        /* Unread State */
+        .notification-item.unread {
+            background: rgba(0, 242, 255, 0.03);
+            border-left: 3px solid var(--primary);
+        }
+
+        .notification-icon-item {
+            font-size: 24px;
+            color: var(--primary);
+            background: rgba(0, 242, 255, 0.1);
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(0, 242, 255, 0.2);
+        }
+
+        .notification-content { flex: 1; }
+
+        .notification-content h4 {
+            margin: 0 0 6px 0;
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notification-content p {
+            margin: 0 0 10px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .notification-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .notification-meta i { font-size: 14px; }
+
+        /* Empty State */
+        .empty-state {
+            padding: 60px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: var(--primary);
+            opacity: 0.5;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--gradient-brand);
+            color: #000;
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 242, 255, 0.5); }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            background: rgba(0, 255, 157, 0.05);
+        }
+
+        /* Loading */
+        .loading i { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Responsive */
+        .mobile-toggle { display: none; font-size: 28px; color: var(--text-main); cursor: pointer; }
+
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; padding: 24px; }
+            .mobile-toggle { display: block; margin-right: 16px; }
+        }
+        @media (max-width: 600px) {
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .header-actions { width: 100%; justify-content: flex-end; }
+            .notification-item { padding: 16px; flex-direction: column; gap: 12px; }
+            .notification-icon-item { width: 40px; height: 40px; font-size: 20px; }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="create-quiz.html" class="nav-item">
+                <i class='bx bxs-plus-circle'></i>
+                <span>Create Quiz</span>
+            </a>
+            <a href="my-quiz.html" class="nav-item">
+                <i class='bx bxs-folder-open'></i>
+                <span>My Quizzes</span>
+            </a>
+            <a href="quiz-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>Results</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class='bx bxs-user'></i>
+                <span>Profile</span>
+            </a>
+            <a href="notifications.html" class="nav-item active">
+                <i class='bx bxs-bell'></i>
+                <span>Notifications</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html" onclick="logout()" class="nav-item logout">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Notifications</h1>
+                    <p>Stay updated with system alerts and activities</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="notifications.html" class="notification-icon">
+                    <i class='bx bx-bell'></i>
+                    <span class="notification-badge"></span>
+                </a>
+                <div class="user-profile-header">
+                    <div class="avatar" id="headerAvatar">A</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 24px;">
+                
+                <button id="mark-all-read" class="btn-outline">
+                    <i class='bx bx-check-double'></i> Mark All Read
+                </button>
+            </div>
+
+            <div class="notifications-card">
+                <div id="notifications-list">
+                    <div class="empty-state">
+                        <i class='bx bx-loader-alt'></i>
+                        <p>Loading notifications...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        };
+        
+        document.addEventListener('DOMContentLoaded', () => {
+             if (window.initAvatars) window.initAvatars();
+        });
+    </script>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="../user/script-notifications.js"></script>
+    <script src="script-admin-header.js"></script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Features - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= PREMIUM THEME (Nebula Onyx) ================= */
+        :root {
+            --bg-dark: #050509;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-card: rgba(20, 25, 38, 0.6);
+            --osian-cyan: #00f2ff;
+            --osian-mint: #00ff9d;
+            --osian-purple: #bd00ff;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --gradient-primary: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --shadow-glow: 0 0 20px rgba(0, 242, 255, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.08), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(189, 0, 255, 0.08), transparent 40%);
+            color: var(--text-main); font-family: 'Inter', sans-serif;
+            margin: 0; line-height: 1.7; overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { padding: 0; margin: 0; list-style: none; }
+
+        /* --- NAVBAR --- */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(15px);
+            z-index: 1000; border-bottom: 1px solid var(--border-light);
+        }
+        .navbar {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; }
+        .nav-link { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .nav-link:hover { color: var(--osian-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .btn { padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-primary { background: var(--gradient-primary); color: #000; box-shadow: 0 4px 15px rgba(0,242,255,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 242, 255, 0.5); }
+        .btn-light { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border-light); }
+        .btn-light:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+        .hamburger { display: none; cursor: pointer; color: #fff; font-size: 1.5rem; }
+
+        /* --- PAGE HEADER --- */
+        .page-header {
+            padding: 160px 2rem 80px; text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 242, 255, 0.1), transparent 70%);
+        }
+        .page-header h1 {
+            font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-header p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        /* --- DETAILED FEATURES SECTION --- */
+        .feature-detail-container { max-width: 1100px; margin: 0 auto; padding: 0 2rem 100px; }
+
+        .feature-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+            margin-bottom: 100px;
+        }
+        /* Alternate order for even rows */
+        .feature-row:nth-child(even) { direction: rtl; }
+        .feature-row:nth-child(even) .feature-text { direction: ltr; }
+
+        .feature-visual {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 3rem;
+            display: flex; justify-content: center; align-items: center;
+            position: relative; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .feature-visual:hover { border-color: var(--osian-cyan); transform: translateY(-5px); }
+        
+        .feature-visual i {
+            font-size: 8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 30px rgba(0, 242, 255, 0.3));
+        }
+
+        /* Decorative background blobs behind icons */
+        .feature-visual::before {
+            content: ''; position: absolute; width: 150px; height: 150px;
+            background: var(--osian-cyan); filter: blur(80px); opacity: 0.2; z-index: 0;
+        }
+
+        .feature-text h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: #fff; }
+        .feature-text p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+        
+        .feature-list { margin-bottom: 2rem; }
+        .feature-list li {
+            display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; color: #ddd;
+        }
+        .feature-list i { color: var(--osian-mint); font-size: 1.2rem; margin-top: 4px; }
+
+        /* --- CTA SECTION --- */
+        .cta-box {
+            background: linear-gradient(145deg, rgba(20, 25, 38, 0.8), rgba(5, 5, 9, 0.9));
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            text-align: center;
+            max-width: 900px; margin: 0 auto 80px;
+            position: relative; overflow: hidden;
+        }
+        .cta-box::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--osian-cyan), transparent);
+        }
+
+        /* ================= FOOTER STYLES ================= */
+        .footer { background: #020204; padding: 60px 2rem 20px; border-top: 1px solid var(--border-light); margin-top: 80px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 3rem;
+        }
+        .footer h3 { color: var(--osian-cyan); font-size: 1.5rem; margin-bottom: 1rem; }
+        .footer p, .footer li a { color: var(--text-muted); font-size: 0.9rem; }
+        .footer li { margin-bottom: 0.5rem; }
+        .footer li a:hover { color: #fff; padding-left: 5px; }
+        
+        .social-media { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-media a {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: #fff; font-size: 1.2rem;
+        }
+        .social-media a:hover { background: var(--osian-cyan); color: #000; }
+
+        .footer-bottom {
+            text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light); font-size: 0.8rem; color: #555;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem; }
+            .nav-menu, .nav-buttons { display: none; }
+            .hamburger { display: block; }
+            .page-header h1 { font-size: 2.5rem; }
+            
+            .feature-row { grid-template-columns: 1fr; gap: 2rem; margin-bottom: 60px; }
+            .feature-row:nth-child(even) { direction: ltr; }
+            .feature-visual { height: 250px; }
+            .feature-visual i { font-size: 5rem; }
+            
+            .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">
+                <i class='bx bx-atom' style="font-size: 2rem; color: var(--osian-cyan); filter: drop-shadow(0 0 5px var(--osian-cyan));"></i>
+                <span style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px;">OSIAN</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#features" class="nav-link" style="color:#fff;">Features</a></li>
+                <li><a href="index.html#categories" class="nav-link">Categories</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="auth/register.html" class="btn btn-primary">Sign Up</a>
+                <a href="auth/login.html" class="btn btn-light">Login</a>
+            </div>
+            <div class="hamburger"><i class='bx bx-menu'></i></div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Why Choose OSIAN?</h1>
+            <p>Dive deeper into the features that make us India’s ultimate quiz platform. Designed for students, built for excellence.</p>
+        </section>
+
+        <div class="feature-detail-container">
+            
+            <div class="feature-row" id="free-challenges">
+                <div class="feature-visual">
+                    <i class='bx bx-trophy'></i>
+                </div>
+                <div class="feature-text">
+                    <h2>Free Challenges</h2>
+                    <p>Education shouldn't have a price tag. At OSIAN, we believe in democratizing knowledge. Our Free Challenges allow anyone, anywhere, to jump into thrilling quiz battles without paying a single rupee.</p>
+                    <ul class="feature-list">
+                        <li><i class='bx bx-check-circle'></i> <strong>Zero Entry Fee:</strong> Participate in daily quizzes completely free.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Global Access:</strong> Compete with students from across the country.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Instant Feedback:</strong> See your score and correct answers immediately.</li>
+                    </ul>
+                    <a href="auth/register.html" class="btn btn-light">Start Playing</a>
+                </div>
+            </div>
+
+            <div class="feature-row" id="multi-category">
+                <div class="feature-visual">
+                    <i class='bx bx-category-alt'></i>
+                </div>
+                <div class="feature-text">
+                    <h2>Multi-Category Quizzes</h2>
+                    <p>Curiosity knows no bounds, and neither do we. Whether you are a coding wizard, a history buff, or an engineering enthusiast, OSIAN has a domain for you.</p>
+                    <ul class="feature-list">
+                        <li><i class='bx bx-check-circle'></i> <strong>Diverse Topics:</strong> From Python to Polity, Mechanics to Mythology.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Skill Levels:</strong> Beginner, Intermediate, and Expert difficulty tiers.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Regular Updates:</strong> New questions added weekly by subject experts.</li>
+                    </ul>
+                    <a href="index.html#categories" class="btn btn-light">Browse Categories</a>
+                </div>
+            </div>
+
+            <div class="feature-row" id="leaderboards">
+                <div class="feature-visual">
+                    <i class='bx bx-bar-chart-alt-2'></i>
+                </div>
+                <div class="feature-text">
+                    <h2>Live Leaderboards</h2>
+                    <p>Feel the adrenaline rush of real-time competition. Our dynamic leaderboards update instantly as you play, letting you track your rank against thousands of other participants.</p>
+                    <ul class="feature-list">
+                        <li><i class='bx bx-check-circle'></i> <strong>Real-Time Ranking:</strong> Watch your name climb as you answer correctly.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Filter Views:</strong> See rankings by college, city, or friend groups.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Monthly Rewards:</strong> Top rankers earn exclusive rewards and recognition.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="feature-row" id="certificates">
+                <div class="feature-visual">
+                    <i class='bx bx-medal'></i>
+                </div>
+                <div class="feature-text">
+                    <h2>Verified Certificates</h2>
+                    <p>Your achievements deserve to be recognized. We provide secure, verifiable certificates that validate your skills and can be showcased to future employers.</p>
+                    <ul class="feature-list">
+                        <li><i class='bx bx-check-circle'></i> <strong>Blockchain Verified:</strong> Tamper-proof digital credentials.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>LinkedIn Ready:</strong> One-click sharing to your professional profile.</li>
+                        <li><i class='bx bx-check-circle'></i> <strong>Portfolio Builder:</strong> Accumulate badges to prove your domain expertise.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="cta-box">
+            <h2 style="color: #fff; margin-bottom: 1rem;">Ready to Experience It?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Join thousands of students enhancing their knowledge on OSIAN today.</p>
+            <a href="auth/register.html" class="btn btn-primary btn-lg">Create Free Account</a>
+        </section>
+
+    </main>
+
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>OSIAN</h3>
+                <p>India’s premium student quiz platform — fair, transparent, and engaging.</p>
+            </div>
+            <div class="footer-links">
+                <h4 style="color:#fff; margin-bottom:1rem;">Quick Links</h4>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="shipping-policy.html">Shipping Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4 style="color:#fff; margin-bottom:1rem;">Contact Us</h4>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/osianoffical" target="_blank"><i class='bx bxl-instagram'></i></a>
+                    <a href="https://www.linkedin.com/in/osian-group-94b1b3398/" target="_blank"><i class='bx bxl-linkedin'></i></a>
+                </div>
+                <p style="margin-top: 20px;">Email: osiancommunity01025@gmail.com</p>
+                <p>Phone: +91 76967-01967</p>
+                <p>Office: Chandigarh Engineering College, Jhanjeri, MOHALI</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 OSIAN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navButtons = document.querySelector('.nav-buttons');
+
+        hamburger.addEventListener('click', () => {
+            const isFlex = navMenu.style.display === 'flex';
+            if(!isFlex) {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '70px';
+                navMenu.style.left = '0';
+                navMenu.style.width = '100%';
+                navMenu.style.background = '#050509';
+                navMenu.style.padding = '2rem';
+                
+                navButtons.style.display = 'flex';
+                navButtons.style.flexDirection = 'column';
+                navButtons.style.position = 'absolute';
+                navButtons.style.top = '300px';
+                navButtons.style.left = '0';
+                navButtons.style.width = '100%';
+                navButtons.style.padding = '2rem';
+                navButtons.style.background = '#050509';
+            } else {
+                navMenu.style.display = 'none';
+                navButtons.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

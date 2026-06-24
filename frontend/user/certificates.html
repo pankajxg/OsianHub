@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Certificates - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================= */
+        /* PREMIUM THEME VARIABLES (MATCHING DASHBOARD) */
+        /* ========================================= */
+        :root {
+            /* Backgrounds: Deep & Atmospheric */
+            --bg-main: #030508;
+            --bg-deep-radial: radial-gradient(circle at 60% 0%, #0F1C2E 0%, #020305 100%);
+            
+            /* Card Surface: Smoked Glass */
+            --bg-card: rgba(13, 22, 36, 0.6);
+            --bg-card-hover: rgba(20, 30, 48, 0.75);
+            
+            /* Text Colors */
+            --text-main: #FFFFFF;
+            --text-para: #B0C4DE;   /* Cool Blue-Grey */
+            --text-muted: #647C96;  /* Muted Grey */
+
+            /* Accents: Electric Gemstones */
+            --osian-cyan: #4FF4E8;
+            --osian-mint: #70F3D6;
+            --osian-yellow: #F0EA76;
+            --osian-dark: #020812;
+
+            /* Gradients */
+            --osian-gradient: linear-gradient(135deg, #4FF4E8 0%, #70F3D6 50%, #F0EA76 100%);
+            --gradient-gold: linear-gradient(135deg, #F0EA76 0%, #D4C948 100%); /* Adjusted Gold */
+            
+            /* Lighting & Effects */
+            --osian-glow: rgba(79, 244, 232, 0.25);
+            --border-color: rgba(95, 251, 241, 0.12);
+            --border-highlight: rgba(255, 255, 255, 0.08);
+            
+            --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: var(--bg-deep-radial);
+            background-attachment: fixed;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Ambient Glow (Background) */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 600px; height: 600px; 
+            border-radius: 50%;
+            left: -150px; bottom: -150px;
+            background: #4259EF;
+            filter: blur(120px);
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* App Layout */
+        .app-shell {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* --- Sidebar Layout --- */
+        #sidebar-container {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+            border-right: 1px solid var(--border-color);
+            background: rgba(5, 10, 18, 0.95); /* Darker, mostly solid for contrast */
+            backdrop-filter: blur(10px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Top right glow */
+        .main-content::before {
+            content: '';
+            position: fixed;
+            top: -100px; right: -100px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, var(--osian-glow) 0%, transparent 70%);
+            filter: blur(80px);
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(79, 244, 232, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--osian-cyan);
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            filter: drop-shadow(0 0 5px var(--osian-cyan));
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(79, 244, 232, 0.2));
+        }
+
+        .dashboard-header p {
+            color: var(--text-para);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* --- PREMIUM STAT CARD --- */
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-highlight);
+            box-shadow: var(--shadow-card);
+            
+            border-radius: 20px;
+            padding: 2rem 3rem;
+            min-width: 320px;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            gap: 2.5rem;
+            
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--osian-cyan);
+            background: var(--bg-card-hover);
+            box-shadow: 0 25px 50px -10px rgba(0,0,0,0.6), 0 0 20px rgba(79, 244, 232, 0.1);
+        }
+
+        .stat-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: rgba(79, 244, 232, 0.08);
+            border: 1px solid rgba(79, 244, 232, 0.15);
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            
+            font-size: 2.2rem;
+            color: var(--osian-cyan);
+            box-shadow: 0 0 30px rgba(79, 244, 232, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: var(--osian-gradient);
+            border-color: transparent;
+            color: var(--osian-dark);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left; 
+        }
+
+        .stat-info h3 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 0 0 5px 0;
+            color: var(--text-main);
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .stat-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* --- CERTIFICATES GRID --- */
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 30px;
+        }
+        
+        .certificate-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-highlight);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .certificate-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px var(--osian-glow);
+            border-color: var(--osian-cyan);
+            background: var(--bg-card-hover);
+        }
+        
+        .certificate-card.featured-certificate {
+            border: 1px solid rgba(240, 234, 118, 0.4);
+            box-shadow: 0 0 20px rgba(240, 234, 118, 0.1);
+        }
+        
+        /* Certificate Preview Area */
+        .cert-preview {
+            height: 220px;
+            background: radial-gradient(circle at center, rgba(15, 28, 46, 0.8), rgba(2, 3, 5, 0.9));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .cert-preview::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%), 
+                linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%);
+            background-size: 20px 20px;
+            opacity: 0.5;
+        }
+        
+        .cert-preview i.bx-certification {
+            font-size: 80px;
+            color: rgba(79, 244, 232, 0.15);
+            z-index: 1;
+            filter: drop-shadow(0 0 15px var(--osian-glow));
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .certificate-card:hover .cert-preview i.bx-certification {
+            transform: scale(1.15);
+            color: var(--osian-cyan);
+            filter: drop-shadow(0 0 25px var(--osian-cyan));
+        }
+        
+        .cert-seal {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            background: var(--osian-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--osian-glow);
+            z-index: 2;
+        }
+        
+        .cert-seal i {
+            font-size: 24px;
+            color: var(--osian-dark) !important;
+        }
+        
+        /* Featured Badge */
+        .featured-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gradient-gold);
+            color: var(--osian-dark);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            z-index: 5;
+            box-shadow: 0 4px 15px rgba(240, 234, 118, 0.4);
+            text-transform: uppercase;
+        }
+        
+        /* Content Area */
+        .cert-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        
+        .cert-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: var(--text-main);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.8em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .cert-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-para);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .certificate-card:hover .meta-item {
+            background: rgba(79, 244, 232, 0.05);
+            border-color: rgba(79, 244, 232, 0.1);
+        }
+        
+        .meta-item i {
+            color: var(--osian-cyan);
+            font-size: 1.1em;
+        }
+        
+        /* Actions */
+        .cert-actions {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        .cert-btn {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-download {
+            background: var(--osian-gradient);
+            background-size: 150% auto;
+            color: var(--osian-dark);
+            box-shadow: 0 5px 15px rgba(79, 244, 232, 0.2);
+        }
+        
+        .btn-download:hover {
+            transform: translateY(-2px);
+            background-position: right center;
+            box-shadow: 0 8px 25px rgba(79, 244, 232, 0.4);
+        }
+        
+        .btn-share {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-para);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-share:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: var(--osian-cyan);
+            box-shadow: 0 0 10px var(--osian-glow);
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem 2rem;
+            background: rgba(13, 22, 36, 0.4);
+            border-radius: 20px;
+            border: 1px dashed var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 16px;
+            height: 380px;
+            opacity: 0.6;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Toast Styles */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 300px;
+        }
+        
+        .toast {
+            background: rgba(10, 15, 25, 0.95);
+            border-left: 4px solid var(--osian-cyan);
+            border: 1px solid var(--border-color);
+            border-left-width: 4px; /* Ensure override */
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Modal Enhancements */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(160deg, #0f1623, #050a12);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+            overflow: hidden;
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .modal-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-para);
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #EF4444;
+            border-color: #EF4444;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            #sidebar-container {
+                position: fixed;
+                width: 280px;
+                left: -280px;
+                transition: left 0.3s ease;
+                background: #050a12; /* Solid for mobile perf */
+            }
+            #sidebar-container.active {
+                left: 0;
+                box-shadow: 50px 0 100px rgba(0,0,0,0.8);
+            }
+
+            .main-content { padding: 1.5rem; width: 100%; margin-left: 0; }
+            .certificates-grid { grid-template-columns: 1fr; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .mobile-menu-btn { display: block; position: absolute; right: 0; top: 0; color: var(--text-main); font-size: 28px; background: none; border: none; }
+            .dashboard-header { position: relative; }
+            .stat-card { width: 100%; min-width: unset; padding: 1.5rem; }
+            .stat-info h3 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        
+        <div class="overlay" id="overlay"></div>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>My Certificates 🏆</h1>
+                    <p>Verified Credentials & Achievements</p>
+                </div>
+                
+                <button id="mobile-menu-btn" class="mobile-menu-btn">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </header>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class='bx bx-certification'></i></div>
+                    <div class="stat-info">
+                        <h3 id="total-certificates">--</h3>
+                        <p>Total Earned</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="certificates-grid" class="certificates-grid">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class='bx bx-certification'></i>
+                <h3>No Certificates Yet</h3>
+                <p style="color: var(--text-para); margin-bottom: 2rem;">Complete quizzes to earn professional credentials and showcase your skills.</p>
+                <a href="global-quizzes.html" class="btn-download" style="display: inline-flex; width: auto; padding: 0.75rem 2rem; background: var(--osian-gradient); color: var(--osian-dark); text-decoration: none; border-radius: 8px; font-weight: 700;">
+                    <i class='bx bx-globe' style="font-size: 1.2rem; margin-right: 8px; color: var(--osian-dark); opacity: 1;"></i> Explore Quizzes
+                </a>
+            </div>
+
+            <div id="loading-spinner" style="text-align: center; padding: 3rem; display: none;">
+                <div class="loading-spinner" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                <p style="margin-top: 1rem; color: var(--text-muted);">Retrieving blockchain credentials...</p>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="certificate-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" style="margin:0; color:var(--text-main); font-size: 1.25rem;">Certificate Details</h2>
+                <button class="modal-close" id="modal-close"><i class='bx bx-x'></i></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+        </div>
+    </div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    
+    <script>
+        // Global variables
+        let certificates = [];
+        let userData = {};
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCertificates();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('modal-close').addEventListener('click', closeModal);
+            document.getElementById('certificate-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+        }
+
+        // Load certificates from API
+        async function loadCertificates() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) throw new Error('Not authenticated');
+
+                showLoadingState(true);
+
+                // Fetch user data
+                const userLocal = JSON.parse(localStorage.getItem('user') || '{}');
+                userData = userLocal && typeof userLocal === 'object' ? userLocal : {};
+                try {
+                    if (window.getUserProfile) {
+                        const profile = await window.getUserProfile({});
+                        if (profile) userData = profile;
+                    } else {
+                        const prof = await window.apiFetch('/users/profile');
+                        if (prof && prof.success && prof.user) userData = prof.user;
+                    }
+                } catch (_) {}
+
+                // Fetch Certificates
+                const data = await window.apiFetch('/certificates');
+                certificates = (data && data.success && Array.isArray(data.certificates)) ? data.certificates : [];
+                
+                updateStats();
+                displayCertificates();
+                
+            } catch (error) {
+                console.error('Error loading certificates:', error);
+                showToast('Failed to load certificates.', 'error');
+                certificates = [];
+                updateStats();
+                displayCertificates();
+            } finally {
+                showLoadingState(false);
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = certificates.length;
+            document.getElementById('total-certificates').textContent = total;
+        }
+
+        // Display certificates in grid
+        function displayCertificates() {
+            const certificatesGrid = document.getElementById('certificates-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (certificates.length === 0) {
+                certificatesGrid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            let certificatesHTML = '';
+            certificates.forEach(certificate => {
+                certificatesHTML += generateCertificateCard(certificate);
+            });
+            
+            certificatesGrid.innerHTML = certificatesHTML;
+            
+            // Add click handlers for card body
+            document.querySelectorAll('.certificate-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('button')) {
+                        const certId = this.dataset.certificateId;
+                        viewCertificateDetails(certId);
+                    }
+                });
+            });
+        }
+
+        // Generate certificate card HTML
+        function generateCertificateCard(certificate) {
+            const certId = certificate._id || certificate.id;
+            const title = (certificate.quiz && certificate.quiz.title) ? certificate.quiz.title : (certificate.title || 'Certificate of Completion');
+            const issueDate = new Date(certificate.issueDate || certificate.issue_date || certificate.createdAt || Date.now());
+            const formattedDate = issueDate.toLocaleDateString('en-US', {
+                year: 'numeric', month: 'short', day: 'numeric'
+            });
+            
+            const cover = certificate.quiz && certificate.quiz.coverImage ? certificate.quiz.coverImage : null;
+            const icon = 'bx-certification'; 
+            
+            return `
+                <div class="certificate-card ${certificate.featured ? 'featured-certificate' : ''}" data-certificate-id="${certId}">
+                    ${certificate.featured ? '<div class="featured-badge"><i class="bx bxs-star"></i> Featured</div>' : ''}
+                    
+                    <div class="cert-preview">
+                        ${cover ? 
+                            `<img src="${cover}" alt="${title}" style="width:100%; height:100%; object-fit: cover; z-index: 2;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                             <i class='bx ${icon}' style="display:none; font-size: 80px;"></i>` 
+                            : 
+                            `<i class='bx ${icon}'></i>`
+                        }
+                        <div class="cert-seal">
+                            <i class='bx bx-award'></i>
+                        </div>
+                    </div>
+                    
+                    <div class="cert-content">
+                        <h3 class="cert-title">${title}</h3>
+                        
+                        <div class="cert-meta">
+                            <div class="meta-item">
+                                <i class='bx bx-calendar'></i>
+                                <span>${formattedDate}</span>
+                            </div>
+                            ${certificate.score ? `
+                                <div class="meta-item">
+                                    <i class='bx bx-target-lock'></i>
+                                    <span>Score: ${certificate.score}%</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="cert-actions">
+                            <button class="cert-btn btn-download" onclick="downloadCertificate('${certId}')">
+                                <i class='bx bx-download'></i> Download
+                            </button>
+                            <button class="cert-btn btn-share" onclick="shareCertificate('${certId}')">
+                                <i class='bx bx-share-alt'></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // View certificate details
+        async function viewCertificateDetails(certificateId) {
+            try {
+                const certificate = certificates.find(c => String(c._id || c.id) === String(certificateId));
+                if (!certificate) return;
+
+                const title = (certificate.quiz && certificate.quiz.title) ? certificate.quiz.title : (certificate.title || 'Certificate');
+                
+                document.getElementById('modal-title').textContent = title;
+                const modalBody = document.getElementById('modal-body');
+                modalBody.innerHTML = generateCertificateDetailsHTML(certificate);
+                document.getElementById('certificate-modal').style.display = 'flex';
+                
+            } catch (error) {
+                console.error('Error loading certificate details:', error);
+            }
+        }
+
+        // Generate certificate details HTML (For Modal)
+        function generateCertificateDetailsHTML(certificate) {
+            const issueDate = new Date(certificate.issueDate || certificate.issue_date || certificate.createdAt || Date.now());
+            const formattedDate = issueDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const title = (certificate.quiz && certificate.quiz.title) ? certificate.quiz.title : (certificate.title || 'Certificate');
+            const certificateCode = certificate.certificateCode || certificate.certificate_id || certificate.id || certificate._id || 'N/A';
+            const certId = certificate._id || certificate.id;
+
+            // Updated modal HTML to use vars
+            return `
+                <div class="certificate-details">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                         <i class='bx bx-certification' style="font-size: 64px; color: var(--osian-cyan); margin-bottom: 1rem; filter: drop-shadow(0 0 10px var(--osian-glow));"></i>
+                        <h3 style="color: var(--text-main); margin: 0 0 0.5rem 0; font-size: 1.5rem; font-weight: 700;">${title}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; font-family: monospace;">ID: ${certificateCode}</p>
+                    </div>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                <span style="color: var(--text-muted);">Recipient</span>
+                                <span style="color: var(--text-main); font-weight: 600;">${userData.name || 'User'}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                <span style="color: var(--text-muted);">Issued On</span>
+                                <span style="color: var(--text-main); font-weight: 600;">${formattedDate}</span>
+                            </div>
+                            ${certificate.score ? `
+                                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">
+                                    <span style="color: var(--text-muted);">Score</span>
+                                    <span style="color: var(--osian-cyan); font-weight: 600;">${certificate.score}%</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <button onclick="downloadCertificate('${certId}')" class="btn-download" style="flex:1; padding: 0.75rem; border-radius: 8px; border:none; cursor:pointer; font-weight:600; display:flex; justify-content:center; align-items:center; gap:8px;">
+                            <i class='bx bx-download'></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Download certificate
+        async function downloadCertificate(certificateId) {
+            try {
+                const token = localStorage.getItem('token');
+                const certificate = certificates.find(c => String(c._id || c.id) === String(certificateId));
+                
+                if (!certificate) return;
+                
+                const downloadBtn = document.querySelector(`.certificate-card[data-certificate-id="${certificateId}"] .btn-download`);
+                let originalContent = '';
+                if (downloadBtn) {
+                    originalContent = downloadBtn.innerHTML;
+                    downloadBtn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i>';
+                    downloadBtn.disabled = true;
+                }
+                
+                showToast('Preparing download...', 'info');
+
+                const baseUrl = window.API_BASE || 'https://osianoffical-hfp9.vercel.app/api';
+                const response = await fetch(`${baseUrl}/certificates/download/${encodeURIComponent(certificateId)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error(`Download failed: ${response.status}`);
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const code = certificate.certificateCode || certificate.certificate_id || certificateId;
+                a.href = url;
+                a.download = `Certificate-${code}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                showToast('Certificate downloaded successfully', 'success');
+                
+                if (downloadBtn) {
+                    downloadBtn.innerHTML = originalContent;
+                    downloadBtn.disabled = false;
+                }
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                showToast('Failed to download certificate', 'error');
+                
+                const downloadBtn = document.querySelector(`.certificate-card[data-certificate-id="${certificateId}"] .btn-download`);
+                if (downloadBtn) {
+                    downloadBtn.innerHTML = '<i class="bx bx-download"></i> Download';
+                    downloadBtn.disabled = false;
+                }
+            }
+        }
+
+        // Share certificate
+        async function shareCertificate(certificateId) {
+            try {
+                const certificate = certificates.find(c => String(c._id || c.id) === String(certificateId));
+                if (!certificate) return;
+
+                const title = (certificate.quiz && certificate.quiz.title) ? certificate.quiz.title : (certificate.title || 'Certificate');
+                
+                if (navigator.share) {
+                    await navigator.share({
+                        title: `My Certificate: ${title}`,
+                        text: `I earned the "${title}" certificate on OSIAN!`,
+                        url: window.location.href
+                    });
+                } else {
+                    const shareText = `I earned the ${title} certificate!`;
+                    await navigator.clipboard.writeText(shareText);
+                    showToast('Copied to clipboard!', 'success');
+                }
+            } catch (error) {
+                console.error('Share error:', error);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('certificate-modal').style.display = 'none';
+        }
+
+        function showLoadingState(loading) {
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const certificatesGrid = document.getElementById('certificates-grid');
+            
+            if (loading) {
+                loadingSpinner.style.display = 'block';
+                certificatesGrid.style.opacity = '0.3';
+                certificatesGrid.style.pointerEvents = 'none';
+            } else {
+                loadingSpinner.style.display = 'none';
+                certificatesGrid.style.opacity = '1';
+                certificatesGrid.style.pointerEvents = 'auto';
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            
+            let icon = type === 'success' ? 'bx-check-circle' : type === 'error' ? 'bx-error-circle' : 'bx-info-circle';
+            let color = type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#4FF4E8';
+            
+            toast.style.borderLeftColor = color;
+            toast.innerHTML = `<i class='bx ${icon}' style="color: ${color}"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

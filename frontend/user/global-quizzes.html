@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Quizzes - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           Premium Theme - Nebula Onyx
+           ========================================= */
+        :root {
+            --bg-dark: #050509;
+            --bg-deep: #0a0f18;
+            /* Glassmorphism backgrounds */
+            --glass-surface: rgba(20, 25, 40, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.12);
+            
+            /* Brand Colors */
+            --osian-cyan: #00f2ff;
+            --osian-mint: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            
+            /* Effects */
+            --gradient-primary: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            --gradient-text: linear-gradient(to right, #fff 20%, #00f2ff 100%);
+            --neon-glow: 0 0 20px rgba(0, 242, 255, 0.25);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            /* Subtle background mesh/nebula effect */
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(0, 242, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 90%, rgba(0, 255, 157, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* =========================================
+           Header Styling
+           ========================================= */
+        .dashboard-header {
+            padding: 30px 0;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-section p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* =========================================
+           Filters & Search Section (Glass Pills)
+           ========================================= */
+        .filters-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            background: transparent;
+            padding: 0;
+            border: none;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px; /* Pill shape */
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-box input:focus {
+            border-color: var(--osian-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            transition: color 0.3s;
+        }
+
+        .search-box input:focus + i {
+            color: var(--osian-cyan);
+        }
+        
+        .filter-select {
+            padding: 0 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-main);
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+            appearance: none; /* Remove default arrow */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
+        .filter-select:hover, .filter-select:focus {
+            border-color: var(--osian-cyan);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* =========================================
+           Grid & Premium Cards
+           ========================================= */
+        .quizzes-grid, .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            /* Entry Animation */
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .quiz-card {
+            background: var(--glass-surface);
+            border-radius: 24px;
+            padding: 26px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        
+        /* Inner shine effect on hover */
+        .quiz-card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.04), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: rgba(0, 242, 255, 0.3);
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.6), 
+                        0 0 20px rgba(0, 242, 255, 0.1);
+        }
+        
+        .quiz-card:hover::after {
+            opacity: 1;
+        }
+        
+        /* Card Header */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quiz-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.15), rgba(0, 255, 157, 0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: var(--osian-cyan);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Badges */
+        .quiz-badge {
+            font-size: 10px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .badge-beginner {
+            background: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .badge-intermediate {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .badge-advanced {
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .quiz-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quiz-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Card Meta Data */
+        .quiz-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .quiz-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .quiz-meta-item i {
+            color: var(--osian-cyan);
+        }
+        
+        /* Start Button */
+        .start-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 14px;
+            background: var(--gradient-primary);
+            color: #050509; /* Dark text on bright button */
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.2);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 255, 0.5);
+        }
+        
+        /* Navigation (Back Button) */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 242, 255, 0.1);
+            color: #fff;
+            border-color: var(--osian-cyan);
+            transform: translateX(-4px);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--osian-cyan);
+            border-right-color: var(--osian-mint);
+            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.2);
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Premium Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(
+                90deg, 
+                rgba(255, 255, 255, 0.03) 25%, 
+                rgba(255, 255, 255, 0.07) 50%, 
+                rgba(255, 255, 255, 0.03) 75%
+            );
+            background-size: 200% 100%;
+            animation: loading 1.5s ease-in-out infinite;
+            border-radius: 20px;
+            height: 240px;
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+            border-radius: 24px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+        
+        .empty-state i {
+            font-size: 72px;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.05);
+            display: block;
+        }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .toast {
+            background: rgba(15, 23, 42, 0.9);
+            border-left: 4px solid var(--osian-cyan);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px); /* Blur background behind modal */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: #0f1520;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent);
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 1.4rem;
+        }
+        
+        .modal-close {
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .filters-section { flex-direction: column; gap: 12px; }
+            .search-box, .filter-select { width: 100%; }
+            .quizzes-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        
+        <div class="overlay" id="overlay"></div>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>Global Quizzes 🌍</h1>
+                    <p>Explore premium quizzes from various domains and challenge yourself</p>
+                </div>
+                
+                <button id="mobile-menu-btn" class="mobile-menu-btn">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </header>
+
+            <div id="quiz-breadcrumbs" style="margin-bottom: 24px; display: none;">
+                <button class="back-btn" id="breadcrumb-back">
+                    <i class='bx bx-arrow-back'></i> <span id="breadcrumb-text">Back</span>
+                </button>
+            </div>
+
+            <div id="views-container">
+                <div id="categories-view">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2 style="font-size: 1.25rem; color: var(--text-main); font-weight: 600;">Select Category</h2>
+                    </div>
+                    <div id="categories-grid" class="categories-grid">
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                    </div>
+                </div>
+
+                <div id="topics-view" style="display: none;">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2 style="font-size: 1.25rem; color: var(--text-main); font-weight: 600;">Select Topic</h2>
+                    </div>
+                    <div id="topics-grid" class="categories-grid">
+                        </div>
+                </div>
+
+                <div id="quizzes-view" style="display: none;">
+                    <div class="filters-section">
+                        <div class="search-box">
+                            <input type="text" id="quiz-search" placeholder="Search quizzes by title, description..." autocomplete="off">
+                            <i class='bx bx-search'></i>
+                        </div>
+                        <select id="difficulty-filter" class="filter-select">
+                            <option value="">All Difficulty Levels</option>
+                            <option value="beginner">Easy</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+
+                    <div id="quizzes-grid" class="quizzes-grid">
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                    </div>
+
+                    <div id="empty-state" class="empty-state" style="display: none;">
+                        <i class='bx bx-search-alt'></i>
+                        <h3>No Quizzes Found</h3>
+                        <p>Try adjusting your search or filters to find what you're looking for.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loading-spinner" style="text-align: center; padding: 3rem; display: none;">
+                <div class="loading-spinner"></div>
+                <p style="margin-top: 1.5rem; color: var(--osian-cyan); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;">Loading Resources...</p>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="quiz-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Quiz Details</h2>
+                <button class="modal-close" id="modal-close"><i class='bx bx-x'></i></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="/frontend/user/script-global-quizzes.js"></script>
+    
+    <script>
+        // Smooth Modal Animation Handler
+        const modal = document.getElementById('quiz-modal');
+        const modalCloseBtn = document.getElementById('modal-close');
+        
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if(mutation.target.style.display !== 'none') {
+                    // Small delay to allow display:block to render before adding opacity class
+                    setTimeout(() => mutation.target.classList.add('active'), 10);
+                } else {
+                    mutation.target.classList.remove('active');
+                }
+            });
+        });
+        
+        observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+        
+        modalCloseBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); 
+        });
+
+        // Add mouse tracking for card hover effects (optional nice-to-have)
+        document.addEventListener('mousemove', e => {
+            document.querySelectorAll('.quiz-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>

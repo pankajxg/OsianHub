@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Categories - OSIAN Super Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8; /* OSIAN mint */
+            --primary-hover: #5FFBF1; /* OSIAN cyan */
+            --secondary: #F9F586; /* OSIAN yellow */
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+
+            /* Card Colors - Updated for dark theme */
+            --color-blue-500: #5FFBF1; /* Cyan */
+            --color-green-500: #86FDE8; /* Mint */
+            --color-purple-500: #A78BFA; /* Light purple */
+            --color-amber-500: #F9F586; /* Yellow */
+            --color-cyan-500: #5FFBF1; /* Cyan */
+
+            /* Additional colors */
+            --white: #ffffff;
+            --secondary-color: #0F1A2B;
+            --text-light: #9FB6CC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .notification-icon:hover {
+            color: var(--primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        /* Avatar */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Container Styling */
+        .container {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--osian-gradient);
+        }
+
+        /* Button Styling */
+        .btn {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--osian-glow);
+        }
+
+        .btn-primary {
+            background: var(--osian-gradient);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background: rgba(134, 253, 232, 0.08);
+            border-color: var(--primary);
+        }
+
+        /* Category Grid */
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--osian-gradient);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            border-color: var(--primary);
+        }
+
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        img.category-icon {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: none;
+            -webkit-text-fill-color: initial;
+        }
+
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .category-desc {
+            font-size: 0.95rem;
+            color: var(--text-para);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        .category-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .btn-icon {
+            background: rgba(134, 253, 232, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: var(--primary);
+            color: var(--bg-sidebar);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon.delete:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(7, 11, 18, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--osian-gradient);
+        }
+
+        .modal-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--osian-glow);
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        small {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        small a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        small a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-management.html" class="nav-item">
+                <i class='bx bxs-user-detail'></i>
+                <span>Manage Admins</span>
+            </a>
+            <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="manage-departments.html" class="nav-item">
+                <i class='bx bxs-building-house'></i>
+                <span>Departments</span>
+            </a>
+            <a href="manage-categories.html" class="nav-item active">
+                <i class='bx bxs-folder'></i>
+                <span>Categories</span>
+            </a>
+            <a href="manage-global-quizzes.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>Global Quizzes</span>
+            </a>
+            <a href="all-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>All Results</span>
+            </a>
+            <a href="events.html" class="nav-item">
+                <i class='bx bxs-calendar-event'></i>
+                <span>Events</span>
+            </a>
+            
+            <a href="site-settings.html" class="nav-item">
+                <i class='bx bxs-cog'></i>
+                <span>Site Settings</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+             <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Manage Categories</h1>
+                    <p>Create and manage quiz categories</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="notification-icon">
+                    <i class='bx bx-bell'></i>
+                    <span class="notification-badge"></span>
+                </div>
+                <div class="user-profile-header">
+                    <div class="avatar">SA</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 style="margin: 0;">All Categories</h2>
+                    <button class="btn btn-primary" onclick="openModal()">
+                        <i class='bx bx-plus'></i> Add Category
+                    </button>
+                </div>
+
+                <div id="categories-container" class="category-grid">
+                    <!-- Example Categories - will be populated by JS -->
+                    
+                    
+                
+                    
+                
+            </div>
+        </div>
+    </main>
+
+    <!-- Create/Edit Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add Category</h2>
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label for="catName">Name</label>
+                    <input type="text" id="catName" class="form-control" required placeholder="e.g. Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="catDesc">Description</label>
+                    <textarea id="catDesc" class="form-control" rows="3" placeholder="Short description of the category..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="catImageInput">Category Image</label>
+                    <input type="file" id="catImageInput" class="form-control" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="catIcon">Icon Class (Boxicons)</label>
+                    <input type="text" id="catIcon" class="form-control" placeholder="e.g. bx-code-alt">
+                    <small>Find icons at <a href="https://boxicons.com/" target="_blank">boxicons.com</a></small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Global logout function
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        };
+
+        // Modal Functions
+        function openModal(category = null) {
+            const modal = document.getElementById('categoryModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const form = document.getElementById('categoryForm');
+            
+            if (category) {
+                modalTitle.textContent = 'Edit Category';
+                // Populate form with category data
+                document.getElementById('categoryId').value = category.id || '';
+                document.getElementById('catName').value = category.name || '';
+                document.getElementById('catDesc').value = category.description || '';
+                document.getElementById('catIcon').value = category.icon || '';
+            } else {
+                modalTitle.textContent = 'Add Category';
+                form.reset();
+                document.getElementById('categoryId').value = '';
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+            document.getElementById('categoryForm').reset();
+        }
+
+        // Form Submission
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const categoryData = {
+                id: document.getElementById('categoryId').value,
+                name: document.getElementById('catName').value,
+                description: document.getElementById('catDesc').value,
+                icon: document.getElementById('catIcon').value,
+                // Handle image upload here
+            };
+            
+            console.log('Category Data:', categoryData);
+            // TODO: Implement API call to save category
+            
+            closeModal();
+        });
+
+        // Load existing scripts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load auth guard if exists
+            if (typeof loadAuthGuard === 'function') {
+                loadAuthGuard();
+            }
+            
+            // Load navbar if exists
+            if (typeof loadNavbar === 'function') {
+                loadNavbar();
+            }
+            
+            // Load categories script if exists
+            if (typeof loadCategories === 'function') {
+                loadCategories();
+            }
+        });
+    </script>
+    
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/shared/navbar.js"></script>
+    <script src="script-manage-categories.js"></script>
+</body>
+</html>

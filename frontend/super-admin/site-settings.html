@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Settings - OSIAN Super Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8; /* OSIAN mint */
+            --primary-hover: #5FFBF1; /* OSIAN cyan */
+            --secondary: #F9F586; /* OSIAN yellow */
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+
+            /* Card Colors - Updated for dark theme */
+            --color-blue-500: #5FFBF1; /* Cyan */
+            --color-green-500: #86FDE8; /* Mint */
+            --color-purple-500: #A78BFA; /* Light purple */
+            --color-amber-500: #F9F586; /* Yellow */
+            --color-cyan-500: #5FFBF1; /* Cyan */
+
+            /* Additional colors */
+            --white: #ffffff;
+            --secondary-color: #0F1A2B;
+            --text-light: #9FB6CC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        /* Avatar */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Settings Container */
+        .settings-container {
+            background: var(--bg-card);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--osian-gradient);
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h3 i {
+            margin-right: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--osian-glow);
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Feature Item Styling */
+        .feature-item {
+            background: rgba(134, 253, 232, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(134, 253, 232, 0.08);
+            border-color: var(--primary);
+        }
+
+        .feature-item-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            background: rgba(134, 253, 232, 0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Divider */
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border);
+            margin: 2rem 0;
+        }
+
+        /* Image Preview */
+        .preview-img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 1rem;
+            border-radius: 0.75rem;
+            max-height: 250px;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            display: block;
+        }
+
+        /* Save Button */
+        .btn-save {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--osian-glow);
+        }
+
+        .btn-save i {
+            font-size: 1.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .settings-container {
+                padding: 1.5rem;
+            }
+            
+            .feature-item {
+                padding: 1rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-management.html" class="nav-item">
+                <i class='bx bxs-user-detail'></i>
+                <span>Manage Admins</span>
+            </a>
+            <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+            <a href="manage-departments.html" class="nav-item">
+                <i class='bx bxs-building-house'></i>
+                <span>Departments</span>
+            </a>
+            <a href="manage-categories.html" class="nav-item">
+                <i class='bx bxs-folder'></i>
+                <span>Categories</span>
+            </a>
+            <a href="manage-global-quizzes.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>Global Quizzes</span>
+            </a>
+            <a href="all-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>All Results</span>
+            </a>
+            <a href="events.html" class="nav-item">
+                <i class='bx bxs-calendar-event'></i>
+                <span>Events</span>
+            </a>
+            <a href="site-settings.html" class="nav-item active">
+                <i class='bx bxs-cog'></i>
+                <span>Site Settings</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html"onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Site Settings</h1>
+                    <p>Configure the homepage, branding, and global settings</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <div class="user-profile-header">
+                    <div class="avatar">SA</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-container">
+            <form id="siteSettingsForm">
+                <div>
+                    <h3><i class='bx bx-home'></i> Hero Section</h3>
+                    <div class="form-group">
+                        <label class="form-label">Hero Title</label>
+                        <input type="text" id="heroTitle" class="form-control" placeholder="Enter hero title" value="Welcome to OSIAN">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hero Description</label>
+                        <textarea id="heroDescription" class="form-control" placeholder="Enter hero description">A comprehensive platform for interactive quizzes, assessments, and learning experiences. Join thousands of students and educators.</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hero Image URL</label>
+                        <input type="text" id="heroImage" class="form-control" placeholder="Enter image URL">
+                        <img id="heroImagePreview" src="" alt="Preview" class="preview-img" style="display: none;">
+                    </div>
+                </div>
+
+                <hr>
+
+                <div>
+                    <h3><i class='bx bx-star'></i> Features Section</h3>
+                    
+                    <div class="feature-item">
+                        <div class="feature-item-header">
+                            <div class="feature-item-icon">
+                                <i class='bx bx-trophy'></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <input type="text" id="feature1Title" class="form-control" placeholder="Feature Title" value="Interactive Quizzes" style="margin-bottom: 0.5rem;">
+                            </div>
+                        </div>
+                        <textarea id="feature1Desc" class="form-control" placeholder="Feature Description" style="margin-bottom: 0.5rem;">Engage with interactive quizzes across various categories and difficulty levels.</textarea>
+                        <input type="text" id="feature1Icon" class="form-control" placeholder="Icon Class (e.g., bx bx-trophy)" value="bx bx-trophy">
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-item-header">
+                            <div class="feature-item-icon">
+                                <i class='bx bx-chart'></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <input type="text" id="feature2Title" class="form-control" placeholder="Feature Title" value="Progress Tracking" style="margin-bottom: 0.5rem;">
+                            </div>
+                        </div>
+                        <textarea id="feature2Desc" class="form-control" placeholder="Feature Description" style="margin-bottom: 0.5rem;">Monitor your learning progress with detailed analytics and performance reports.</textarea>
+                        <input type="text" id="feature2Icon" class="form-control" placeholder="Icon Class" value="bx bx-chart">
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-item-header">
+                            <div class="feature-item-icon">
+                                <i class='bx bx-group'></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <input type="text" id="feature3Title" class="form-control" placeholder="Feature Title" value="Community Events" style="margin-bottom: 0.5rem;">
+                            </div>
+                        </div>
+                        <textarea id="feature3Desc" class="form-control" placeholder="Feature Description" style="margin-bottom: 0.5rem;">Participate in hackathons, competitions, and collaborative learning events.</textarea>
+                        <input type="text" id="feature3Icon" class="form-control" placeholder="Icon Class" value="bx bx-group">
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-item-header">
+                            <div class="feature-item-icon">
+                                <i class='bx bx-award'></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <input type="text" id="feature4Title" class="form-control" placeholder="Feature Title" value="Certifications" style="margin-bottom: 0.5rem;">
+                            </div>
+                        </div>
+                        <textarea id="feature4Desc" class="form-control" placeholder="Feature Description" style="margin-bottom: 0.5rem;">Earn certificates and badges for completing courses and achieving milestones.</textarea>
+                        <input type="text" id="feature4Icon" class="form-control" placeholder="Icon Class" value="bx bx-award">
+                    </div>
+                </div>
+
+                <hr>
+
+                <div>
+                    <h3><i class='bx bx-category'></i> Categories Section</h3>
+                    <div class="form-group">
+                        <label class="form-label">Categories Title</label>
+                        <input type="text" id="categoriesTitle" class="form-control" placeholder="Enter categories title" value="Explore Categories">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categories Description</label>
+                        <textarea id="categoriesDescription" class="form-control" placeholder="Enter categories description">Browse through various categories to find quizzes and content that match your interests and learning goals.</textarea>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div>
+                    <h3><i class='bx bx-info-circle'></i> About Section</h3>
+                    <div class="form-group">
+                        <label class="form-label">About Title</label>
+                        <input type="text" id="aboutTitle" class="form-control" placeholder="Enter about title" value="About OSIAN">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">About Description</label>
+                        <textarea id="aboutDescription" class="form-control" placeholder="Enter about description">OSIAN (Online System for Interactive Assessment & Networking) is a cutting-edge platform designed to revolutionize learning through interactive quizzes, assessments, and collaborative experiences. Our mission is to make learning engaging, accessible, and effective for everyone.</textarea>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div>
+                    <h3><i class='bx bx-palette'></i> Branding</h3>
+                    <div class="form-group">
+                        <label class="form-label">Primary Color (Hex Code)</label>
+                        <input type="color" id="primaryColor" class="form-control" value="#86FDE8" style="height: 50px; padding: 0.5rem;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Secondary Color (Hex Code)</label>
+                        <input type="color" id="secondaryColor" class="form-control" value="#F9F586" style="height: 50px; padding: 0.5rem;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Site Logo URL</label>
+                        <input type="text" id="siteLogo" class="form-control" placeholder="Enter logo URL">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save">
+                    <i class='bx bx-save'></i> Save All Settings
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Global logout function
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        };
+
+        // Image Preview
+        const heroImageInput = document.getElementById('heroImage');
+        const heroImagePreview = document.getElementById('heroImagePreview');
+
+        heroImageInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url) {
+                heroImagePreview.src = url;
+                heroImagePreview.style.display = 'block';
+            } else {
+                heroImagePreview.style.display = 'none';
+            }
+        });
+
+        // Icon Preview for features
+        const iconInputs = [
+            document.getElementById('feature1Icon'),
+            document.getElementById('feature2Icon'),
+            document.getElementById('feature3Icon'),
+            document.getElementById('feature4Icon')
+        ];
+
+        iconInputs.forEach((input, index) => {
+            const iconContainer = input.closest('.feature-item').querySelector('.feature-item-icon i');
+            
+            input.addEventListener('input', function() {
+                const iconClass = this.value.trim();
+                if (iconClass) {
+                    // Remove existing classes
+                    iconContainer.className = '';
+                    // Add the new icon class
+                    iconClass.split(' ').forEach(cls => {
+                        iconContainer.classList.add(cls);
+                    });
+                }
+            });
+            
+            // Initialize with default icon
+            if (input.value) {
+                const iconClass = input.value.trim();
+                iconContainer.className = '';
+                iconClass.split(' ').forEach(cls => {
+                    iconContainer.classList.add(cls);
+                });
+            }
+        });
+
+        // Form Submission
+        document.getElementById('siteSettingsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect all form data
+            const settings = {
+                hero: {
+                    title: document.getElementById('heroTitle').value,
+                    description: document.getElementById('heroDescription').value,
+                    image: document.getElementById('heroImage').value
+                },
+                features: [
+                    {
+                        title: document.getElementById('feature1Title').value,
+                        description: document.getElementById('feature1Desc').value,
+                        icon: document.getElementById('feature1Icon').value
+                    },
+                    {
+                        title: document.getElementById('feature2Title').value,
+                        description: document.getElementById('feature2Desc').value,
+                        icon: document.getElementById('feature2Icon').value
+                    },
+                    {
+                        title: document.getElementById('feature3Title').value,
+                        description: document.getElementById('feature3Desc').value,
+                        icon: document.getElementById('feature3Icon').value
+                    },
+                    {
+                        title: document.getElementById('feature4Title').value,
+                        description: document.getElementById('feature4Desc').value,
+                        icon: document.getElementById('feature4Icon').value
+                    }
+                ],
+                categories: {
+                    title: document.getElementById('categoriesTitle').value,
+                    description: document.getElementById('categoriesDescription').value
+                },
+                about: {
+                    title: document.getElementById('aboutTitle').value,
+                    description: document.getElementById('aboutDescription').value
+                },
+                branding: {
+                    primaryColor: document.getElementById('primaryColor').value,
+                    secondaryColor: document.getElementById('secondaryColor').value,
+                    logo: document.getElementById('siteLogo').value
+                }
+            };
+            
+            console.log('Saving site settings:', settings);
+            
+            // TODO: Implement API call to save settings
+            // Example: fetch('/api/settings/site', { method: 'POST', body: JSON.stringify(settings) })
+            
+            // Show success message
+            const saveButton = document.querySelector('.btn-save');
+            const originalText = saveButton.innerHTML;
+            
+            saveButton.innerHTML = '<i class="bx bx-check"></i> Settings Saved!';
+            saveButton.style.background = 'var(--success)';
+            
+            setTimeout(() => {
+                saveButton.innerHTML = originalText;
+                saveButton.style.background = '';
+            }, 2000);
+        });
+
+        // Load existing settings (if any)
+        function loadSettings() {
+            // TODO: Implement API call to load existing settings
+            // Example: fetch('/api/settings/site').then(response => response.json()).then(settings => { ... })
+            
+            // For now, we'll use the defaults already set in the form
+            console.log('Loading site settings...');
+        }
+
+        // Load existing scripts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load auth guard if exists
+            if (typeof loadAuthGuard === 'function') {
+                loadAuthGuard();
+            }
+            
+            // Load shared init if exists
+            if (typeof loadSharedInit === 'function') {
+                loadSharedInit();
+            }
+            
+            // Load settings
+            loadSettings();
+        });
+    </script>
+    
+    <script src="../shared/js/shared-init.js"></script>
+    <script src="../shared/auth-guard.js"></script>
+    <script src="script-site-settings.js"></script>
+</body>
+</html>

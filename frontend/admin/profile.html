@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - OSIAN</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="shortcut icon" href="/public/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           Premium Admin Theme - "Nebula Obsidian"
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-body: #030508;
+            --bg-sidebar: rgba(11, 16, 26, 0.95);
+            --bg-card: rgba(20, 27, 45, 0.6);
+            --bg-card-hover: rgba(28, 36, 56, 0.8);
+            --bg-input: rgba(0, 0, 0, 0.3);
+            
+            /* Text Colors */
+            --text-main: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* Brand Colors */
+            --primary: #00f2ff; /* Cyan */
+            --primary-glow: rgba(0, 242, 255, 0.5);
+            --secondary: #00ff9d; /* Mint */
+            --accent: #7c3aed; /* Purple */
+            --danger: #ff6347; /* Red */
+            
+            /* Gradients */
+            --gradient-brand: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            
+            /* UI Elements */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(0, 242, 255, 0.3);
+            --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            --radius-md: 16px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(124, 58, 237, 0.03) 0%, transparent 40%);
+        }
+
+        /* --- Sidebar Styling --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brand {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand i {
+            font-size: 24px;
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .brand span {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.05);
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .nav-item i { font-size: 1.25rem; }
+
+        .logout-container {
+            padding: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 32px 40px;
+            width: calc(100% - 260px);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            color: var(--text-secondary);
+            position: relative;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .notification-icon:hover { color: var(--text-main); transform: scale(1.1); }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px; right: -2px;
+            width: 10px; height: 10px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--bg-body);
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px 6px 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .user-profile-header:hover { border-color: var(--text-secondary); }
+
+        .avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2a2a72, #009ffd);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* --- Profile Container --- */
+        .profile-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--gradient-brand);
+        }
+
+        /* Avatar Section */
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .avatar-upload {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-preview {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(0, 242, 255, 0.1);
+            background: var(--bg-body);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .avatar-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 50px rgba(0, 242, 255, 0.25);
+            border-color: var(--primary);
+        }
+
+        .avatar-upload-label {
+            position: absolute;
+            bottom: 6px; right: 6px;
+            width: 36px; height: 36px;
+            background: var(--gradient-brand);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid var(--bg-card);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .avatar-upload-label:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .role-badge {
+            background: rgba(0, 242, 255, 0.1);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(0, 242, 255, 0.2);
+        }
+
+        /* --- Form Styling --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .form-section-title {
+            grid-column: 1 / -1;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin: 16px 0 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .form-section-title i { color: var(--primary); font-size: 16px; }
+
+        .form-group { margin-bottom: 0; }
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 242, 255, 0.15);
+            background: rgba(0,0,0,0.5);
+        }
+
+        .form-input:disabled {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--gradient-brand);
+            color: #000;
+            padding: 12px 32px;
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 242, 255, 0.5);
+        }
+
+        .form-actions {
+            margin-top: 32px;
+            text-align: right;
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+
+        /* Toast & Loading */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; }
+        .toast { background: var(--bg-card); color: var(--text-main); padding: 12px 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: slideIn 0.3s; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* Responsive */
+        .mobile-toggle { display: none; font-size: 28px; color: var(--text-main); cursor: pointer; }
+
+        @media (max-width: 900px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; padding: 24px; }
+            .mobile-toggle { display: block; margin-right: 16px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .header-actions { width: 100%; justify-content: flex-end; }
+            .profile-card { padding: 24px; }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    </style>
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="create-quiz.html" class="nav-item">
+                <i class='bx bxs-plus-circle'></i>
+                <span>Create Quiz</span>
+            </a>
+            <a href="my-quiz.html" class="nav-item">
+                <i class='bx bxs-folder-open'></i>
+                <span>My Quizzes</span>
+            </a>
+            <a href="quiz-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>Results</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class='bx bxs-user'></i>
+                <span>Profile</span>
+            </a>
+            <a href="notifications.html" class="nav-item">
+                <i class='bx bxs-bell'></i>
+                <span>Notifications</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html" onclick="logout()" class="nav-item logout">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Admin Profile</h1>
+                    <p>Manage your personal information and account settings</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="notifications.html" class="notification-icon">
+                    <i class='bx bx-bell'></i>
+                    <span class="notification-badge" id="notification-badge" style="display: none;"></span>
+                </a>
+                <div class="user-profile-header">
+                    <div class="avatar" id="header-avatar">AD</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="avatar-section">
+                    <div class="avatar-upload">
+                        <img id="avatar-preview" class="avatar-preview" 
+                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238FA9C4'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" 
+                             alt="Profile">
+                        <label for="avatar-input" class="avatar-upload-label" title="Upload new photo">
+                            <i class='bx bx-camera'></i>
+                        </label>
+                    </div>
+                    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                    <div class="role-badge" id="role-display">ADMIN</div>
+                </div>
+
+                <form id="profile-form">
+                    <div class="form-grid">
+                        
+                        <div class="form-section-title"><i class='bx bx-user'></i> Personal Details</div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="name" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="email" class="form-input" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" id="username" class="form-input" disabled>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Age</label>
+                            <input type="number" id="age" class="form-input" min="1" max="100">
+                        </div>
+
+                        <div class="form-section-title"><i class='bx bx-book'></i> Academic & Location</div>
+
+                        <div class="form-group">
+                            <label class="form-label">College / Institution</label>
+                            <input type="text" id="college" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <input type="text" id="course" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Year / Batch</label>
+                            <input type="text" id="year" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">City</label>
+                            <input type="text" id="city" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">State</label>
+                            <input type="text" id="state" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Current Address</label>
+                            <textarea id="address" class="form-input" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-section-title"><i class='bx bx-share-alt'></i> Social & Interests</div>
+
+                        <div class="form-group">
+                            <label class="form-label">GitHub Profile</label>
+                            <input type="url" id="githubProfile" class="form-input" placeholder="https://github.com/...">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">LinkedIn Profile</label>
+                            <input type="url" id="linkedinProfile" class="form-input" placeholder="https://linkedin.com/in/...">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Areas of Interest</label>
+                            <input type="text" id="areasOfInterest" class="form-input" placeholder="e.g. Web Development, AI, Data Science">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn">
+                            <i class='bx bx-save'></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script src="../shared/js/shared-init.js"></script>
+    <script src="../shared/auth-guard.js"></script>
+    <script>
+        // --- Sidebar Logic ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        };
+
+        function showCreateQuiz() {
+            window.location.href = 'create-quiz.html';
+        }
+
+        // --- Profile Logic ---
+        async function loadProfileData() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) { window.location.href = '/frontend/auth/login.html'; return; }
+
+                // Fetch fresh user data using apiFetch
+                // Note: apiFetch throws on error, returns body on success
+                try {
+                    const data = await window.apiFetch('/auth/me');
+                    localStorage.setItem('user', JSON.stringify(data));
+                    populateForm(data);
+                } catch (e) {
+                    // Fallback to cache if offline or failed
+                    console.warn('Network fetch failed, using cache', e);
+                    const cached = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (cached.name) populateForm(cached);
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+
+        function populateForm(user) {
+            const p = user.profile || {};
+            
+            // Basic Info
+            setValue('name', user.name);
+            setValue('email', user.email);
+            setValue('username', user.username);
+            
+            // Profile Info
+            setValue('phone', p.phone);
+            setValue('age', p.age);
+            setValue('college', p.college);
+            setValue('course', p.course || user.department); // Fallback to dept
+            setValue('year', p.year);
+            setValue('city', p.city);
+            setValue('state', p.state);
+            setValue('address', p.address);
+            
+            // Socials
+            setValue('githubProfile', p.githubProfile);
+            setValue('linkedinProfile', p.linkedinProfile);
+            setValue('areasOfInterest', p.areasOfInterest);
+
+            // Avatar
+            const avatarUrl = p.avatar || user.avatar;
+            if (avatarUrl) {
+                document.getElementById('avatar-preview').src = avatarUrl;
+                updateHeaderAvatar(avatarUrl);
+            } else {
+                updateHeaderAvatar(null, user.name);
+            }
+        }
+
+        function setValue(id, val) {
+            const el = document.getElementById(id);
+            if(el) el.value = val || '';
+        }
+
+        function updateHeaderAvatar(url, name) {
+            const headerEl = document.getElementById('header-avatar');
+            if (url) {
+                headerEl.innerHTML = '';
+                headerEl.style.backgroundImage = `url(${url})`;
+                headerEl.style.backgroundSize = 'cover';
+            } else if (name) {
+                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                headerEl.style.backgroundImage = 'none';
+                headerEl.innerHTML = initials;
+            }
+        }
+
+        // --- Avatar Upload Preview ---
+        document.getElementById('avatar-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    document.getElementById('avatar-preview').src = ev.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // --- Form Submission ---
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Saving...';
+            btn.disabled = true;
+
+            try {
+                const token = localStorage.getItem('token');
+                const formData = new FormData();
+                
+                // Append text fields
+                const fields = ['name', 'phone', 'age', 'college', 'course', 'year', 'city', 'state', 'address', 'githubProfile', 'linkedinProfile', 'areasOfInterest'];
+                fields.forEach(id => formData.append(id, document.getElementById(id).value));
+
+                // Append avatar
+                const fileInput = document.getElementById('avatar-input');
+                if (fileInput.files[0]) {
+                    formData.append('avatar', fileInput.files[0]);
+                }
+
+                const res = await fetch('/api/users/profile', {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData // No Content-Type header, browser sets it for FormData
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showToast('Profile updated successfully!', 'success');
+                    if (data.user) {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        updateHeaderAvatar(data.user.profile?.avatar, data.user.name);
+                    }
+                } else {
+                    showToast(data.message || 'Update failed', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('An error occurred', 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        function showToast(msg, type) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.style.borderColor = type === 'success' ? 'var(--secondary)' : 'var(--danger)';
+            toast.innerHTML = `<i class='bx ${type==='success'?'bx-check-circle':'bx-error-circle'}' style="color:${type==='success'?'var(--secondary)':'var(--danger)'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfileData);
+    </script>
+</body>
+</html>

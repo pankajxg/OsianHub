@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - OSIAN Super Admin</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            /* Dark Theme Palette */
+            --bg-main: #070B12;
+            --bg-sidebar: #06121F;
+            --bg-card: #0D1422;
+            --bg-input: #0F1A2B;
+
+            --text-main: #E6F1FF;
+            --text-para: #BFD3E6;
+            --text-muted: #8FA9C4;
+            --text-sidebar: #BFD3E6;
+
+            --primary: #86FDE8;
+            --primary-hover: #5FFBF1;
+            --secondary: #F9F586;
+            
+            --border: rgba(134,253,232,0.18);
+            --border-color: rgba(134,253,232,0.18);
+            
+            --success: #86FDE8;
+            --warning: #F9F586;
+            --danger: #FF6B6B;
+
+            --shadow: 0 14px 36px rgba(0,0,0,0.6);
+            --osian-glow: rgba(134,253,232,0.35);
+            --osian-gradient: linear-gradient(135deg, #5FFBF1, #86FDE8, #F9F586);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            background-color: var(--bg-sidebar);
+            color: var(--text-sidebar);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            border-right: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand i {
+            font-size: 1.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand span {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(134, 253, 232, 0.08);
+            border-color: var(--border);
+            color: var(--text-main);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(134, 253, 232, 0.12);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .logout-container {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 16rem;
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 16rem);
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            background: transparent;
+            padding: 1rem 0;
+        }
+
+        .page-title h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-title p {
+            color: var(--text-para);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            margin-right: 1rem;
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Quiz Creation Form */
+        .quiz-creation-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Form Stepper */
+        .form-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .stepper-line {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: var(--border);
+            z-index: 1;
+        }
+
+        .stepper-line-fill {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            height: 2px;
+            background: var(--osian-gradient);
+            z-index: 2;
+            transition: width 0.3s ease;
+        }
+
+        .stepper-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step-circle.active {
+            background: var(--osian-gradient);
+            border-color: transparent;
+            color: var(--bg-sidebar);
+            box-shadow: 0 0 20px var(--osian-glow);
+        }
+
+        .step-circle.completed {
+            background: var(--success);
+            border-color: transparent;
+            color: var(--bg-sidebar);
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .step-label.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+            background: var(--osian-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-para);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-group .input-with-icon {
+            position: relative;
+        }
+
+        .form-group .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--osian-glow);
+        }
+
+        /* Radio and Checkbox Groups */
+        .radio-group,
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-label,
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: var(--text-para);
+            font-size: 0.875rem;
+        }
+
+        .radio-label input,
+        .checkbox-label input {
+            accent-color: var(--primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(15, 26, 43, 0.5);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(134, 253, 232, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .upload-area p {
+            color: var(--text-para);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area small {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        /* Question Builder */
+        .question-builder {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Option Items */
+        .option-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .options-grid .option-item label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .option-item input[type="text"] {
+            padding: 0.5rem;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-main);
+        }
+
+        .option-item input[type="text"]:focus {
+            border-color: var(--primary);
+            background: var(--bg-card);
+        }
+
+        /* Button Styles */
+        .btn {
+            background: var(--osian-gradient);
+            color: var(--bg-sidebar);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--osian-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(134, 253, 232, 0.1);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #FF6B6B, #FF8787);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+
+        /* Form Navigation */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(7, 11, 18, 0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        /* Topic Management */
+        .topic-management {
+            margin-top: 2rem;
+        }
+
+        .topics-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .topic-tag {
+            background: rgba(134, 253, 232, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topic-tag span {
+            color: var(--text-para);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-stepper {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stepper-line {
+                display: none;
+            }
+        }
+
+        /* Select2 Customization */
+        .select2-container--default .select2-selection--single,
+        .select2-container--default .select2-selection--multiple {
+            background-color: var(--bg-input) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 0.5rem !important;
+            color: var(--text-main) !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--text-main) !important;
+        }
+
+        .select2-container--default .select2-results__option--selected {
+            background-color: rgba(134, 253, 232, 0.2) !important;
+        }
+
+        .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+            background-color: var(--primary) !important;
+            color: var(--bg-sidebar) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class='bx bxs-dashboard'></i>
+            <span>OSIAN</span>
+        </div>
+        
+        <nav class="nav-menu">
+            <a href="dashboard.html" class="nav-item">
+                <i class='bx bxs-grid-alt'></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="admin-management.html" class="nav-item">
+                <i class='bx bxs-user-detail'></i>
+                <span>Manage Admins</span>
+            </a>
+            <a href="user-management.html" class="nav-item">
+                <i class='bx bxs-group'></i>
+                <span>Manage Users</span>
+            </a>
+
+            <a href="manage-categories.html" class="nav-item">
+                <i class='bx bxs-folder'></i>
+                <span>Categories</span>
+            </a>
+            <a href="manage-global-quizzes.html" class="nav-item">
+                <i class='bx bxs-help-circle'></i>
+                <span>Global Quizzes</span>
+            </a>
+            <a href="create-quiz.html" class="nav-item active">
+                <i class='bx bxs-plus-circle'></i>
+                <span>Create Quiz</span>
+            </a>
+            <a href="all-results.html" class="nav-item">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <span>All Results</span>
+            </a>
+            <a href="events.html" class="nav-item">
+                <i class='bx bxs-calendar-event'></i>
+                <span>Events</span>
+            </a>
+            <a href="site-settings.html" class="nav-item">
+                <i class='bx bxs-cog'></i>
+                <span>Site Settings</span>
+            </a>
+        </nav>
+
+        <div class="logout-container">
+            <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+                <i class='bx bx-log-out'></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <i class='bx bx-menu mobile-toggle' onclick="toggleSidebar()"></i>
+                <div class="page-title">
+                    <h1>Create New Quiz</h1>
+                    <p>Design comprehensive quizzes with advanced configurations</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Stepper -->
+        <div class="form-stepper">
+            <div class="stepper-line"></div>
+            <div class="stepper-line-fill" id="stepperFill"></div>
+            
+            <div class="stepper-step">
+                <div class="step-circle active" id="step1">1</div>
+                <div class="step-label active">Quiz Details</div>
+            </div>
+            
+            <div class="stepper-step">
+                <div class="step-circle" id="step2">2</div>
+                <div class="step-label">Configuration</div>
+            </div>
+            
+            <div class="stepper-step">
+                <div class="step-circle" id="step3">3</div>
+                <div class="step-label">Questions</div>
+            </div>
+            
+            <div class="stepper-step">
+                <div class="step-circle" id="step4">4</div>
+                <div class="step-label">Review & Publish</div>
+            </div>
+        </div>
+
+        <!-- Quiz Creation Form -->
+        <div class="quiz-creation-container">
+            <!-- Step 1: Quiz Details -->
+            <div class="form-section active" id="step1Section">
+                <h2><i class='bx bx-detail'></i> Quiz Basic Details</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Quiz Scope *</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="quizScope" value="Global" checked onchange="toggleScope('Global')">
+                                <span>Global Quiz</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="quizScope" value="Department" onchange="toggleScope('Department')">
+                                <span>Department Quiz</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="linkedAdminCodeGroup" style="display: none;">
+                        <label for="linkedAdminCode">Linked Admin Code (Optional)</label>
+                        <div class="input-with-icon" style="display: flex; gap: 10px;">
+                            <div style="position: relative; flex: 1;">
+                                <i class='bx bx-id-card input-icon'></i>
+                                <input type="text" id="linkedAdminCode" placeholder="Enter Admin's Unique Code" onblur="verifyAdminCode()">
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline" onclick="verifyAdminCode()">Verify</button>
+                        </div>
+                        <small id="adminCodeFeedback" style="display: block; margin-top: 5px; color: var(--text-muted);">Leave empty to assign to your department (if applicable)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizTitle">Quiz Title *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-edit-alt input-icon'></i>
+                            <input type="text" id="quizTitle" placeholder="Enter quiz title" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizImage">Quiz Cover Image (Optional)</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-image input-icon'></i>
+                            <input type="file" id="quizImage" accept="image/*" style="padding-left: 2.5rem;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizCategory">Category *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-category input-icon'></i>
+                            <select id="quizCategory" required>
+                                <option value="">Select Category</option>
+                                <!-- Categories will be loaded dynamically -->
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline" style="margin-top: 0.5rem;" onclick="showCategoryModal()">
+                            <i class='bx bx-plus'></i> Add New Category
+                        </button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizTopic">Topic *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-hash input-icon'></i>
+                            <select id="quizTopic" required></select>
+                        </div>
+                        <div class="topic-management">
+                            <button type="button" class="btn btn-sm btn-outline" onclick="showTopicModal()">
+                                <i class='bx bx-plus'></i> Manage Topics
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizDescription">Description</label>
+                        <textarea id="quizDescription" placeholder="Describe the quiz content and objectives..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quiz Type *</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="quizType" value="regular" checked>
+                                <span>Regular Quiz</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="quizType" value="paid">
+                                <span>Paid Quiz</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="quizType" value="scheduled">
+                                <span>Scheduled Quiz</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="paidQuizOptions" style="display: none;">
+                        <label for="quizPrice">Price (₹)</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-rupee input-icon'></i>
+                            <input type="number" id="quizPrice" placeholder="Enter amount" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="scheduledQuizOptions" style="display: none;">
+                        <label for="quizSchedule">Schedule Date & Time</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-calendar input-icon'></i>
+                            <input type="datetime-local" id="quizSchedule">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <div></div>
+                    <button class="btn" onclick="nextStep(2)">
+                        Next <i class='bx bx-chevron-right'></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Configuration -->
+            <div class="form-section" id="step2Section">
+                <h2><i class='bx bx-cog'></i> Quiz Configuration</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="quizDifficulty">Difficulty Level *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-bar-chart-alt-2 input-icon'></i>
+                            <select id="quizDifficulty" required>
+                                <option value="Easy">Basic</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quizDuration">Duration (minutes) *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-time input-icon'></i>
+                            <input type="number" id="quizDuration" placeholder="e.g., 30" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="totalQuestions">Total Questions *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-list-check input-icon'></i>
+                            <input type="number" id="totalQuestions" placeholder="Number of questions to show" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passingPercentage">Certificate Minimum Percentage *</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-percent input-icon'></i>
+                            <input type="number" id="passingPercentage" placeholder="e.g., 60" min="1" max="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxAttempts">Maximum Attempts</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-recycle input-icon'></i>
+                            <input type="number" id="maxAttempts" placeholder="0 for unlimited" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Visibility *</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="visibility" value="public" checked>
+                                <span>Public (All users)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="visibility" value="private">
+                                <span>Private (Specific users)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="visibility" value="unlisted">
+                                <span>Unlisted (Link-based)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quiz Features</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="randomizeQuestions">
+                                <span>Randomize Questions</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="randomizeOptions">
+                                <span>Randomize Options</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="allowMultipleAttempts">
+                                <span>Allow Multiple Attempts</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="showResults">
+                                <span>Show Results Immediately</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="negativeMarking">
+                                <span>Enable Negative Marking</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="negativeMarkPercentage">Negative Mark Percentage</label>
+                        <div class="input-with-icon">
+                            <i class='bx bx-minus-circle input-icon'></i>
+                            <input type="number" id="negativeMarkPercentage" placeholder="e.g., 25" min="0" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <button class="btn btn-outline" onclick="prevStep(1)">
+                        <i class='bx bx-chevron-left'></i> Previous
+                    </button>
+                    <button class="btn" onclick="nextStep(3)">
+                        Next <i class='bx bx-chevron-right'></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Questions -->
+            <div class="form-section" id="step3Section">
+                <h2><i class='bx bx-question-mark'></i> Add Questions</h2>
+                
+                <div class="form-group">
+                    <label>Question Import Method</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="importMethod" value="manual" checked onclick="toggleImportMethod('manual')">
+                            <span>Add Manually</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="importMethod" value="csv" onclick="toggleImportMethod('csv')">
+                            <span>Upload CSV/Excel</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Manual Question Entry -->
+                <div id="manualQuestions">
+                    <div id="questionsContainer">
+                        <!-- Questions will be added here dynamically -->
+                    </div>
+                    
+                    <button class="btn btn-outline" onclick="addNewQuestion()" style="margin-top: 1rem;">
+                        <i class='bx bx-plus'></i> Add Question
+                    </button>
+                </div>
+
+                <!-- CSV Upload -->
+                <div id="csvUpload" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>CSV Upload</label>
+                            <input type="file" id="csv-upload" accept=".csv">
+                            <small style="color: var(--text-muted); display:block; margin-top: 0.5rem; font-size: 0.875rem;">
+                                Columns: question, optionA, optionB, optionC, optionD, correct, explanation (optional), difficulty (optional), marks (optional)
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label>CSV Preview</label>
+                            <div id="csv-status"></div>
+                            <div id="csv-preview"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top: 1rem;">
+                        <button type="button" class="btn btn-outline" id="btn-clear-csv">Clear CSV</button>
+                        <button type="button" class="btn btn-outline" id="btn-parse-csv">Parse CSV</button>
+                        <button type="button" class="btn" id="btn-use-csv">Use Parsed Questions</button>
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <button class="btn btn-outline" onclick="prevStep(2)">
+                        <i class='bx bx-chevron-left'></i> Previous
+                    </button>
+                    <button class="btn" onclick="nextStep(4)">
+                        Next <i class='bx bx-chevron-right'></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Review & Publish -->
+            <div class="form-section" id="step4Section">
+                <h2><i class='bx bx-check-circle'></i> Review & Publish</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <h3>Quiz Summary</h3>
+                        <div id="quizSummary" style="padding: 1rem; background: var(--bg-input); border-radius: 0.5rem;">
+                            <!-- Summary will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <h3>Generate Quiz Link</h3>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="generateLink">
+                                <span>Generate shareable link for unlisted quiz</span>
+                            </label>
+                        </div>
+                        <div id="quizLinkContainer" style="margin-top: 1rem; display: none;">
+                            <div class="input-with-icon">
+                                <i class='bx bx-link input-icon'></i>
+                                <input type="text" id="quizLink" readonly>
+                            </div>
+                            <button class="btn btn-sm" onclick="copyQuizLink()" style="margin-top: 0.5rem;">
+                                <i class='bx bx-copy'></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="publishStatus">Publish Status</label>
+                        <select id="publishStatus">
+                            <option value="draft">Save as Draft</option>
+                            <option value="publish">Publish Immediately</option>
+                            <option value="schedule">Schedule for Later</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="scheduleDateContainer" style="display: none;">
+                        <label for="publishSchedule">Schedule Date (Optional)</label>
+                        <input type="datetime-local" id="publishSchedule">
+                    </div>
+                </div>
+
+                <div class="form-navigation">
+                    <button class="btn btn-outline" onclick="prevStep(3)">
+                        <i class='bx bx-chevron-left'></i> Previous
+                    </button>
+                    <button class="btn" onclick="publishQuiz()">
+                        <i class='bx bx-check'></i> Publish Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Category Modal -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <h2>Add New Category</h2>
+            <div class="form-group">
+                <label for="newCategoryName">Category Name</label>
+                <input type="text" id="newCategoryName" placeholder="Enter category name">
+            </div>
+            <div class="form-group">
+                <label for="categoryDescription">Description</label>
+                <textarea id="categoryDescription" placeholder="Category description"></textarea>
+            </div>
+            <div class="form-navigation">
+                <button class="btn btn-outline" onclick="closeCategoryModal()">Cancel</button>
+                <button class="btn" onclick="saveCategory()">Save Category</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topic Modal -->
+    <div class="modal" id="topicModal">
+        <div class="modal-content">
+            <h2>Manage Topics</h2>
+            <div class="form-group">
+                <label for="newTopicName">Add New Topic</label>
+                <div class="input-with-icon">
+                    <i class='bx bx-hash input-icon'></i>
+                    <input type="text" id="newTopicName" placeholder="Enter topic name">
+                </div>
+                <button class="btn btn-sm" onclick="addTopic()" style="margin-top: 0.5rem;">
+                    <i class='bx bx-plus'></i> Add Topic
+                </button>
+            </div>
+            
+            <div class="topic-management">
+                <h3>Existing Topics</h3>
+                <div class="topics-list" id="topicsList">
+                    <!-- Topics will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="form-navigation">
+                <button class="btn" onclick="closeTopicModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Template -->
+    <template id="questionTemplate">
+        <div class="question-builder">
+            <div class="question-header">
+                <div class="question-number">Question <span class="qnum">1</span></div>
+                <div class="question-actions">
+                    <button class="btn btn-sm btn-outline" onclick="removeQuestion(this)">
+                        <i class='bx bx-trash'></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="moveQuestionUp(this)">
+                        <i class='bx bx-up-arrow-alt'></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline" onclick="moveQuestionDown(this)">
+                        <i class='bx bx-down-arrow-alt'></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Question Text *</label>
+                <textarea class="question-text" placeholder="Enter your question here..." rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Question Type *</label>
+                <select class="question-type" onchange="handleQuestionTypeChange(this)">
+                    <option value="single">Single Choice</option>
+                    <option value="multiple">Multiple Choice</option>
+                    <option value="truefalse">True/False</option>
+                    <option value="coding">Coding Question</option>
+                    <option value="descriptive">Descriptive Answer</option>
+                </select>
+            </div>
+            
+            <div class="options-container">
+                <div class="form-group">
+                    <label>Options *</label>
+                    <div class="options-grid">
+                        <div class="option-item">
+                            <label>Option A</label>
+                            <input type="text" class="option-text q-opt-0" placeholder="Option A">
+                        </div>
+                        <div class="option-item">
+                            <label>Option B</label>
+                            <input type="text" class="option-text q-opt-1" placeholder="Option B">
+                        </div>
+                        <div class="option-item">
+                            <label>Option C</label>
+                            <input type="text" class="option-text q-opt-2" placeholder="Option C">
+                        </div>
+                        <div class="option-item">
+                            <label>Option D</label>
+                            <input type="text" class="option-text q-opt-3" placeholder="Option D">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Correct Answer</label>
+                    <select class="correct-select q-correct">
+                        <option value="">Select correct option</option>
+                        <option value="0">Option A</option>
+                        <option value="1">Option B</option>
+                        <option value="2">Option C</option>
+                        <option value="3">Option D</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Marks</label>
+                <input type="number" class="question-marks" placeholder="Marks for this question" min="1" value="1">
+            </div>
+            
+            <div class="form-group">
+                <label>Explanation (Optional)</label>
+                <textarea class="question-explanation" placeholder="Explain the correct answer..." rows="2"></textarea>
+            </div>
+        </div>
+    </template>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        // Scope Toggle
+        function toggleScope(scope) {
+            const linkedGroup = document.getElementById('linkedAdminCodeGroup');
+            const paidOption = document.querySelector('input[name="quizType"][value="paid"]').closest('.radio-label');
+            
+            if (scope === 'Department') {
+                linkedGroup.style.display = 'block';
+                // Disable Paid option for Department quizzes
+                paidOption.style.opacity = '0.5';
+                paidOption.style.pointerEvents = 'none';
+                // If paid was selected, switch to regular
+                if (document.querySelector('input[name="quizType"][value="paid"]').checked) {
+                    document.querySelector('input[name="quizType"][value="regular"]').click();
+                }
+            } else {
+                linkedGroup.style.display = 'none';
+                // Enable Paid option
+                paidOption.style.opacity = '1';
+                paidOption.style.pointerEvents = 'auto';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Select2
+            $('#quizTopic').select2({ placeholder: 'Select topic' });
+            
+            // Load categories and topics
+            loadCategories();
+            document.getElementById('quizCategory').addEventListener('change', function(e){ loadTopicsForCategory(e.target.value); });
+            
+            // Add first question
+            addNewQuestion();
+            
+            // Update stepper
+            updateStepper(1);
+            
+            // Quiz type change listener
+            document.querySelectorAll('input[name="quizType"]').forEach(radio => {
+                radio.addEventListener('change', handleQuizTypeChange);
+            });
+            
+            // Visibility change listener
+            document.querySelectorAll('input[name="visibility"]').forEach(radio => {
+                radio.addEventListener('change', handleVisibilityChange);
+            });
+            
+            // Publish status listener
+            document.getElementById('publishStatus').addEventListener('change', handlePublishStatusChange);
+            
+            // Generate link listener
+            document.getElementById('generateLink').addEventListener('change', handleGenerateLinkChange);
+
+            const csvUpload = document.getElementById('csv-upload');
+            const btnParse = document.getElementById('btn-parse-csv');
+            const btnUse = document.getElementById('btn-use-csv');
+            const btnClear = document.getElementById('btn-clear-csv');
+
+            if (csvUpload) {
+                csvUpload.addEventListener('change', function(e) {
+                    handleCSVFileSelect(e);
+                });
+            }
+            if (btnParse) {
+                btnParse.addEventListener('click', function() {
+                    if (csvUpload && csvUpload.files && csvUpload.files[0]) {
+                        handleCSVFileSelect({ target: { files: csvUpload.files } });
+                    } else {
+                        alert('Please select a CSV file first');
+                    }
+                });
+            }
+            if (btnUse) {
+                btnUse.addEventListener('click', function() {
+                    importCSVToForm();
+                });
+            }
+            if (btnClear) {
+                btnClear.addEventListener('click', function() {
+                    clearCSVData();
+                });
+            }
+
+            // Check for edit mode
+            const urlParams = new URLSearchParams(window.location.search);
+            const editId = urlParams.get('edit');
+            if (editId) {
+                loadQuizForEdit(editId);
+            }
+        });
+
+        async function loadQuizForEdit(id) {
+            try {
+                const data = await window.apiFetch(`/quizzes/${id}`);
+                if (!data.quiz) {
+                    if (window.showToast) window.showToast('Quiz not found', 'error');
+                    else console.error('Quiz not found');
+                    return;
+                }
+                const quiz = data.quiz;
+                
+                // Populate fields
+                document.getElementById('quizTitle').value = quiz.title;
+                
+                // Set Category (Wait a bit for categories to load)
+                setTimeout(() => {
+                    const catSelect = document.getElementById('quizCategory');
+                    const catId = quiz.category?._id || quiz.category;
+                    catSelect.value = catId;
+                    
+                    // Trigger change to load topics
+                    if (catId) {
+                         loadTopicsForCategory(catId).then(() => {
+                             // Set topic if exists
+                             if (quiz.field) {
+                                 $('#quizTopic').val(quiz.field).trigger('change');
+                             }
+                         });
+                    }
+                }, 1000);
+
+                document.getElementById('quizDescription').value = quiz.description;
+                document.getElementById('quizDifficulty').value = quiz.difficulty;
+                document.getElementById('quizDuration').value = quiz.duration;
+                document.getElementById('totalQuestions').value = quiz.numQuestionsToShow || (quiz.questions ? quiz.questions.length : 0);
+                if (document.getElementById('passingPercentage')) {
+                    const value = typeof quiz.certificatePassPercentage === 'number'
+                        ? quiz.certificatePassPercentage
+                        : (quiz.passingPercentage || 60);
+                    document.getElementById('passingPercentage').value = value;
+                }
+                
+                // Set Type
+                if (quiz.isPaid) {
+                    const paidRadio = document.querySelector('input[name="quizType"][value="paid"]');
+                    if (paidRadio) {
+                        paidRadio.click();
+                        document.getElementById('quizPrice').value = quiz.price;
+                    }
+                } else {
+                    const regRadio = document.querySelector('input[name="quizType"][value="regular"]');
+                    if (regRadio) regRadio.click();
+                }
+
+                // Set Visibility
+                if (quiz.visibility) {
+                    const vis = quiz.visibility.toLowerCase();
+                    const visRadio = document.querySelector(`input[name="visibility"][value="${vis}"]`);
+                    if(visRadio) visRadio.click();
+                }
+
+                // Clear existing questions
+                document.getElementById('questionsContainer').innerHTML = '';
+                questionCount = 1;
+                
+                if (quiz.questions && quiz.questions.length > 0) {
+                    quiz.questions.forEach(q => {
+                        addNewQuestion();
+                        const questions = document.querySelectorAll('.question-builder');
+                        const qDiv = questions[questions.length - 1];
+                        
+                        if (!qDiv) return;
+
+                        const qText = qDiv.querySelector('.question-text');
+                        if (qText) {
+                            qText.value = q.questionText || q.question || q.text || '';
+                        }
+
+                        const qMarks = qDiv.querySelector('.question-marks');
+                        if (qMarks) qMarks.value = q.marks || 1;
+                        
+                        const typeSelect = qDiv.querySelector('.question-type');
+                        if (typeSelect && q.type) {
+                            typeSelect.value = q.type;
+                            if (typeof handleQuestionTypeChange === 'function') {
+                                handleQuestionTypeChange(typeSelect);
+                            }
+                        }
+
+                        const type = q.type || 'single';
+                        const correctIndex =
+                            typeof q.correctOptionIndex === 'number' && q.correctOptionIndex >= 0
+                                ? q.correctOptionIndex
+                                : typeof q.correctIndex === 'number' && q.correctIndex >= 0
+                                    ? q.correctIndex
+                                    : typeof q.correct === 'number' && q.correct >= 0
+                                        ? q.correct
+                                        : -1;
+                        if (type === 'coding' || type === 'descriptive') {
+                            const expl = qDiv.querySelector('.question-explanation');
+                            if (expl) expl.value = q.explanation || '';
+                            return; 
+                        }
+
+                        if (type === 'truefalse') {
+                            const checkboxes = qDiv.querySelectorAll('.correct-checkbox');
+                            if (correctIndex >= 0 && checkboxes[correctIndex]) checkboxes[correctIndex].checked = true;
+                            
+                            const expl = qDiv.querySelector('.question-explanation');
+                            if (expl) expl.value = q.explanation || '';
+                            return;
+                        }
+
+                        const rawOptions = Array.isArray(q.options)
+                            ? q.options
+                            : Array.isArray(q.answers)
+                                ? q.answers
+                                : [];
+                        const normalizedOptions = rawOptions.map(opt => {
+                            if (typeof opt === 'string') return opt;
+                            if (!opt || typeof opt !== 'object') return '';
+                            return opt.text || opt.label || opt.value || '';
+                        });
+                        const optionInputs = qDiv.querySelectorAll('.option-text');
+                        optionInputs.forEach((input, idx) => {
+                            input.value = normalizedOptions[idx] || '';
+                        });
+
+                        const correctSelect = qDiv.querySelector('.correct-select') || qDiv.querySelector('.q-correct');
+                        if (correctSelect && correctIndex >= 0) {
+                            correctSelect.value = String(correctIndex);
+                        }
+                        
+                        const expl = qDiv.querySelector('.question-explanation');
+                        if (expl) expl.value = q.explanation || '';
+                    });
+                } else {
+                    addNewQuestion(); // Add at least one empty
+                }
+                
+                document.querySelector('.page-title h1').textContent = 'Edit Quiz';
+                
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                alert('Failed to load quiz for editing');
+            }
+        }
+
+        // Step Navigation
+        let currentStep = 1;
+
+        async function nextStep(step) {
+            if (await validateStep(currentStep)) {
+                document.getElementById(`step${currentStep}Section`).classList.remove('active');
+                document.getElementById(`step${step}Section`).classList.add('active');
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                document.getElementById(`step${step}`).classList.add('active');
+                document.getElementById(`step${currentStep}`).classList.add('completed');
+                
+                currentStep = step;
+                updateStepper(step);
+                
+                if (step === 4) {
+                    updateQuizSummary();
+                }
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${currentStep}Section`).classList.remove('active');
+            document.getElementById(`step${step}Section`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            currentStep = step;
+            updateStepper(step);
+        }
+
+        function updateStepper(step) {
+            const stepperFill = document.getElementById('stepperFill');
+            const width = ((step - 1) / 3) * 100;
+            stepperFill.style.width = `calc(${width}% - 100px)`;
+        }
+
+        let isAdminCodeVerified = true; // Default true if empty
+
+        async function verifyAdminCode() {
+            const codeInput = document.getElementById('linkedAdminCode');
+            const code = codeInput.value.trim();
+            const feedback = document.getElementById('adminCodeFeedback');
+            
+            if (!code) {
+                feedback.textContent = 'Leave empty to assign to your department (if applicable)';
+                feedback.style.color = 'var(--text-muted)';
+                isAdminCodeVerified = true; 
+                return true;
+            }
+            
+            try {
+                feedback.textContent = 'Verifying...';
+                feedback.style.color = 'var(--warning)';
+                
+                const data = await window.apiFetch(`/users/admin/verify/${code}`);
+                
+                if (data.success && data.admin) {
+                    feedback.innerHTML = `✓ Linked to: <strong>${data.admin.name}</strong> (${data.admin.department || 'No Dept'})`;
+                    feedback.style.color = 'var(--success)';
+                    isAdminCodeVerified = true;
+                    return true;
+                } else {
+                    feedback.textContent = '❌ Invalid Admin Code';
+                    feedback.style.color = 'var(--danger)';
+                    isAdminCodeVerified = false;
+                    return false;
+                }
+            } catch (e) {
+                console.error(e);
+                feedback.textContent = '❌ Error verifying code';
+                feedback.style.color = 'var(--danger)';
+                isAdminCodeVerified = false;
+                return false;
+            }
+        }
+
+        async function validateStep(step) {
+            switch(step) {
+                case 1:
+                    const title = document.getElementById('quizTitle').value;
+                    const category = document.getElementById('quizCategory').value;
+                    
+                    // Validate Admin Code if present
+                    const scope = document.querySelector('input[name="quizScope"]:checked')?.value;
+                    const linkedCode = document.getElementById('linkedAdminCode').value.trim();
+                    
+                    // Note: 'scope' logic might be inside 'toggleScope' but checking the DOM elements is safer
+                    // Actually, there is no name="quizScope" input in the HTML I read earlier? 
+                    // Let's check how toggleScope is triggered.
+                    // It seems it's triggered by scope selection UI which I didn't see fully.
+                    // But if linkedAdminCodeGroup is visible, we should validate.
+                    const linkedGroup = document.getElementById('linkedAdminCodeGroup');
+                    if (linkedGroup && linkedGroup.style.display !== 'none' && linkedCode) {
+                         // Force verification if not verified
+                         if (!isAdminCodeVerified) {
+                             const isValid = await verifyAdminCode();
+                             if (!isValid) return false;
+                         }
+                    }
+
+                    if (!title || !category) {
+                        alert('Please fill all required fields');
+                        return false;
+                    }
+                    return true;
+                case 2:
+                    const duration = document.getElementById('quizDuration').value;
+                    const questions = document.getElementById('totalQuestions').value;
+                    const passing = document.getElementById('passingPercentage').value;
+                    if (!duration || !questions || !passing) {
+                        alert('Please fill all required fields');
+                        return false;
+                    }
+                    return true;
+                case 3:
+                    // Validate at least one question is added
+                    const questionCount = document.querySelectorAll('.question-builder').length;
+                    if (questionCount === 0) {
+                        alert('Please add at least one question');
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        // Quiz Type Handler
+        function handleQuizTypeChange(e) {
+            const type = e.target.value;
+            const paidOptions = document.getElementById('paidQuizOptions');
+            if (paidOptions) {
+                paidOptions.style.display = type === 'paid' ? 'block' : 'none';
+            }
+        }
+
+        // Visibility Handler
+        function handleVisibilityChange(e) {
+            const visibility = e.target.value;
+            // Handle visibility specific logic here
+        }
+
+        // Category Management
+        function showCategoryModal() {
+            document.getElementById('categoryModal').classList.add('active');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+        }
+
+        function saveCategory() {
+            const name = document.getElementById('newCategoryName').value;
+            const description = document.getElementById('categoryDescription').value;
+            
+            if (!name) {
+                alert('Please enter category name');
+                return;
+            }
+            
+            // Here you would typically make an API call to save the category
+            console.log('Saving category:', { name, description });
+            
+            // Add to dropdown
+            const option = document.createElement('option');
+            option.value = name.toLowerCase().replace(/\s+/g, '-');
+            option.textContent = name;
+            document.getElementById('quizCategory').appendChild(option);
+            
+            closeCategoryModal();
+            alert('Category saved successfully!');
+        }
+
+        // Topic Management
+        function showTopicModal() {
+            document.getElementById('topicModal').classList.add('active');
+        }
+
+        function closeTopicModal() {
+            document.getElementById('topicModal').classList.remove('active');
+        }
+
+        async function addTopic() {
+            const topicName = document.getElementById('newTopicName').value;
+            if (!topicName) {
+                alert('Please enter topic name');
+                return;
+            }
+            const catId = document.getElementById('quizCategory').value;
+            if (!catId) {
+                alert('Select a category first');
+                return;
+            }
+            try {
+                // Use POST to create new topic
+                const data = await window.apiFetch('/topics', {
+                    method: 'POST',
+                    body: { name: topicName, categoryId: catId }
+                });
+                if (data.success) {
+                    document.getElementById('newTopicName').value = '';
+                    await loadTopicsForCategory(catId);
+                    alert('Topic added successfully');
+                } else {
+                    console.error('Add topic failed:', data);
+                    alert('Failed to add topic: ' + (data.message || 'Unknown error'));
+                }
+            } catch (e) {
+                console.error('Error adding topic:', e);
+                alert('Error adding topic: ' + (e.message || e));
+            }
+        }
+
+        async function removeTopic(button) {
+            const topicTag = button.closest('.topic-tag');
+            const topicName = topicTag.querySelector('span').textContent;
+            const catId = document.getElementById('quizCategory').value;
+
+            if(!catId) return;
+
+            if(!confirm(`Are you sure you want to remove topic "${topicName}"?`)) return;
+
+            try {
+                const data = await window.apiFetch(`/categories/${catId}`, {
+                    method: 'PUT',
+                    body: { topicToRemove: topicName }
+                });
+
+                if(data.success) {
+                    topicTag.remove();
+                    // Remove from select2
+                    const select2 = $('#quizTopic');
+                    const values = select2.val() || [];
+                    const index = values.indexOf(topicName);
+                    if (index > -1) {
+                        values.splice(index, 1);
+                        select2.val(values).trigger('change');
+                    }
+                    alert('Topic removed successfully');
+                } else {
+                    alert('Failed to remove topic');
+                }
+            } catch(e) {
+                console.error(e);
+                alert('Error removing topic');
+            }
+        }
+
+        let questionCount = 1;
+        let csvBufferQuestions = [];
+
+        function addNewQuestion() {
+            const template = document.getElementById('questionTemplate');
+            const clone = template.content.cloneNode(true);
+            const questionDiv = clone.querySelector('.question-builder');
+            questionDiv.querySelector('.qnum').textContent = questionCount;
+            
+            // Set unique IDs
+            const textarea = questionDiv.querySelector('.question-text');
+            textarea.name = `question_${questionCount}`;
+            
+            document.getElementById('questionsContainer').appendChild(questionDiv);
+            questionCount++;
+            
+            updateQuestionNumbers();
+        }
+
+        function removeQuestion(button) {
+            const questionDiv = button.closest('.question-builder');
+            if (document.querySelectorAll('.question-builder').length > 1) {
+                questionDiv.remove();
+                updateQuestionNumbers();
+            } else {
+                alert('At least one question is required');
+            }
+        }
+
+        function moveQuestionUp(button) {
+            const questionDiv = button.closest('.question-builder');
+            const prevDiv = questionDiv.previousElementSibling;
+            if (prevDiv) {
+                questionDiv.parentNode.insertBefore(questionDiv, prevDiv);
+                updateQuestionNumbers();
+            }
+        }
+
+        function moveQuestionDown(button) {
+            const questionDiv = button.closest('.question-builder');
+            const nextDiv = questionDiv.nextElementSibling;
+            if (nextDiv) {
+                questionDiv.parentNode.insertBefore(nextDiv, questionDiv);
+                updateQuestionNumbers();
+            }
+        }
+
+        function updateQuestionNumbers() {
+            const questions = document.querySelectorAll('.question-builder');
+            questions.forEach((question, index) => {
+                question.querySelector('.qnum').textContent = index + 1;
+            });
+            questionCount = questions.length + 1;
+        }
+
+        function addOption(button) {
+            const container = button.closest('.options-container');
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option-item';
+            optionDiv.innerHTML = `
+                <input type="checkbox" class="correct-checkbox">
+                <input type="text" class="option-text" placeholder="New option">
+                <button class="btn btn-sm btn-outline" onclick="removeOption(this)">
+                    <i class='bx bx-trash'></i>
+                </button>
+            `;
+            container.querySelector('.form-group').appendChild(optionDiv);
+        }
+
+        function removeOption(button) {
+            const optionDiv = button.closest('.option-item');
+            if (optionDiv.parentElement.querySelectorAll('.option-item').length > 2) {
+                optionDiv.remove();
+            } else {
+                alert('At least two options are required');
+            }
+        }
+
+        function handleQuestionTypeChange(select) {
+            const questionDiv = select.closest('.question-builder');
+            const optionsContainer = questionDiv.querySelector('.options-container');
+            
+            switch(select.value) {
+                case 'truefalse':
+                    optionsContainer.innerHTML = `
+                        <div class="form-group">
+                            <label>Options</label>
+                            <div class="option-item">
+                                <input type="radio" name="tf_${questionDiv.querySelector('.qnum').textContent}" class="correct-checkbox">
+                                <input type="text" class="option-text" value="True" readonly>
+                            </div>
+                            <div class="option-item">
+                                <input type="radio" name="tf_${questionDiv.querySelector('.qnum').textContent}" class="correct-checkbox">
+                                <input type="text" class="option-text" value="False" readonly>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'coding':
+                case 'descriptive':
+                    optionsContainer.innerHTML = '<p>No options needed for this question type.</p>';
+                    break;
+            }
+        }
+
+        function toggleImportMethod(method) {
+            if (method === 'manual') {
+                document.getElementById('manualQuestions').style.display = 'block';
+                document.getElementById('csvUpload').style.display = 'none';
+            } else {
+                document.getElementById('manualQuestions').style.display = 'none';
+                document.getElementById('csvUpload').style.display = 'block';
+            }
+        }
+
+        function handleCSVFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const content = event.target.result;
+                previewRawCSV(content);
+                const parsed = parseCSVContent(content);
+                csvBufferQuestions = parsed;
+                updateCSVStatus(parsed.length);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSVLine(text) {
+            const result = [];
+            let cur = '';
+            let inQuote = false;
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                if (char === '"') {
+                    if (inQuote && text[i + 1] === '"') {
+                        cur += '"';
+                        i++;
+                    } else {
+                        inQuote = !inQuote;
+                    }
+                } else if (char === ',' && !inQuote) {
+                    result.push(cur);
+                    cur = '';
+                } else {
+                    cur += char;
+                }
+            }
+            result.push(cur);
+            return result;
+        }
+
+        function parseCSVContent(content) {
+            const lines = content.split(/\r?\n/).filter(line => line.trim() !== '');
+            if (lines.length === 0) return [];
+            const headerCells = parseCSVLine(lines[0]).map(c => c.trim());
+            const normalize = s => s.toLowerCase().replace(/[\s_]/g, '');
+            const normalizedHeaders = headerCells.map(normalize);
+            const hasHeader = normalizedHeaders.some(h => h.includes('question')) && normalizedHeaders.some(h => h.includes('option') || h.includes('correct'));
+            const startRow = hasHeader ? 1 : 0;
+            const findKey = variants => {
+                for (let i = 0; i < normalizedHeaders.length; i++) {
+                    for (const v of variants) {
+                        if (normalizedHeaders[i] === v) return i;
+                    }
+                }
+                return -1;
+            };
+            let colMap = { q: 0, a: 1, b: 2, c: 3, d: 4, ans: 5, exp: 6, diff: 7, marks: 8 };
+            if (hasHeader) {
+                const qIdx = findKey(['question', 'ques', 'q']);
+                const aIdx = findKey(['optiona', 'option1', 'a']);
+                const bIdx = findKey(['optionb', 'option2', 'b']);
+                const cIdx = findKey(['optionc', 'option3', 'c']);
+                const dIdx = findKey(['optiond', 'option4', 'd']);
+                const ansIdx = findKey(['correct', 'answer', 'correctanswer']);
+                const expIdx = findKey(['explanation', 'exp']);
+                const diffIdx = findKey(['difficulty', 'level', 'diff']);
+                const marksIdx = findKey(['marks', 'mark', 'score']);
+                if (qIdx > -1) colMap.q = qIdx;
+                if (aIdx > -1) colMap.a = aIdx;
+                if (bIdx > -1) colMap.b = bIdx;
+                if (cIdx > -1) colMap.c = cIdx;
+                if (dIdx > -1) colMap.d = dIdx;
+                if (ansIdx > -1) colMap.ans = ansIdx;
+                if (expIdx > -1) colMap.exp = expIdx;
+                if (diffIdx > -1) colMap.diff = diffIdx;
+                if (marksIdx > -1) colMap.marks = marksIdx;
+            }
+            const questions = [];
+            for (let i = startRow; i < lines.length; i++) {
+                const cells = parseCSVLine(lines[i]).map(v => v.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+                if (cells.length < 2) continue;
+                const getVal = idx => (idx >= 0 && cells[idx] !== undefined) ? cells[idx] : '';
+                const qText = getVal(colMap.q);
+                if (!qText) continue;
+                const options = [getVal(colMap.a), getVal(colMap.b), getVal(colMap.c), getVal(colMap.d)];
+                let correctRaw = getVal(colMap.ans);
+                let correctIndex = 0;
+                if (['1', '2', '3', '4'].includes(correctRaw)) {
+                    correctIndex = parseInt(correctRaw, 10) - 1;
+                } else if (['a', 'b', 'c', 'd'].includes(correctRaw.toLowerCase())) {
+                    const map = { a: 0, b: 1, c: 2, d: 3 };
+                    correctIndex = map[correctRaw.toLowerCase()];
+                } else {
+                    const matchIdx = options.findIndex(o => o.toLowerCase() === correctRaw.toLowerCase());
+                    if (matchIdx > -1) correctIndex = matchIdx;
+                }
+                questions.push({
+                    question: qText,
+                    options,
+                    correctIndex,
+                    explanation: getVal(colMap.exp),
+                    difficulty: (getVal(colMap.diff) || 'medium').toLowerCase(),
+                    marks: parseInt(getVal(colMap.marks), 10) || 1
+                });
+            }
+            return questions;
+        }
+
+        function previewRawCSV(content) {
+            const preview = document.getElementById('csv-preview');
+            if (!preview) return;
+            const lines = content.split(/\r?\n/).slice(0, 5);
+            const escaped = lines.map(l => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+            preview.innerHTML = `<pre style="font-size:0.8rem; color:var(--text-muted); background:rgba(0,0,0,0.2); padding:10px;">${escaped.join('\n')}...</pre>`;
+        }
+
+        function updateCSVStatus(count) {
+            const status = document.getElementById('csv-status');
+            if (!status) return;
+            if (count > 0) {
+                status.innerHTML = `<div style="color:var(--osian-mint);">Parsed ${count} questions successfully. Ready to import.</div>`;
+            } else {
+                status.innerHTML = `<div style="color:var(--danger);">No valid questions found in CSV.</div>`;
+            }
+        }
+
+        function importCSVToForm() {
+            if (csvBufferQuestions.length === 0) {
+                alert('No parsed questions to import');
+                return;
+            }
+            const container = document.getElementById('questionsContainer');
+            const cards = container.querySelectorAll('.question-builder');
+            let replace = false;
+            if (cards.length === 1) {
+                const text = cards[0].querySelector('.question-text').value.trim();
+                if (!text) replace = true;
+            }
+            if (replace) {
+                container.innerHTML = '';
+            } else {
+                if (!confirm(`Append ${csvBufferQuestions.length} questions to existing list?`)) return;
+            }
+            csvBufferQuestions.forEach(q => {
+                addNewQuestion();
+                const questions = container.querySelectorAll('.question-builder');
+                const lastQ = questions[questions.length - 1];
+                const qTextEl = lastQ.querySelector('.question-text');
+                if (qTextEl) qTextEl.value = q.question;
+                const optionsContainer = lastQ.querySelector('.options-container');
+                if (optionsContainer) {
+                    const optionInputs = optionsContainer.querySelectorAll('.option-text');
+                    optionInputs.forEach((input, idx) => {
+                        input.value = q.options[idx] || '';
+                    });
+                }
+                const correctSelect = lastQ.querySelector('.correct-select') || lastQ.querySelector('.q-correct');
+                if (correctSelect) {
+                    correctSelect.value = String(q.correctIndex);
+                }
+                const marksInput = lastQ.querySelector('.question-marks');
+                if (marksInput) marksInput.value = q.marks || 1;
+                const explInput = lastQ.querySelector('.question-explanation');
+                if (explInput) explInput.value = q.explanation || '';
+            });
+            alert(`Imported ${csvBufferQuestions.length} questions.`);
+            const preview = document.getElementById('csv-preview');
+            const status = document.getElementById('csv-status');
+            const upload = document.getElementById('csv-upload');
+            if (preview) preview.innerHTML = '';
+            if (status) status.innerHTML = '';
+            if (upload) upload.value = '';
+            csvBufferQuestions = [];
+            updateQuestionNumbers();
+            const manualBlock = document.getElementById('manualQuestions');
+            const csvBlock = document.getElementById('csvUpload');
+            if (manualBlock) manualBlock.style.display = 'block';
+            if (csvBlock) csvBlock.style.display = 'none';
+            const manualRadio = document.querySelector('input[name="importMethod"][value="manual"]');
+            if (manualRadio) manualRadio.checked = true;
+        }
+
+        function clearCSVData() {
+            csvBufferQuestions = [];
+            const preview = document.getElementById('csv-preview');
+            const status = document.getElementById('csv-status');
+            const upload = document.getElementById('csv-upload');
+            if (preview) preview.innerHTML = '';
+            if (status) status.innerHTML = '';
+            if (upload) upload.value = '';
+            alert('CSV cleared');
+        }
+
+        // Quiz Summary
+        function updateQuizSummary() {
+            const summary = document.getElementById('quizSummary');
+            const title = document.getElementById('quizTitle').value;
+            const category = document.getElementById('quizCategory').value;
+            const duration = document.getElementById('quizDuration').value;
+            const totalQuestions = document.getElementById('totalQuestions').value;
+            const quizType = document.querySelector('input[name="quizType"]:checked').value;
+            const visibility = document.querySelector('input[name="visibility"]:checked').value;
+            
+            const questionCount = document.querySelectorAll('.question-builder').length;
+            
+            summary.innerHTML = `
+                <div><strong>Title:</strong> ${title || 'Not set'}</div>
+                <div><strong>Category:</strong> ${category || 'Not set'}</div>
+                <div><strong>Type:</strong> ${quizType}</div>
+                <div><strong>Visibility:</strong> ${visibility}</div>
+                <div><strong>Duration:</strong> ${duration} minutes</div>
+                <div><strong>Questions to show:</strong> ${totalQuestions} (out of ${questionCount} added)</div>
+                <div><strong>Passing Percentage:</strong> ${document.getElementById('passingPercentage').value}%</div>
+            `;
+        }
+
+        // Publish Handler
+        function handlePublishStatusChange(e) {
+            const status = e.target.value;
+            document.getElementById('scheduleDateContainer').style.display = 
+                status === 'schedule' ? 'block' : 'none';
+        }
+
+        function handleGenerateLinkChange(e) {
+            document.getElementById('quizLinkContainer').style.display = 
+                e.target.checked ? 'block' : 'none';
+            
+            if (e.target.checked) {
+                // Generate a unique link
+                const link = `https://osian.com/quiz/${Math.random().toString(36).substr(2, 9)}`;
+                document.getElementById('quizLink').value = link;
+            }
+        }
+
+        function copyQuizLink() {
+            const linkInput = document.getElementById('quizLink');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        }
+
+        // Publish Quiz
+        async function publishQuiz() {
+            try {
+                // Determine Scope from UI (Radio Buttons) or URL (Fallback)
+                const scopeRadio = document.querySelector('input[name="quizScope"]:checked');
+                const urlParams = new URLSearchParams(window.location.search);
+                const scopeRaw = scopeRadio ? scopeRadio.value : (urlParams.get('scope') || 'Global');
+                const scope = scopeRaw; // 'Global' or 'Department'
+
+                // Collect basic data
+                const title = document.getElementById('quizTitle').value;
+                const category = document.getElementById('quizCategory').value;
+                const description = document.getElementById('quizDescription').value;
+                const type = document.querySelector('input[name="quizType"]:checked').value; // regular, paid
+                
+                // Difficulty mapping (Basic->Easy, Intermediate->Medium, Advanced->Hard)
+                const difficultyVal = document.getElementById('quizDifficulty').value;
+                
+                const duration = document.getElementById('quizDuration').value;
+                const totalQuestions = document.getElementById('totalQuestions').value;
+                const visibility = document.querySelector('input[name="visibility"]:checked') ? document.querySelector('input[name="visibility"]:checked').value : 'Public';
+                const publishStatus = document.getElementById('publishStatus').value;
+
+                // Validation
+                if (!title || !category || !duration || !totalQuestions) {
+                    alert('Please fill all required fields (Title, Category, Duration, Total Questions)');
+                    return;
+                }
+
+                const questions = collectQuestions();
+                if (questions.length === 0) {
+                    alert('Please add at least one question.');
+                    return;
+                }
+
+                // Prepare FormData
+                const formData = new FormData();
+                formData.append('title', title);
+                formData.append('category', category); // Sends ID
+                formData.append('description', description);
+                formData.append('scope', scope);
+                
+                // Handle Linked Admin Code for Department Quizzes
+                if (scope === 'Department') {
+                    const linkedCode = document.getElementById('linkedAdminCode').value;
+                    if (linkedCode) {
+                        formData.append('linkedAdminCode', linkedCode);
+                    }
+                }
+
+                formData.append('type', type === 'paid' ? 'Paid' : 'Free'); // Backend expects 'type' or 'isPaid'
+                if (type === 'paid') {
+                    formData.append('isPaid', 'true');
+                    formData.append('price', document.getElementById('quizPrice').value || 0);
+                } else {
+                    formData.append('isPaid', 'false');
+                }
+
+                formData.append('difficulty', difficultyVal);
+                formData.append('duration', duration);
+                formData.append('numQuestionsToShow', totalQuestions);
+                formData.append('visibility', visibility.charAt(0).toUpperCase() + visibility.slice(1));
+                const certPass = document.getElementById('passingPercentage').value;
+                if (certPass !== '') {
+                    formData.append('certificatePassPercentage', certPass);
+                }
+                
+                // Features
+                formData.append('randomizeQuestions', document.getElementById('randomizeQuestions') ? document.getElementById('randomizeQuestions').checked : false);
+                formData.append('randomizeOptions', document.getElementById('randomizeOptions') ? document.getElementById('randomizeOptions').checked : false);
+                
+                // Schedule
+                // Check both schedule inputs (Step 1 and Step 4)
+                const step1Schedule = document.getElementById('quizSchedule') ? document.getElementById('quizSchedule').value : null;
+                const step4Schedule = document.getElementById('publishSchedule') ? document.getElementById('publishSchedule').value : null;
+                const finalSchedule = step4Schedule || step1Schedule;
+
+                if (publishStatus === 'schedule') {
+                    if (!finalSchedule) {
+                        if(confirm('No schedule date selected. Save as Draft instead?')) {
+                             formData.append('status', 'draft');
+                        } else {
+                             return;
+                        }
+                    } else {
+                        formData.append('scheduleTime', finalSchedule);
+                        formData.append('status', 'scheduled'); 
+                    }
+                } else if (publishStatus === 'draft') {
+                    formData.append('status', 'draft');
+                    if (finalSchedule) formData.append('scheduleTime', finalSchedule);
+                } else {
+                    formData.append('status', 'published');
+                    if (finalSchedule) formData.append('scheduleTime', finalSchedule);
+                }
+
+                // Questions (stringify for FormData)
+                formData.append('questions', JSON.stringify(questions));
+
+                // Image
+                const imageFile = document.getElementById('quizImage').files[0];
+                if (imageFile) {
+                    formData.append('coverImage', imageFile);
+                }
+
+                const topicVal = $('#quizTopic').val();
+                if (topicVal) formData.append('field', Array.isArray(topicVal) ? topicVal[0] : topicVal);
+
+                // Send Request
+                const data = await window.apiFetch('/quizzes', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (data.success) {
+                    alert('Quiz saved successfully!');
+                    window.location.href = 'manage-global-quizzes.html';
+                } else {
+                    alert('Failed to save quiz: ' + (data.message || 'Unknown error'));
+                }
+
+            } catch (error) {
+                console.error('Error publishing quiz:', error);
+                alert(error?.data?.message || error?.message || 'An error occurred while saving the quiz.');
+            }
+        }
+
+        function collectQuestions() {
+            const questions = [];
+            document.querySelectorAll('.question-builder').forEach((questionDiv) => {
+                const questionText = questionDiv.querySelector('.question-text').value;
+                const marks = parseInt(questionDiv.querySelector('.question-marks').value) || 1;
+                
+                const options = [];
+                let correctOptionIndex = -1;
+
+                const optionInputs = questionDiv.querySelectorAll('.option-text');
+                optionInputs.forEach((input) => {
+                    const text = input.value;
+                    options.push(text);
+                });
+
+                const correctSelect = questionDiv.querySelector('.correct-select') || questionDiv.querySelector('.q-correct');
+                if (correctSelect && correctSelect.value !== '') {
+                    correctOptionIndex = parseInt(correctSelect.value, 10);
+                } else {
+                    const optionItems = questionDiv.querySelectorAll('.option-item');
+                    optionItems.forEach((item, index) => {
+                        const checkbox = item.querySelector('.correct-checkbox');
+                        if (checkbox && checkbox.checked) {
+                            correctOptionIndex = index;
+                        }
+                    });
+                }
+
+                if (questionText) {
+                    questions.push({
+                        questionText,
+                        options,
+                        correctOptionIndex,
+                        marks
+                    });
+                }
+            });
+            return questions;
+        }
+
+        // Load Data Functions (Mock)
+        async function loadCategories() {
+            try {
+                const data = await window.apiFetch('/categories');
+                const select = document.getElementById('quizCategory');
+                select.innerHTML = '<option value="">Select Category</option>';
+                if (data && data.success && data.categories && data.categories.length) {
+                    data.categories.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category._id || category.id || category.name;
+                        option.textContent = category.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        async function loadTopicsForCategory(categoryId) {
+            const select = $('#quizTopic');
+            select.empty();
+            if (!categoryId) return;
+            try {
+                // Use new /api/topics endpoint
+                const data = await window.apiFetch(`/topics?categoryId=${categoryId}&t=${Date.now()}`);
+                
+                // Map topic objects to names
+                const topics = data.topics || [];
+                const topicNames = topics.map(t => t.name);
+
+                if (data.success) {
+                    if (topicNames.length === 0) {
+                        select.append(new Option("No topics available", ""));
+                        select.prop('disabled', true);
+                    } else {
+                        select.prop('disabled', false);
+                        topicNames.forEach(t => {
+                            const opt = new Option(t, t);
+                            select.append(opt);
+                        });
+                    }
+                    select.trigger('change');
+                }
+                const topicsList = document.getElementById('topicsList');
+                if (topicsList) {
+                    topicsList.innerHTML = '';
+                    topicNames.forEach(t => {
+                        const div = document.createElement('div');
+                        div.className = 'topic-tag';
+                        div.innerHTML = `<span>${t}</span><button class="btn btn-sm btn-outline" onclick="removeTopic(this)"><i class='bx bx-trash'></i></button>`;
+                        topicsList.appendChild(div);
+                    });
+                }
+            } catch (e) {
+                console.error('Error loading topics:', e);
+            }
+        }
+
+        // Sidebar Toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/frontend/auth/login.html';
+        }
+    </script>
+</body>
+</html>

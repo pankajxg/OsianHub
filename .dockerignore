@@ -1,0 +1,11 @@
+osian-backend/
+node_modules/
+osian-backend/node_modules/
+.git/
+.gitignore
+.env
+osian-backend/.env
+deploy/
+**/*.log
+**/.DS_Store
+**/Thumbs.db

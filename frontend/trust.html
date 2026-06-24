@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust & Security - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= PREMIUM THEME (Nebula Onyx) ================= */
+        :root {
+            --bg-dark: #050509;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-card: rgba(20, 25, 38, 0.6);
+            --osian-cyan: #00f2ff;
+            --osian-mint: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --gradient-primary: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            --border-light: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.05), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 255, 157, 0.05), transparent 40%);
+            color: var(--text-main); font-family: 'Inter', sans-serif;
+            margin: 0; line-height: 1.7; overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { padding: 0; margin: 0; list-style: none; }
+
+        /* --- NAVBAR --- */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(15px);
+            z-index: 1000; border-bottom: 1px solid var(--border-light);
+        }
+        .navbar {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; }
+        .nav-link { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .nav-link:hover { color: var(--osian-cyan); text-shadow: 0 0 10px rgba(0,242,255,0.5); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .btn { padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-primary { background: var(--gradient-primary); color: #000; box-shadow: 0 4px 15px rgba(0,242,255,0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 242, 255, 0.5); }
+        .btn-light { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border-light); }
+        .btn-light:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+        .hamburger { display: none; cursor: pointer; color: #fff; font-size: 1.5rem; }
+
+        /* --- PAGE HEADER --- */
+        .page-header {
+            padding: 160px 2rem 80px; text-align: center;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 242, 255, 0.08), transparent 70%);
+        }
+        .page-header h1 {
+            font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5f3fc 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-header p { color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto; }
+
+        /* --- TRUST DETAIL SECTIONS --- */
+        .trust-container { max-width: 1100px; margin: 0 auto; padding: 0 2rem 100px; }
+
+        .trust-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            display: grid; grid-template-columns: 100px 1fr; gap: 2rem;
+            transition: 0.3s;
+            position: relative; overflow: hidden;
+        }
+        
+        .trust-block:hover {
+            border-color: var(--osian-cyan);
+            box-shadow: 0 10px 40px rgba(0, 242, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        /* Icon Styling */
+        .trust-icon-box {
+            width: 80px; height: 80px;
+            background: rgba(0, 242, 255, 0.1);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: var(--osian-cyan);
+        }
+
+        .trust-content h2 { font-size: 1.8rem; margin-bottom: 1rem; color: #fff; }
+        .trust-content p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 1.05rem; }
+        
+        .trust-features {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
+        }
+        .trust-feature-item {
+            background: rgba(255,255,255,0.03); padding: 10px 15px; border-radius: 8px;
+            font-size: 0.9rem; color: #e0e0e0; display: flex; align-items: center; gap: 8px;
+        }
+        .trust-feature-item i { color: var(--osian-mint); }
+
+        /* --- CTA SECTION --- */
+        .cta-box {
+            text-align: center; padding: 60px 20px;
+            background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.05));
+            border-radius: 24px; border: 1px solid var(--border-light);
+            margin-top: 60px;
+        }
+
+        /* ================= FOOTER STYLES ================= */
+        .footer { background: #020204; padding: 60px 2rem 20px; border-top: 1px solid var(--border-light); margin-top: 80px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 3rem;
+        }
+        .footer h3 { color: var(--osian-cyan); font-size: 1.5rem; margin-bottom: 1rem; }
+        .footer p, .footer li a { color: var(--text-muted); font-size: 0.9rem; }
+        .footer li { margin-bottom: 0.5rem; }
+        .footer li a:hover { color: #fff; padding-left: 5px; }
+        
+        .social-media { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-media a {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: #fff; font-size: 1.2rem;
+        }
+        .social-media a:hover { background: var(--osian-cyan); color: #000; }
+
+        .footer-bottom {
+            text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light); font-size: 0.8rem; color: #555;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem; }
+            .nav-menu, .nav-buttons { display: none; }
+            .hamburger { display: block; }
+            .trust-block { grid-template-columns: 1fr; text-align: center; padding: 2rem; }
+            .trust-icon-box { margin: 0 auto; }
+            .trust-features { justify-content: center; }
+            .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">
+                <i class='bx bx-atom' style="font-size: 2rem; color: var(--osian-cyan); filter: drop-shadow(0 0 5px var(--osian-cyan));"></i>
+                <span style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px;">OSIAN</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="features.html" class="nav-link">Features</a></li>
+                <li><a href="index.html#categories" class="nav-link">Categories</a></li>
+                <li><a href="index.html#about" class="nav-link" style="color:#fff;">About</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="auth/register.html" class="btn btn-primary">Sign Up</a>
+                <a href="auth/login.html" class="btn btn-light">Login</a>
+            </div>
+            <div class="hamburger"><i class='bx bx-menu'></i></div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Our Commitment to Integrity</h1>
+            <p>At OSIAN, fairness, transparency, and security aren't just features—they are the foundation of our platform. Here is how we ensure a premium experience for every student.</p>
+        </section>
+
+        <div class="trust-container">
+            
+            <div class="trust-block" id="fair-play">
+                <div class="trust-icon-box"><i class='bx bx-shield'></i></div>
+                <div class="trust-content">
+                    <h2>Fair Play Protocol</h2>
+                    <p>We employ advanced proctoring technologies to ensure that merit is the only metric that matters. Our system creates a level playing field for all participants by actively preventing malpractice.</p>
+                    <div class="trust-features">
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> AI Proctoring</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Browser Lockdown</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Tab-Switch Detection</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trust-block" id="transparency">
+                <div class="trust-icon-box"><i class='bx bx-check-circle'></i></div>
+                <div class="trust-content">
+                    <h2>Complete Transparency</h2>
+                    <p>Trust is earned through openness. We provide clear, real-time insights into how scores are calculated and rankings are determined, leaving no room for ambiguity.</p>
+                    <div class="trust-features">
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Real-Time Scoring</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Audit-Ready Logs</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Instant Results</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trust-block" id="security">
+                <div class="trust-icon-box"><i class='bx bx-lock-alt'></i></div>
+                <div class="trust-content">
+                    <h2>Enterprise Security</h2>
+                    <p>Your data is your asset, and protecting it is our priority. We utilize industry-leading encryption standards to safeguard your personal information and academic identity.</p>
+                    <div class="trust-features">
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> End-to-End Encryption</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> GDPR Compliance</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Secure Auth</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="trust-block" id="support">
+                <div class="trust-icon-box"><i class='bx bx-support'></i></div>
+                <div class="trust-content">
+                    <h2>Dedicated Support</h2>
+                    <p>Technology is great, but human support is essential. Our dedicated team is available around the clock to assist students and institutions with any technical or operational queries.</p>
+                    <div class="trust-features">
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> 24/7 Assistance</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Live Chat</div>
+                        <div class="trust-feature-item"><i class='bx bx-check'></i> Priority Email</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-box">
+                <h2>Join a Platform You Can Trust</h2>
+                <p>Experience the most secure and fair competitive environment in India.</p>
+                <a href="auth/register.html" class="btn btn-primary">Get Started Now</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>OSIAN</h3>
+                <p>India’s premium student quiz platform — fair, transparent, and engaging.</p>
+            </div>
+            <div class="footer-links">
+                <h4 style="color:#fff; margin-bottom:1rem;">Quick Links</h4>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="shipping-policy.html">Shipping Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4 style="color:#fff; margin-bottom:1rem;">Contact Us</h4>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/osianoffical" target="_blank"><i class='bx bxl-instagram'></i></a>
+                    <a href="https://www.linkedin.com/in/osian-group-94b1b3398/" target="_blank"><i class='bx bxl-linkedin'></i></a>
+                </div>
+                <p style="margin-top: 20px;">Email: osiancommunity01025@gmail.com</p>
+                <p>Phone: +91 76967-01967</p>
+                <p>Office: Chandigarh Engineering College, Jhanjeri, MOHALI</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 OSIAN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navButtons = document.querySelector('.nav-buttons');
+
+        hamburger.addEventListener('click', () => {
+            const isFlex = navMenu.style.display === 'flex';
+            if(!isFlex) {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '70px';
+                navMenu.style.left = '0';
+                navMenu.style.width = '100%';
+                navMenu.style.background = '#050509';
+                navMenu.style.padding = '2rem';
+                
+                navButtons.style.display = 'flex';
+                navButtons.style.flexDirection = 'column';
+                navButtons.style.position = 'absolute';
+                navButtons.style.top = '300px';
+                navButtons.style.left = '0';
+                navButtons.style.width = '100%';
+                navButtons.style.padding = '2rem';
+                navButtons.style.background = '#050509';
+            } else {
+                navMenu.style.display = 'none';
+                navButtons.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

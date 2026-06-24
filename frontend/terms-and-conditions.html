@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= PREMIUM THEME (Nebula Onyx) ================= */
+        :root {
+            --bg-dark: #050509;
+            --bg-card: rgba(20, 25, 38, 0.6);
+            --osian-cyan: #00f2ff;
+            --osian-orange: #ff9d00;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --gradient-primary: linear-gradient(135deg, #00f2ff 0%, #00ff9d 100%);
+            --border-light: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 10% 90%, rgba(255, 157, 0, 0.05), transparent 40%);
+            color: var(--text-main); font-family: 'Inter', sans-serif;
+            margin: 0; line-height: 1.7; overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { padding: 0; margin: 0; list-style: none; }
+
+        /* --- NAVBAR --- */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(5, 5, 9, 0.85); backdrop-filter: blur(15px);
+            z-index: 1000; border-bottom: 1px solid var(--border-light);
+        }
+        .navbar {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-menu { display: flex; gap: 2rem; list-style: none; }
+        .nav-link { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .nav-link:hover { color: var(--osian-cyan); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .btn { padding: 0.6rem 1.5rem; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; font-size: 0.9rem; }
+        .btn-primary { background: var(--gradient-primary); color: #000; box-shadow: 0 4px 15px rgba(0,242,255,0.3); }
+        .btn-light { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border-light); }
+        .hamburger { display: none; cursor: pointer; color: #fff; font-size: 1.5rem; }
+
+        /* --- CONTENT --- */
+        .terms-container { max-width: 1000px; margin: 140px auto 60px; padding: 0 2rem; }
+        
+        .terms-header { text-align: center; margin-bottom: 60px; }
+        .terms-header h1 {
+            font-size: 3rem; margin-bottom: 15px;
+            background: linear-gradient(135deg, #fff, #ffd180);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .terms-header p { color: var(--text-muted); max-width: 800px; margin: 0 auto; font-size: 1.1rem; }
+
+        .terms-section {
+            background: var(--bg-card); border: 1px solid var(--border-light);
+            border-radius: 20px; padding: 35px; margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .terms-section h2 { color: var(--osian-orange); margin-bottom: 20px; font-size: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .terms-section h3 { color: #fff; margin: 25px 0 10px; font-size: 1.2rem; }
+        .terms-section p, .terms-section li { color: var(--text-muted); margin-bottom: 10px; }
+        .terms-section ul { margin-left: 20px; list-style: disc; }
+        /* Reset for footer lists */
+        .footer ul { margin-left: 0; list-style: none; }
+
+        /* Boxes */
+        .info-box { background: rgba(0, 242, 255, 0.05); border-left: 4px solid var(--osian-cyan); padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .warning-box { background: rgba(255, 68, 68, 0.05); border-left: 4px solid #ff4444; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; color: #ffadad; }
+        
+        .update-date { text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid var(--border-light); color: var(--text-muted); font-style: italic; }
+        
+        /* ================= FOOTER STYLES ================= */
+        .footer { background: #020204; padding: 60px 2rem 20px; border-top: 1px solid var(--border-light); margin-top: 80px; }
+        .footer-container {
+            max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 3rem;
+        }
+        .footer h3 { color: var(--osian-cyan); font-size: 1.5rem; margin-bottom: 1rem; }
+        .footer p, .footer li a { color: var(--text-muted); font-size: 0.9rem; }
+        .footer li { margin-bottom: 0.5rem; }
+        .footer li a:hover { color: #fff; padding-left: 5px; }
+        
+        .social-media { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-media a {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; color: #fff; font-size: 1.2rem;
+        }
+        .social-media a:hover { background: var(--osian-cyan); color: #000; }
+
+        .footer-bottom {
+            text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light); font-size: 0.8rem; color: #555;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 1rem; }
+            .nav-menu, .nav-buttons { display: none; }
+            .hamburger { display: block; }
+            
+            .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+            .terms-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <nav class="navbar">
+            <a href="index.html" class="nav-logo">
+                <i class='bx bx-atom' style="font-size: 2rem; color: var(--osian-cyan); filter: drop-shadow(0 0 5px var(--osian-cyan));"></i>
+                <span style="font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px;">OSIAN</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#features" class="nav-link">Features</a></li>
+                <li><a href="index.html#categories" class="nav-link">Categories</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="auth/register.html" class="btn btn-primary">Sign Up</a>
+                <a href="auth/login.html" class="btn btn-light">Login</a>
+            </div>
+            <div class="hamburger"><i class='bx bx-menu'></i></div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="terms-container">
+            <div class="terms-header">
+                <h1>Terms & Conditions</h1>
+                <p>Welcome to OSIAN. These Terms & Conditions govern your use of our quiz platform. By accessing or using OSIAN, you agree to be bound by these terms.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>1. Acceptance of Terms</h2>
+                <p>By creating an account or using OSIAN, you acknowledge that you have read, understood, and agree to be bound by these Terms & Conditions. If you disagree with any part of these terms, you must not use our platform.</p>
+                
+                <div class="info-box">
+                    <p><strong>Note:</strong> These terms apply to all users including students, educators, and institutional partners.</p>
+                </div>
+            </div>
+            
+            <div class="terms-section">
+                <h2>2. Account Registration and Security</h2>
+                <h3>2.1 Eligibility</h3>
+                <p>To use OSIAN, you must:</p>
+                <ul>
+                    <li>Be at least 13 years old</li>
+                    <li>Have parental consent if under 18</li>
+                    <li>Provide accurate and complete information</li>
+                    <li>Maintain the security of your account</li>
+                </ul>
+                
+                <h3>2.2 Account Responsibilities</h3>
+                <p>You are responsible for:</p>
+                <ul>
+                    <li>All activities under your account</li>
+                    <li>Keeping your password secure</li>
+                    <li>Promptly updating your information</li>
+                    <li>Notifying us of unauthorized access</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>3. Platform Usage Rules</h2>
+                <h3>3.1 Permitted Use</h3>
+                <p>You may use OSIAN for:</p>
+                <ul>
+                    <li>Educational purposes and self-improvement</li>
+                    <li>Participating in quizzes and challenges</li>
+                    <li>Legitimate competitive learning</li>
+                    <li>Connecting with educational communities</li>
+                </ul>
+                
+                <h3>3.2 Prohibited Activities</h3>
+                <p>You must not:</p>
+                <ul>
+                    <li>Cheat or use unauthorized assistance</li>
+                    <li>Impersonate others or create fake accounts</li>
+                    <li>Harass, threaten, or bully other users</li>
+                    <li>Upload malicious content or viruses</li>
+                    <li>Reverse engineer or hack the platform</li>
+                    <li>Violate intellectual property rights</li>
+                    <li>Use automated bots or scripts</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <p><strong>Serious Violation:</strong> Cheating in quizzes may result in immediate account suspension, removal from leaderboards, and permanent ban from future events.</p>
+                </div>
+            </div>
+            
+            <div class="terms-section">
+                <h2>4. Quiz Participation and Fair Play</h2>
+                <p>OSIAN is built on principles of fairness and integrity:</p>
+                <ul>
+                    <li>All quizzes must be completed individually unless explicitly stated as team events</li>
+                    <li>External assistance is prohibited unless allowed by specific quiz rules</li>
+                    <li>Quiz timers must be respected - late submissions are not accepted</li>
+                    <li>Disputed answers can be appealed through proper channels</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>5. Intellectual Property</h2>
+                <h3>5.1 Our Content</h3>
+                <p>All OSIAN platform content, including quizzes, logos, and software, is owned by OSIAN or its licensors and is protected by copyright laws.</p>
+                
+                <h3>5.2 Your Content</h3>
+                <p>By submitting content to OSIAN, you grant us a non-exclusive license to use, display, and distribute it for platform operations.</p>
+                
+                <h3>5.3 Copyright Complaints</h3>
+                <p>If you believe your copyright has been infringed, contact us at osiancommunity01025@gmail.com with details.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>6. Limitation of Liability</h2>
+                <p>OSIAN provides the platform "as is" without warranties of any kind. We are not liable for:</p>
+                <ul>
+                    <li>Technical issues or platform downtime</li>
+                    <li>Accuracy of quiz content</li>
+                    <li>User interactions or disputes</li>
+                    <li>Loss of data or account access</li>
+                    <li>Indirect or consequential damages</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>7. Termination</h2>
+                <p>We reserve the right to terminate or suspend your account for:</p>
+                <ul>
+                    <li>Violation of these terms</li>
+                    <li>Fraudulent or harmful activities</li>
+                    <li>Prolonged inactivity</li>
+                    <li>Legal or regulatory requirements</li>
+                </ul>
+            </div>
+            
+            <div class="terms-section">
+                <h2>8. Modifications to Terms</h2>
+                <p>We may update these Terms & Conditions periodically. Continued use of OSIAN after changes constitutes acceptance. We will notify users of significant changes via email or platform notifications.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>9. Governing Law and Dispute Resolution</h2>
+                <p>These terms are governed by Indian law. Any disputes shall be resolved through arbitration in Mohali, Punjab, in accordance with Indian arbitration laws.</p>
+            </div>
+            
+            <div class="terms-section">
+                <h2>10. Contact Information</h2>
+                <p>For questions about these Terms & Conditions:</p>
+                <p>Email: osiancommunity01025@gmail.com<br>
+                Phone: +91 76967-01967, +91 62003-98447<br>
+                Office: Chandigarh Engineering College, Jhanjeri, MOHALI</p>
+            </div>
+            
+            <div class="update-date">
+                <p><strong>Last Updated:</strong> DEC 11, 2025</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-about">
+                <h3>OSIAN</h3>
+                <p>India’s premium student quiz platform — fair, transparent, and engaging.</p>
+            </div>
+            <div class="footer-links">
+                <h4 style="color:#fff; margin-bottom:1rem;">Quick Links</h4>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-and-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="shipping-policy.html">Shipping Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4 style="color:#fff; margin-bottom:1rem;">Contact Us</h4>
+                <div class="social-media">
+                    <a href="https://www.instagram.com/osianoffical" target="_blank"><i class='bx bxl-instagram'></i></a>
+                    <a href="https://www.linkedin.com/in/osian-group-94b1b3398/" target="_blank"><i class='bx bxl-linkedin'></i></a>
+                </div>
+                <p style="margin-top: 20px;">Email: osiancommunity01025@gmail.com</p>
+                <p>Phone: +91 76967-01967</p>
+                <p>Office: Chandigarh Engineering College, Jhanjeri, MOHALI</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 OSIAN. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar toggle logic
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navButtons = document.querySelector('.nav-buttons');
+
+        hamburger.addEventListener('click', () => {
+            const isFlex = navMenu.style.display === 'flex';
+            if(!isFlex) {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '70px';
+                navMenu.style.left = '0';
+                navMenu.style.width = '100%';
+                navMenu.style.background = '#050509';
+                navMenu.style.padding = '2rem';
+                
+                navButtons.style.display = 'flex';
+                navButtons.style.flexDirection = 'column';
+                navButtons.style.position = 'absolute';
+                navButtons.style.top = '300px';
+                navButtons.style.left = '0';
+                navButtons.style.width = '100%';
+                navButtons.style.padding = '2rem';
+                navButtons.style.background = '#050509';
+            } else {
+                navMenu.style.display = 'none';
+                navButtons.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

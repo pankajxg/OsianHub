@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzes - OSIAN</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <!-- CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    <link rel="stylesheet" href="style-quiz.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Proctoring Styles */
+        #proctor-video-wrapper {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 160px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--osian-cyan);
+            background: #000;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+        #proctor-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror effect */
+        }
+        #proctor-status {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #22c55e; /* Green for active */
+            box-shadow: 0 0 5px #22c55e;
+        }
+        #proctor-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--osian-cyan);
+            font-size: 24px;
+        }
+        
+        /* Code Editor Styles */
+        .code-answer-container {
+            margin-top: 20px;
+            border: 1px solid var(--osian-dark);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1e1e1e;
+        }
+        .code-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #252526;
+            border-bottom: 1px solid #333;
+        }
+        .code-language-label {
+            color: var(--osian-cyan);
+            font-family: monospace;
+            font-weight: bold;
+        }
+        #code-editor {
+            width: 100%;
+            height: 300px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border: none;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.5;
+            outline: none;
+        }
+        .code-editor-footer {
+            padding: 10px 15px;
+            background: #252526;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .run-btn {
+            background: var(--osian-cyan);
+            color: var(--osian-dark);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .run-btn:hover {
+            background: var(--osian-mint);
+        }
+        #code-output {
+            background: #000;
+            color: #fff;
+            padding: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border-top: 1px solid #333;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+        #code-output.active {
+            display: block;
+        }
+        .run-status {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-right: auto;
+            align-self: center;
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+    <div class="app-shell">
+        <div id="sidebar-container" class="sidebar"></div>
+        <div class="overlay" id="overlay"></div>
+        <main class="main-content">
+             <header class="dashboard-header">
+                <div class="welcome-section">
+                    <h1>Available Quizzes</h1>
+                    <p>Select a quiz to start learning.</p>
+                </div>
+                <button id="mobile-menu-btn" class="mobile-menu-btn">
+                    <i class='bx bx-menu'></i>
+                </button>
+            </header>
+            
+            <div id="quiz-list-view" class="container content-card full-page" style="background: transparent; border: none; padding: 0;">
+                <div id="quizzes-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                    <p style="text-align:center; width: 100%;">Loading quizzes...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- QUIZ INTERFACE VIEW (Hidden by default - Legacy/Fallback) -->
+    <div id="quiz-interface-view" style="display: none;">
+        <!-- Proctoring Video -->
+        <div id="proctor-video-wrapper" style="display: none;">
+            <video id="proctor-video" autoplay muted playsinline></video>
+            <div id="proctor-status"></div>
+            <div id="proctor-loader"><i class='bx bx-loader-alt bx-spin'></i></div>
+        </div>
+
+        <div id="warning-modal" class="modal-overlay">
+            <div class="modal-content">
+                <i class='bx bxs-error-circle'></i>
+                <h2>Quiz Instructions & Warnings</h2>
+                <p>Please read the following rules carefully before you begin:</p>
+                <ul>
+                    <li>This is a timed quiz. The timer will start once you click "Start".</li>
+                    <li><strong>Do NOT switch tabs or minimize the window.</strong></li>
+                    <li>Switching tabs will result in a warning. You get 2 warnings.</li>
+                    <li>On the 3rd violation, your quiz will be <strong>auto-submitted</strong>.</li>
+                    <li>Copying, pasting, or right-clicking is disabled.</li>
+                    <li>If you are found cheating, your result will be sent to the admin.</li>
+                </ul>
+                <p><strong>It is your responsibility to follow these rules.</strong></p>
+                <button id="start-quiz-btn" class="btn-primary">I Understand, Start the Quiz</button>
+            </div>
+        </div>
+        
+        <div id="auto-submit-modal" class="modal-overlay">
+            <div class="modal-content">
+                <i class='bx bxs-shield-x'></i>
+                <h2>Quiz Auto-Submitted</h2>
+                <p>You exceeded the allowed number of tab switches.</p>
+                <p>As per the rules, your quiz has been automatically submitted. A notification has been sent to the admin.</p>
+                <button onclick="window.location.reload()" class="btn-primary">Back to Quizzes</button>
+            </div>
+        </div>
+    
+        <div id="final-submit-modal" class="modal-overlay">
+            <div class="modal-content">
+                <i class='bx bxs-check-circle'></i>
+                <h2>Quiz Submitted!</h2>
+                <p>Your responses have been successfully recorded.</p>
+                <p>You can check your results in the "Results" page.</p>
+                <button onclick="window.location.href='results.html'" class="btn-primary">Go to Results</button>
+            </div>
+        </div>
+    
+        <div id="quiz-container" class="quiz-container" style="display: none;">
+            <header class="quiz-header">
+                <h1 class="logo">OSIAN</h1>
+                <div class="quiz-info">
+                    <h3 id="quiz-title-display">Quiz Title</h3>
+                </div>
+                <div class="timer">
+                    <i class='bx bx-time'></i>
+                    <span id="time-left">00:00</span>
+                </div>
+            </header>
+    
+            <div id="cheating-warning" class="warning-banner" style="display: none;">
+                <i class='bx bxs-error'></i>
+                <strong>Warning!</strong> You switched tabs. This is violation <span id="violation-count">1</span> of 2.
+            </div>
+    
+            <main class="quiz-main">
+                <div class="question-header">
+                    <span id="question-number">Question 1 of X</span>
+                    <h2 id="question-text">Question text here...</h2>
+                </div>
+                
+                <div class="options-container" id="options-container">
+                    <!-- Options injected here -->
+                </div>
+
+                <!-- Coding Question Container -->
+                <div class="code-answer-container" style="display: none;">
+                    <div class="code-editor-header">
+                        <span class="code-language-label" id="code-language-label">JavaScript</span>
+                        <div class="run-status" id="run-status"></div>
+                    </div>
+                    <textarea id="code-editor" spellcheck="false" placeholder="// Write your code here..."></textarea>
+                    <div id="code-output"></div>
+                    <div class="code-editor-footer">
+                        <button id="run-code-btn" class="run-btn"><i class='bx bx-play'></i> Run Code</button>
+                    </div>
+                </div>
+
+                <!-- Written Answer Container -->
+                <div class="written-answer-container" style="display: none; margin-top: 20px;">
+                    <textarea id="written-answer" rows="6" style="width: 100%; padding: 15px; background: var(--bg-main); border: 1px solid var(--osian-dark); color: var(--text-main); border-radius: 8px; resize: vertical;" placeholder="Type your answer here..."></textarea>
+                </div>
+    
+                <div class="quiz-navigation" style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button id="prev-btn" class="btn" style="background: var(--osian-dark); color: var(--text-muted); display: none;">Previous</button>
+                    <button id="next-btn" class="btn" style="background: var(--osian-cyan); color: var(--osian-dark);">Next</button>
+                    <button id="submit-btn" class="btn-submit" style="display: none;">Submit Quiz</button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    
+    <!-- Page Specific Scripts -->
+    <script src="script-quiz.js"></script>
+    <script src="script-quizzes.js"></script>
+</body>
+</html>

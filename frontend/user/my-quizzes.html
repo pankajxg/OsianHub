@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress - OSIAN</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/frontend/shared/css/style-dashboard.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Fallback variables if dashboard css doesn't load immediately */
+            --osian-cyan: #5ffbf1;
+            --osian-mint: #4ade80;
+            --osian-dark: #0f172a;
+            --bg-main: #0B1221;
+            --bg-card: #131c2e;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        /* --- Global Enhancements --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main); /* Fallback */
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(95, 251, 241, 0.2);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(95, 251, 241, 0.4);
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(95, 251, 241, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--osian-cyan);
+            animation: spin 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
+            filter: drop-shadow(0 0 4px var(--osian-cyan));
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast styles */
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+        }
+        
+        .toast {
+            background: rgba(19, 28, 46, 0.85);
+            border-left: 4px solid var(--osian-cyan);
+            border-radius: 4px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            color: white;
+            font-size: 14px;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* --- Layout & Typography --- */
+        .progress-section {
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title i {
+            color: var(--osian-cyan);
+            filter: drop-shadow(0 0 5px rgba(95, 251, 241, 0.4));
+        }
+        
+        .progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* --- Cards (History & Progress) --- */
+        .progress-card, .history-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .progress-card::before, .history-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--osian-cyan);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .progress-card:hover, .history-card:hover {
+            transform: translateY(-4px) scale(1.005);
+            border-color: rgba(95, 251, 241, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(95, 251, 241, 0.1);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+        }
+
+        .progress-card:hover::before, .history-card:hover::before {
+            opacity: 1;
+        }
+        
+        .progress-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(95, 251, 241, 0.08);
+            color: var(--osian-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+            border: 1px solid rgba(95, 251, 241, 0.15);
+            box-shadow: 0 0 15px rgba(95, 251, 241, 0.05);
+        }
+        
+        .progress-info, .history-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        
+        .progress-title, .history-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.01em;
+        }
+        
+        /* --- Badges --- */
+        .progress-badge {
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 50px; /* Pill shape */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .badge-inprogress {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+        
+        .badge-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+        }
+        
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .progress-meta, .history-meta {
+            display: flex;
+            gap: 18px;
+            font-size: 13px;
+            color: var(--text-muted);
+            align-items: center;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .meta-item i {
+            color: var(--osian-cyan);
+            font-size: 15px;
+        }
+        
+        /* --- Progress Bar --- */
+        .progress-bar-container {
+            width: 140px;
+            margin-right: 0;
+            flex-shrink: 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .progress-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--osian-cyan), var(--osian-mint));
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(95, 251, 241, 0.5);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: translateX(-100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        
+        /* --- Buttons --- */
+        .continue-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(95, 251, 241, 0.8), rgba(74, 222, 128, 0.8));
+            color: #000;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(95, 251, 241, 0.4);
+            background: linear-gradient(135deg, var(--osian-cyan), var(--osian-mint));
+        }
+
+        .view-details-btn {
+            padding: 8px 16px;
+            background: transparent;
+            color: var(--osian-cyan);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(95, 251, 241, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        
+        .view-details-btn:hover {
+            background: rgba(95, 251, 241, 0.1);
+            border-color: var(--osian-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(95, 251, 241, 0.15);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+        
+        /* --- Score Badges --- */
+        .score-badge {
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            min-width: 60px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .score-high { 
+            background: rgba(16, 185, 129, 0.1); 
+            color: #34d399; 
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+        
+        .score-med { 
+            background: rgba(245, 158, 11, 0.1); 
+            color: #fbbf24; 
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+        }
+        
+        .score-low { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: #f87171; 
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+        }
+        
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.01);
+        }
+        
+        .empty-state i {
+            font-size: 54px;
+            margin-bottom: 18px;
+            color: rgba(255, 255, 255, 0.1);
+            display: block;
+        }
+        
+        .empty-state h3 {
+            color: var(--text-main);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        /* --- Results & Detail View --- */
+        .result-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .score-circle {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: conic-gradient(var(--osian-cyan) var(--percent), rgba(255,255,255,0.05) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 30px rgba(95, 251, 241, 0.15);
+        }
+        
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: var(--bg-card);
+            border-radius: 50%;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .score-value {
+            position: relative;
+            z-index: 1;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        
+        .question-review {
+            margin-bottom: 24px;
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-left: 4px solid transparent;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .question-review.correct { border-left-color: var(--osian-cyan); }
+        .question-review.incorrect { border-left-color: #f87171; }
+        
+        .option-item {
+            padding: 14px 18px;
+            margin: 8px 0;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .option-item.correct { 
+            background: rgba(95, 251, 241, 0.1); 
+            color: var(--osian-cyan); 
+            border: 1px solid rgba(95, 251, 241, 0.2);
+        }
+        
+        .option-item.wrong { 
+            background: rgba(248, 113, 113, 0.1); 
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        /* --- Skeleton Loading --- */
+        .skeleton {
+            background: linear-gradient(90deg, #131c2e 25%, #1e293b 50%, #131c2e 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .progress-card, .history-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                padding: 20px;
+            }
+            
+            .progress-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .progress-bar-container {
+                width: 100%;
+                margin: 10px 0;
+            }
+            
+            .score-badge {
+                align-self: flex-start;
+            }
+            
+            .history-card {
+                /* For history card specifically, keep buttons easy to tap */
+                position: relative;
+            }
+            
+            .view-details-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+         <div id="sidebar-container" class="sidebar"></div>
+        
+        <div class="overlay" id="overlay"></div>
+
+        <div class="main-content" id="main-content">
+
+            <div id="loading-spinner" class="loading-spinner" style="display: none; position: absolute; top: 20px; right: 20px;"></div>
+
+            <div id="progress-dashboard-view">
+                <div class="progress-section">
+                    <div class="section-title">
+                        <i class='bx bx-history'></i> Quiz History
+                    </div>
+                    <div class="progress-list" id="history-list">
+                        <div class="empty-state" id="history-empty" style="display: none;">
+                            <i class='bx bx-history'></i>
+                            <h3>No Quiz History</h3>
+                            <p>You haven't completed any quizzes yet.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pagination-controls" id="history-pagination" style="display: none; margin-top: 30px; justify-content: center;">
+                        <button id="load-more-btn" class="btn-secondary">Load More Activities</button>
+                    </div>
+                </div>
+            </div> <div id="result-detail-view" style="display: none;">
+                <button onclick="backToProgress()" class="btn-secondary" style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">
+                    <i class='bx bx-arrow-back'></i> Back to Progress
+                </button>
+                <div id="detail-content">
+                    </div>
+            </div>
+            
+        </div> </div>
+
+    <div id="toast-container"></div>
+
+    <div id="quiz-details-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 id="modal-title">Quiz Details</h2>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                </div>
+        </div>
+    </div>
+
+    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="/frontend/shared/js/script-toast-helper.js"></script>
+    <script src="/frontend/shared/js/shared-init.js"></script>
+    <script src="/frontend/user/script-dashboard-user.js"></script>
+    <script src="/frontend/user/script-my-quizzes.js"></script>
+</body>
+</html>
