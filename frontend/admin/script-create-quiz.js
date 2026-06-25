@@ -11,15 +11,6 @@ window.toggleSidebar = function() {
     if (sb) sb.classList.toggle('open');
 };
 
-window.logout = function() {
-    try {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        localStorage.removeItem('authToken'); 
-    } catch(e){}
-    window.location.href = '/frontend/auth/login.html';
-};
-
 // Global state
 let csvBufferQuestions = [];
 let defaultCategoryId = null; 

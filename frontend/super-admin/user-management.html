@@ -647,7 +647,7 @@
         </nav>
 
         <div class="logout-container">
-             <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+             <a href="#" onclick="logout(); return false;" class="nav-item">
                 <i class='bx bx-log-out'></i>
                 <span>Logout</span>
             </a>
@@ -721,12 +721,6 @@
         }
 
         // Global logout function
-        window.logout = function() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/frontend/auth/login.html';
-        };
-
         // Load existing scripts
         document.addEventListener('DOMContentLoaded', function() {
             // Load auth guard if exists

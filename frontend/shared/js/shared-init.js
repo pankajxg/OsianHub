@@ -265,6 +265,23 @@
   }
   w.getRedirectUrl = getRedirectUrl;
 
+  function logout() {
+    console.log('[Auth] Logging out via shared-init...');
+    var keys = ['token', 'user', 'authToken', 'userData', 'userPreferences', 'quizProgress'];
+    for (var i = 0; i < keys.length; i++) {
+      try { localStorage.removeItem(keys[i]); } catch(_) {}
+    }
+    try {
+      document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    } catch(_) {}
+    if (window.authRedirectInProgress) {
+      delete window.authRedirectInProgress;
+    }
+    window.location.href = getRedirectUrl('/frontend/auth/login.html');
+  }
+  w.logout = logout;
+
+
   function init(){
     applyTheme();
     initAvatars();

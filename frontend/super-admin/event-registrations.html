@@ -416,7 +416,7 @@
     </nav>
 
     <div class="logout-container">
-      <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+      <a href="#" onclick="logout(); return false;" class="nav-item">
         <i class='bx bx-log-out'></i>
         <span>Logout</span>
       </a>
@@ -483,14 +483,7 @@
       if (sb) sb.classList.toggle('open');
     }
 
-    window.logout = function() {
-      try {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      } catch (_) {}
-      window.location.href = '/frontend/auth/login.html';
-    };
-  </script>
+    </script>
 
   <script src="/frontend/shared/auth-guard.js"></script>
   <script src="/frontend/shared/js/shared-init.js"></script>

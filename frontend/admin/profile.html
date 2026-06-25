@@ -471,7 +471,7 @@
         </nav>
 
         <div class="logout-container">
-            <a href="/frontend/index.html" onclick="logout()" class="nav-item logout">
+            <a href="#" onclick="logout(); return false;" class="nav-item logout">
                 <i class='bx bx-log-out'></i>
                 <span>Logout</span>
             </a>
@@ -614,12 +614,6 @@
             document.getElementById('sidebar').classList.toggle('active');
         }
 
-        window.logout = function() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/frontend/auth/login.html';
-        };
-
         function showCreateQuiz() {
             window.location.href = 'create-quiz.html';
         }
@@ -731,14 +725,10 @@
                 if (fileInput.files[0]) {
                     formData.append('avatar', fileInput.files[0]);
                 }
-
-                const res = await fetch('/api/users/profile', {
+                const data = await window.apiFetch('/users/profile', {
                     method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData // No Content-Type header, browser sets it for FormData
+                    body: formData
                 });
-
-                const data = await res.json();
 
                 if (data.success) {
                     showToast('Profile updated successfully!', 'success');

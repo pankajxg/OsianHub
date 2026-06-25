@@ -7,6 +7,24 @@
     
     console.log('Shared scripts initialized');
 
+    if (!window.getRedirectUrl) {
+        window.getRedirectUrl = function(targetPath) {
+            if (!targetPath) return targetPath;
+            if (targetPath.startsWith('/')) {
+                var pathname = window.location.pathname;
+                var match = pathname.match(/^\/[^/]+/);
+                var firstSegment = match ? match[0] : '';
+                if (firstSegment.toLowerCase() === '/osianhub') {
+                    if (targetPath.startsWith('/frontend')) {
+                        return firstSegment + targetPath.substring(9);
+                    }
+                    return firstSegment + targetPath;
+                }
+            }
+            return targetPath;
+        };
+    }
+
     function redirect(url) {
         window.location.href = window.getRedirectUrl ? window.getRedirectUrl(url) : url;
     }
@@ -485,13 +503,23 @@
         return true;
     };
 
-    // --- Global Logout Function ---
     window.logout = function() {
         console.log('[Auth] Logging out...');
         
-        // Clear all auth data
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        // Clear all auth/session data
+        const keysToRemove = ['token', 'user', 'authToken', 'userData', 'userPreferences', 'quizProgress'];
+        keysToRemove.forEach(key => {
+            try {
+                localStorage.removeItem(key);
+            } catch (e) {
+                console.error('Error removing localStorage key:', key, e);
+            }
+        });
+        
+        // Clear cookies
+        try {
+            document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        } catch (e) {}
         
         // Clear any redirect flags
         delete window.authRedirectInProgress;

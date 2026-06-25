@@ -373,7 +373,7 @@
         </nav>
 
         <div class="logout-container">
-             <a href="/frontend/index.html" onclick="logout()" class="nav-item">
+             <a href="#" onclick="logout(); return false;" class="nav-item">
                 <i class='bx bx-log-out'></i>
                 <span>Logout</span>
             </a>
@@ -472,11 +472,6 @@
     <script src="/frontend/shared/js/script-toast-helper.js"></script>
     <script src="script-manage-departments.js"></script>
     <script>
-        window.logout = function() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            window.location.href = '/frontend/index.html';
-        };
-    </script>
+        </script>
 </body>
 </html>
