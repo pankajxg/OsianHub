@@ -314,13 +314,12 @@
         
         // Public paths that don't require auth
         const publicPaths = [
-            '/frontend/auth/login.html',
-            '/frontend/auth/register.html',
-            '/frontend/auth/verify-otp.html',
-            '/frontend/auth/forgot-password.html',
-            '/frontend/user/events.html',
-            '/frontend/user/event-details.html',
-            '/frontend/index.html',
+            '/auth/login.html',
+            '/auth/register.html',
+            '/auth/verify-otp.html',
+            '/auth/forgot-password.html',
+            '/user/events.html',
+            '/user/event-details.html',
             '/index.html',
             '/'
         ];
@@ -339,10 +338,10 @@
         if (isPublic && token) {
             // Only redirect from login/register pages when logged in
             const authOnlyPages = [
-                '/frontend/auth/login.html',
-                '/frontend/auth/register.html',
-                '/frontend/auth/verify-otp.html',
-                '/frontend/auth/forgot-password.html'
+                '/auth/login.html',
+                '/auth/register.html',
+                '/auth/verify-otp.html',
+                '/auth/forgot-password.html'
             ];
             
             const isAuthOnlyPage = authOnlyPages.some(path => currentPath.endsWith(path));

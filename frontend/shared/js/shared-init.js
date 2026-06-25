@@ -255,6 +255,9 @@
       var match = pathname.match(/^\/[^/]+/);
       var firstSegment = match ? match[0] : '';
       if (firstSegment.toLowerCase() === '/osianhub') {
+        if (targetPath.startsWith('/frontend')) {
+          return firstSegment + targetPath.substring(9);
+        }
         return firstSegment + targetPath;
       }
     }
