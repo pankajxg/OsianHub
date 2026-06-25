@@ -25,22 +25,17 @@ document.addEventListener("DOMContentLoaded", function() {
         if (token && user) {
             const currentPath = window.location.pathname;
             
+            let target = '/frontend/user/dashboard.html';
             if (user.role === 'superadmin') {
-                if (!currentPath.includes('/super-admin/dashboard.html')) {
-                    window.location.href = '/frontend/super-admin/dashboard.html';
-                    return;
-                }
+                target = '/frontend/super-admin/dashboard.html';
             } else if (user.role === 'admin') {
-                if (!currentPath.includes('/admin/dashboard.html')) {
-                    window.location.href = '/frontend/admin/dashboard.html';
-                    return;
-                }
-            } else {
-                // Default user
-                if (!currentPath.includes('/user/dashboard.html')) {
-                    window.location.href = '/frontend/user/dashboard.html';
-                    return;
-                }
+                target = '/frontend/admin/dashboard.html';
+            }
+            
+            const cleanTarget = target.replace('/frontend/', '/');
+            if (!currentPath.includes(cleanTarget)) {
+                window.location.href = window.getRedirectUrl ? window.getRedirectUrl(target) : target;
+                return;
             }
             
             // If we are already on the correct dashboard, allow the script to continue
