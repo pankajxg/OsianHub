@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
 
     if (!token) {
-        window.location.href = '/frontend/auth/login.html';
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
         return;
     }
 

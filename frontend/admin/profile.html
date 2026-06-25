@@ -622,7 +622,7 @@
         async function loadProfileData() {
             try {
                 const token = localStorage.getItem('token');
-                if (!token) { window.location.href = '/frontend/auth/login.html'; return; }
+                if (!token) { window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html'; return; }
 
                 // Fetch fresh user data using apiFetch
                 // Note: apiFetch throws on error, returns body on success

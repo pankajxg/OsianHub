@@ -134,7 +134,7 @@ function render(event) {
       html += `
         <div class="reg-status-card reg-login">
           <i class='bx bx-lock-alt'></i> 
-          <div>Please <a href="/frontend/auth/login.html" style="color:inherit;text-decoration:underline;font-weight:bold;">Login</a> to register for this event.</div>
+          <div>Please <a href="../auth/login.html" style="color:inherit;text-decoration:underline;font-weight:bold;">Login</a> to register for this event.</div>
         </div>
       `;
     } else if (isRegistered) {
@@ -145,7 +145,7 @@ function render(event) {
           <div>You are already registered for this event.</div>
         </div>
         <div style="text-align:center; margin-top:1rem;">
-          <a href="/frontend/user/my-registrations.html" class="btn" style="display:inline-block; color:var(--osian-cyan); text-decoration:underline;">View My Registrations</a>
+          <a href="../user/my-registrations.html" class="btn" style="display:inline-block; color:var(--osian-cyan); text-decoration:underline;">View My Registrations</a>
         </div>
       `;
     } else if (registrationClosed) {

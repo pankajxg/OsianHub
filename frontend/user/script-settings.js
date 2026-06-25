@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if user is authenticated
     if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
         console.log('User not authenticated, redirecting to login');
-        window.location.href = '/auth/login.html';
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
         return;
     }
     
@@ -66,7 +66,7 @@ async function fetchUserDataFromAPI() {
             console.error('No authentication token found');
             showToast('Please login again', 'error');
             setTimeout(() => {
-                window.location.href = '/auth/login.html';
+                window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
             }, 2000);
             return;
         }

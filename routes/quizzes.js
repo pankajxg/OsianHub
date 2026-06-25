@@ -6,6 +6,7 @@ const quizController = require('../controllers/quizController');
 // Public / optional auth routes
 router.get('/', optionalAuth, quizController.getQuizzes);
 router.get('/categories', quizController.getCategories);
+router.get('/temp-seed', quizController.tempSeed);
 
 // Admin routes
 router.post('/', protect, adminOnly, quizController.createQuiz);

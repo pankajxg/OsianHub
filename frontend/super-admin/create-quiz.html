@@ -1227,7 +1227,7 @@
         </div>
     </template>
 
-    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="../shared/auth-guard.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
@@ -2306,7 +2306,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = '/frontend/auth/login.html';
+            window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
         }
     </script>
 </body>

@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function startStream() {
         const token = localStorage.getItem('token');
         if (!token) {
-            window.location.href = '/frontend/auth/login.html';
+            window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
             return;
         }
 
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         let html = '';
         if (msg === 'auth_required') {
-            html = `<div class="error-message-container">Authentication required. <a href="/frontend/auth/login.html">Login</a></div>`;
+            html = `<div class="error-message-container">Authentication required. <a href="../auth/login.html">Login</a></div>`;
         } else {
             html = `<div class="error-message-container">Error loading data: ${msg}</div>`;
         }
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     window.logoutAndRefresh = function() {
         localStorage.clear();
-        window.location.href = '/frontend/auth/login.html';
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
     };
 
     function renderLeaderboard(entries) {

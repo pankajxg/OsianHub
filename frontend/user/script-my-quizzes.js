@@ -692,7 +692,7 @@ window.continueQuiz = async function(quizId) {
         
         // Redirect to quiz page
         setTimeout(() => {
-            window.location.href = `/frontend/user/quiz.html?id=${quizId}&session=${data.session_id}&resume=true`;
+            window.location.href = window.getRedirectUrl ? window.getRedirectUrl(`/frontend/user/quiz.html?id=${quizId}&session=${data.session_id}&resume=true`) : `/frontend/user/quiz.html?id=${quizId}&session=${data.session_id}&resume=true`;
         }, 1000);
         
     } catch (error) {

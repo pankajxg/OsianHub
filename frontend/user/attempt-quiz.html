@@ -247,7 +247,7 @@
         </div>
     </div>
 
-    <script src="/frontend/shared/auth-guard.js"></script>
+    <script src="../shared/auth-guard.js"></script>
     <script>
         // --- GLOBAL STATE ---
         let currentQuizData = null;
@@ -526,7 +526,7 @@
 
                 if (res.success) {
                     // Redirect to Results Page
-                    window.location.href = `/frontend/user/quiz-results.html?resultId=${res.resultId}`;
+                    window.location.href = window.getRedirectUrl ? window.getRedirectUrl(`/frontend/user/quiz-results.html?resultId=${res.resultId}`) : `/frontend/user/quiz-results.html?resultId=${res.resultId}`;
                 } else {
                     document.getElementById('submit-error-msg').textContent = res.message || "Submission Failed";
                     document.getElementById('submit-error-msg').style.display = 'block';
@@ -536,7 +536,7 @@
             } catch (e) {
                 console.error(e);
                 if(force) {
-                    window.location.href = '/frontend/user/dashboard.html';
+                    window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/user/dashboard.html') : '/frontend/user/dashboard.html';
                 } else {
                     document.getElementById('submit-error-msg').textContent = "Network Error. Please check connection.";
                     document.getElementById('submit-error-msg').style.display = 'block';

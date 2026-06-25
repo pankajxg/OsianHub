@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check authentication
     const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '/frontend/auth/login.html';
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
         return;
     }
 
@@ -178,7 +178,7 @@ function handleSessionExpired() {
                         <i class='bx bx-log-out-circle' style="font-size: 3rem; margin-bottom: 1rem;"></i>
                         <h3>Session Expired</h3>
                         <p style="margin-bottom: 1.5rem;">Your session has expired. Please login again to view results.</p>
-                        <a href="/frontend/auth/login.html" class="btn">
+                        <a href="../auth/login.html" class="btn">
                             Login Again
                         </a>
                     </div>

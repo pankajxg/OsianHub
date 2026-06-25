@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button class="btn-action edit btn-edit" data-id="${ev._id}" title="Edit"><i class='bx bx-edit'></i></button>
           <button class="btn-action delete btn-delete" data-id="${ev._id}" title="Delete"><i class='bx bx-trash'></i></button>
           <button class="btn-action btn-toggle" data-id="${ev._id}" title="Toggle Registration"><i class='bx bx-power-off'></i></button>
-          <a href="/frontend/super-admin/event-registrations.html?id=${ev._id}" class="btn-action" title="View Registrations" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;"><i class='bx bx-list-ul'></i></a>
+          <a href="../super-admin/event-registrations.html?id=${ev._id}" class="btn-action" title="View Registrations" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;"><i class='bx bx-list-ul'></i></a>
         </td>
       `;
       body.appendChild(tr);

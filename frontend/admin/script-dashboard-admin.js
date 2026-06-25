@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     if (!token) {
         console.log('No token found in dashboard script');
-        window.location.href = '/frontend/auth/login.html';
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
         return;
     }
     
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Allow 'admin' and 'superadmin' to view this, but primarily for 'admin'
     if (user.role !== 'admin' && user.role !== 'superadmin') {
         console.log('User is not authorized for admin dashboard');
-        window.location.href = '/frontend/index.html';
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/index.html') : '/frontend/index.html';
         return;
     }
 
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log('Authentication error, clearing tokens');
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
-                window.location.href = '/frontend/auth/login.html';
+                window.location.href = window.getRedirectUrl ? window.getRedirectUrl('/frontend/auth/login.html') : '/frontend/auth/login.html';
                 return;
             }
             
