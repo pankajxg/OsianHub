@@ -58,10 +58,14 @@ app.use('/api/mentorship', require('./routes/mentorship'));
 //  Health check
 // ──────────────────────────────────────────────
 app.get('/api', (req, res) => {
+    const mongoose = require('mongoose');
+    const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+    const dbState = states[mongoose.connection.readyState] || 'unknown';
     res.json({
         success: true,
         message: 'OsianHub API is running 🚀',
         timestamp: new Date().toISOString(),
+        database: dbState,
     });
 });
 
