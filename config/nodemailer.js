@@ -1,4 +1,44 @@
 const nodemailer = require('nodemailer');
+const https = require('https');
+
+const sendViaResend = (to, subject, html) => {
+    return new Promise((resolve, reject) => {
+        const body = JSON.stringify({
+            from: process.env.EMAIL_FROM || 'OsianHub <onboarding@resend.dev>',
+            to: [to],
+            subject: subject,
+            html: html
+        });
+
+        const options = {
+            hostname: 'api.resend.com',
+            port: 443,
+            path: '/emails',
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body)
+            }
+        };
+
+        const req = https.request(options, (res) => {
+            let responseBody = '';
+            res.on('data', (chunk) => { responseBody += chunk; });
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    resolve(JSON.parse(responseBody));
+                } else {
+                    reject(new Error(`Resend API Error: ${res.statusCode} - ${responseBody}`));
+                }
+            });
+        });
+
+        req.on('error', (err) => reject(err));
+        req.write(body);
+        req.end();
+    });
+};
 
 const createTransporter = () => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -20,6 +60,19 @@ const createTransporter = () => {
 const transporter = createTransporter();
 
 const sendEmail = async (to, subject, html) => {
+    // 1. Send via Resend API (HTTPS port 443) if API Key is configured (Best for Render Free Tier)
+    if (process.env.RESEND_API_KEY) {
+        try {
+            const result = await sendViaResend(to, subject, html);
+            console.log(`✉️ [Resend Email Sent] To: ${to} | ID: ${result.id}`);
+            return;
+        } catch (resendError) {
+            console.error('❌ Resend API sending error:', resendError.message);
+            // If Resend fails, try fallback to SMTP if configured
+        }
+    }
+
+    // 2. Fallback to Nodemailer SMTP
     if (!transporter) {
         console.log(`[Email skipped] To: ${to} | Subject: ${subject}`);
         return;
