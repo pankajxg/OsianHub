@@ -107,13 +107,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     // 3. Redirect to the correct dashboard based on role
                     setTimeout(() => {
+                        let target = '/frontend/user/dashboard.html';
                         if (data.user.role === 'superadmin') {
-                            window.location.href = '/frontend/super-admin/dashboard.html';
+                            target = '/frontend/super-admin/dashboard.html';
                         } else if (data.user.role === 'admin') {
-                            window.location.href = '/frontend/admin/dashboard.html';
-                        } else {
-                            window.location.href = '/frontend/user/dashboard.html';
+                            target = '/frontend/admin/dashboard.html';
                         }
+                        window.location.href = window.getRedirectUrl ? window.getRedirectUrl(target) : target;
                     }, 1000);
 
                 } else {

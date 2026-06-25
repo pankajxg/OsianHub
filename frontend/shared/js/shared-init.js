@@ -248,6 +248,20 @@
   }
   w.initAvatars = initAvatars;
 
+  function getRedirectUrl(targetPath) {
+    if (!targetPath) return targetPath;
+    if (targetPath.startsWith('/')) {
+      var pathname = window.location.pathname;
+      var match = pathname.match(/^\/[^/]+/);
+      var firstSegment = match ? match[0] : '';
+      if (firstSegment.toLowerCase() === '/osianhub') {
+        return firstSegment + targetPath;
+      }
+    }
+    return targetPath;
+  }
+  w.getRedirectUrl = getRedirectUrl;
+
   function init(){
     applyTheme();
     initAvatars();
@@ -266,7 +280,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     try {
         // 1. Fetch the consistent HTML file
         // Adjust path if your components folder is different relative to the HTML file
-        const response = await fetch('/frontend/components/sidebar-user.html'); 
+        const response = await fetch(window.getRedirectUrl ? window.getRedirectUrl('/frontend/components/sidebar-user.html') : '/frontend/components/sidebar-user.html'); 
         if (!response.ok) throw new Error("Sidebar file not found");
         
         const html = await response.text();

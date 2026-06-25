@@ -392,7 +392,8 @@
                                     'admin': '/frontend/admin/dashboard.html',
                                     'user': '/frontend/user/dashboard.html'
                                 };
-                                window.location.href = dashboardMap[role] || '/frontend/user/dashboard.html';
+                                const target = dashboardMap[role] || '/frontend/user/dashboard.html';
+                                window.location.href = window.getRedirectUrl ? window.getRedirectUrl(target) : target;
                             }, 1000);
                         } else {
                             window.location.href = 'login.html';

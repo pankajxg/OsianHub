@@ -7,6 +7,10 @@
     
     console.log('Shared scripts initialized');
 
+    function redirect(url) {
+        window.location.href = window.getRedirectUrl ? window.getRedirectUrl(url) : url;
+    }
+
     // --- API Configuration ---
     window.API_BASE = (function() {
         let override = window.API_BASE_URL || (function() {
@@ -174,7 +178,7 @@
                     console.log('[API] Redirecting to login from:', currentPath);
                     setTimeout(() => {
                         window.authRedirectInProgress = false;
-                        window.location.href = '/frontend/auth/login.html';
+                        redirect('/frontend/auth/login.html');
                     }, 1500);
                 } else {
                     // Clear the flag immediately if already on login page
@@ -377,11 +381,11 @@
                 // Redirect based on role
                 setTimeout(() => {
                     if (user.role === 'superadmin') {
-                        window.location.href = '/frontend/superadmin/dashboard.html';
+                        redirect('/frontend/super-admin/dashboard.html');
                     } else if (user.role === 'admin') {
-                        window.location.href = '/frontend/admin/dashboard.html';
+                        redirect('/frontend/admin/dashboard.html');
                     } else {
-                        window.location.href = '/frontend/user/dashboard.html';
+                        redirect('/frontend/user/dashboard.html');
                     }
                 }, 100);
                 return false;
@@ -395,7 +399,7 @@
         if (!isPublic && !token) {
             console.log('[Auth] Protected page, no token, redirecting to login');
             setTimeout(() => {
-                window.location.href = '/frontend/auth/login.html';
+                redirect('/frontend/auth/login.html');
             }, 100);
             return false;
         }
@@ -424,7 +428,7 @@
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     setTimeout(() => {
-                        window.location.href = '/frontend/auth/login.html';
+                        redirect('/frontend/auth/login.html');
                     }, 100);
                     return false;
                 }
@@ -439,7 +443,7 @@
                     window.showToast('Admin account pending approval.', 'error');
                 }
                 setTimeout(() => {
-                    window.location.href = '/frontend/auth/login.html';
+                    redirect('/frontend/auth/login.html');
                 }, 100);
                 return false;
             }
@@ -455,9 +459,9 @@
                 }
                 setTimeout(() => {
                     if (role === 'admin') {
-                        window.location.href = '/frontend/admin/dashboard.html';
+                        redirect('/frontend/admin/dashboard.html');
                     } else {
-                        window.location.href = '/frontend/user/dashboard.html';
+                        redirect('/frontend/user/dashboard.html');
                     }
                 }, 100);
                 return false;
@@ -470,7 +474,7 @@
                     window.showToast('Access denied. Admin only.', 'error');
                 }
                 setTimeout(() => {
-                    window.location.href = '/frontend/user/dashboard.html';
+                    redirect('/frontend/user/dashboard.html');
                 }, 100);
                 return false;
             }
