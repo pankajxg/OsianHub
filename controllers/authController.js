@@ -48,9 +48,10 @@ exports.register = async (req, res) => {
 
         // 5. Send OTP via email
         try {
+            console.log(`🔑 [OTP Debug] Register OTP for ${user.email} is: ${otp}`);
             await sendOTP(user.email, otp);
         } catch (emailError) {
-            console.error('Email sending error:', emailError);
+            console.error('Email sending error (SMTP block fallback check):', emailError);
             // Even if email fails, don't block registration. User can resend OTP.
         }
 
@@ -163,15 +164,17 @@ exports.resendOtp = async (req, res) => {
 
         // Resend email
         try {
+            console.log(`🔑 [OTP Debug] Resent OTP for ${user.email} is: ${otp}`);
             await sendOTP(user.email, otp);
         } catch (emailError) {
-            console.error('Email sending error:', emailError);
-            return res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
+            console.error('Email sending error during resend (SMTP block fallback check):', emailError);
+            // Don't fail the request on Render Free tier where SMTP is blocked.
+            // Still return success so the user can check the server logs for the OTP.
         }
 
         res.status(200).json({
             success: true,
-            message: 'A new OTP has been sent to your email.'
+            message: 'A new OTP has been generated. Please check your email (or server logs).'
         });
 
     } catch (error) {
@@ -326,6 +329,7 @@ exports.forgotPassword = async (req, res) => {
         }
         const resetLink = `${baseUrl.replace(/\/$/, '')}/reset-password.html?token=${token}`;
         try {
+            console.log(`🔗 [Reset Link Debug] Password reset link for ${user.email} is: ${resetLink}`);
             await sendPasswordResetEmail(user.email, user.name, resetLink);
         } catch (e) {
             console.error('Password reset email error:', e);
@@ -378,7 +382,12 @@ exports.forgotPasswordOtp = async (req, res) => {
         user.resetOtp = otp;
         user.resetOtpExpires = Date.now() + 10 * 60 * 1000;
         await user.save();
-        try { await sendPasswordResetOtpEmail(user.email, user.name, otp); } catch (e) { console.error('Reset OTP email error:', e); }
+        try {
+            console.log(`🔑 [OTP Debug] Password Reset OTP for ${user.email} is: ${otp}`);
+            await sendPasswordResetOtpEmail(user.email, user.name, otp);
+        } catch (e) {
+            console.error('Reset OTP email error:', e);
+        }
         return res.status(200).json({ message: genericMsg });
     } catch (error) {
         console.error('Forgot password via OTP error:', error);
