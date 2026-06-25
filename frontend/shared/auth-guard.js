@@ -498,7 +498,7 @@
         delete window.authRedirectInProgress;
         
         // Redirect to login
-        window.location.href = '/frontend/auth/login.html';
+        redirect('/frontend/auth/login.html');
     };
 
     // --- Initialize on Page Load ---
@@ -514,9 +514,9 @@
                     try {
                         let u = null;
                         if (window.getUserProfile) {
-                            u = await window.getUserProfile({});
+                            u = await window.getUserProfile({ silent: true });
                         } else {
-                            const data = await window.apiFetch('/users/profile');
+                            const data = await window.apiFetch('/users/profile', { silent: true });
                             u = data && data.success && data.user ? data.user : null;
                         }
                         if (u) {

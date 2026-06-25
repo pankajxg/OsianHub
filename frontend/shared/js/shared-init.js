@@ -149,7 +149,7 @@
       return userProfilePromise;
     }
     userProfilePromise = (async function(){
-      var data = await apiFetch('/users/profile');
+      var data = await apiFetch('/users/profile', { silent: !!options.silent });
       var u = data && data.user ? data.user : null;
       if (u){
         userProfileCache = u;
@@ -218,7 +218,7 @@
         return;
       }
 
-      var u = await getUserProfile({ maxAgeMs: tenMinutes });
+      var u = await getUserProfile({ maxAgeMs: tenMinutes, silent: true });
       if (u){
         var p=u.profile||{}; var fresh = p.avatar || u.avatar || null;
         if (fresh && fresh !== avatar){
