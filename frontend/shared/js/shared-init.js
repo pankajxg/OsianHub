@@ -8,7 +8,7 @@
     var qs = new URLSearchParams(location.search||'');
     var sel = (qs.get('backend')||'').toLowerCase();
     if (sel === 'prod') {
-      override = 'https://osianoffical-hfp9.vercel.app/api';
+      override = 'https://osianhub.onrender.com/api';
       try { localStorage.setItem('API_BASE_URL', override); } catch(_) {}
     } else if (sel === 'local') {
       override = 'http://localhost:5000/api';
@@ -16,7 +16,7 @@
     }
   } catch(_){}
 
-  var base = override || (isLocal ? 'http://localhost:5000/api' : 'https://osianoffical-hfp9.vercel.app/api');
+  var base = override || (isLocal ? 'http://localhost:5000/api' : 'https://osianhub.onrender.com/api');
   w.API_BASE = base;
 
   function getToken(){ try { return localStorage.getItem('token') || ''; } catch(_) { return ''; } }
@@ -28,7 +28,7 @@
         if (isFile || hostname === '' || hostname === 'localhost' || hostname === '127.0.0.1') {
             window.API_BASE = 'http://localhost:5000/api';
         } else {
-            window.API_BASE = 'https://osianoffical-hfp9.vercel.app/api';
+            window.API_BASE = 'https://osianhub.onrender.com/api';
         }
         console.log('API Base URL set to:', window.API_BASE);
     }
@@ -43,7 +43,7 @@
         if ((h === 'localhost' || h === '127.0.0.1') && (p === '5500' || p === '5501' || p === '3000' || p === '8080' || p === '')) {
             return 'http://localhost:5000/api';
         }
-        return (h === 'localhost' || h === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://osianoffical-hfp9.vercel.app/api';
+        return (h === 'localhost' || h === '127.0.0.1') ? 'http://localhost:5000/api' : 'https://osianhub.onrender.com/api';
     })();
     var prim = base + rel;
     var o = Object.assign({ credentials: 'omit' }, opts||{});
